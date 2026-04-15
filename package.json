@@ -1,0 +1,16 @@
+{
+  "name": "englab-ai-placement-test",
+  "version": "1.0.0",
+  "description": "SDA삼육잉글랩 AI 레벨테스트",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.14"
+  }
+}

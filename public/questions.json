@@ -1,0 +1,2334 @@
+[
+  {
+    "id": "pic_01",
+    "difficulty": 0,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "questionType": "picture",
+    "picture": "🍰",
+    "question": "What is this?",
+    "options": [
+      "cake",
+      "tree",
+      "bird",
+      "book"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "pic_02",
+    "difficulty": 0,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "questionType": "picture",
+    "picture": "🌳",
+    "question": "What is this?",
+    "options": [
+      "door",
+      "tree",
+      "house",
+      "ball"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "pic_03",
+    "difficulty": 0,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "questionType": "picture",
+    "picture": "🐦",
+    "question": "What is this?",
+    "options": [
+      "fish",
+      "horse",
+      "bird",
+      "cat"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "pic_04",
+    "difficulty": 0,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "questionType": "picture",
+    "picture": "🐴",
+    "question": "What is this?",
+    "options": [
+      "cow",
+      "horse",
+      "dog",
+      "sheep"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "pic_05",
+    "difficulty": 0,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "questionType": "picture",
+    "picture": "🌹",
+    "question": "What is this?",
+    "options": [
+      "rose",
+      "nose",
+      "hose",
+      "toe"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "pic_06",
+    "difficulty": 0,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "questionType": "picture",
+    "picture": "🐐",
+    "question": "What is this?",
+    "options": [
+      "boat",
+      "sheep",
+      "goat",
+      "coat"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "pic_07",
+    "difficulty": 0,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "questionType": "picture",
+    "picture": "🥔",
+    "question": "What is this?",
+    "options": [
+      "potato",
+      "house",
+      "table",
+      "mango"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "pic_08",
+    "difficulty": 0,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "questionType": "picture",
+    "picture": "🚪",
+    "question": "What is this?",
+    "options": [
+      "window",
+      "door",
+      "floor",
+      "wall"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "pic_09",
+    "difficulty": 0,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "questionType": "picture",
+    "picture": "🍞",
+    "question": "What is this?",
+    "options": [
+      "cake",
+      "bread",
+      "bean",
+      "butter"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "pic_10",
+    "difficulty": 0,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "questionType": "picture",
+    "picture": "🏠",
+    "question": "What is this?",
+    "options": [
+      "school",
+      "garden",
+      "house",
+      "kitchen"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d1_01",
+    "difficulty": 1,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "She ___ my mom.",
+    "options": [
+      "is",
+      "are",
+      "am",
+      "be"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d1_02",
+    "difficulty": 1,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "\"Is it a cake?\" → \"Yes, ___ is.\"",
+    "options": [
+      "it",
+      "she",
+      "he",
+      "they"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d1_03",
+    "difficulty": 1,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "This is ___ backpack.",
+    "options": [
+      "my",
+      "me",
+      "I",
+      "mine"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d1_04",
+    "difficulty": 1,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "They ___ cars.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "be"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d1_05",
+    "difficulty": 1,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "I have ___ books. (나는 많은 책을 갖고 있어.)",
+    "options": [
+      "many",
+      "much",
+      "a lot",
+      "very"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d1_06",
+    "difficulty": 1,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "\"What ___ that?\" \"It is a whiteboard.\"",
+    "options": [
+      "is",
+      "are",
+      "am",
+      "do"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d1_07",
+    "difficulty": 1,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "___ you swim? (너는 수영할 수 있니?)",
+    "options": [
+      "Do",
+      "Does",
+      "Can",
+      "Is"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d1_08",
+    "difficulty": 1,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "I ___ want balloons. (나는 풍선을 원하지 않아.)",
+    "options": [
+      "not",
+      "don't",
+      "doesn't",
+      "no"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d1_09",
+    "difficulty": 1,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"What's your name?\" → \"My ___ is Eric.\"",
+    "options": [
+      "name",
+      "age",
+      "book",
+      "school"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d1_10",
+    "difficulty": 1,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "He ___ my good friend. He is tall and fast.",
+    "options": [
+      "is",
+      "are",
+      "am",
+      "be"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d2_01",
+    "difficulty": 2,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "He ___ to school every day.",
+    "options": [
+      "go",
+      "goes",
+      "going",
+      "went"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d2_02",
+    "difficulty": 2,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "\"How is the weather today?\" \"It ___ hot.\"",
+    "options": [
+      "is",
+      "are",
+      "was",
+      "be"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d2_03",
+    "difficulty": 2,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "\"Can you ride a bike?\" \"Yes, I ___.\"",
+    "options": [
+      "can",
+      "am",
+      "do",
+      "will"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d2_04",
+    "difficulty": 2,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"What do you want to eat?\" \"I ___ some bananas.\"",
+    "options": [
+      "want",
+      "have",
+      "like",
+      "eat"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d2_05",
+    "difficulty": 2,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "In the ___, there are many trees.",
+    "options": [
+      "store",
+      "ocean",
+      "forest",
+      "city"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d2_06",
+    "difficulty": 2,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "He can ___ basketball very well.",
+    "options": [
+      "play",
+      "plays",
+      "playing",
+      "played"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d2_07",
+    "difficulty": 2,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "There ___ some apples on the table.",
+    "options": [
+      "is",
+      "are",
+      "am",
+      "be"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d2_08",
+    "difficulty": 2,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "I see a ___ girl. She is not sad.",
+    "options": [
+      "tired",
+      "funny",
+      "happy",
+      "angry"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d2_09",
+    "difficulty": 2,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "She ___ ballet. (그녀는 발레를 해.)",
+    "options": [
+      "do",
+      "does",
+      "doing",
+      "did"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d2_10",
+    "difficulty": 2,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "I ___ great today! (나는 오늘 기분이 아주 좋아!)",
+    "options": [
+      "feel",
+      "feels",
+      "feeling",
+      "felt"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d3_01",
+    "difficulty": 3,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"Paul likes to draw. Jackie likes to look at the stars. I like to read books.\" — What is the story about?",
+    "options": [
+      "What we like to do",
+      "What we like to eat",
+      "What we can see",
+      "What we need"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d3_02",
+    "difficulty": 3,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "We ___ pizza for dinner last night.",
+    "options": [
+      "eat",
+      "eats",
+      "ate",
+      "eating"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d3_03",
+    "difficulty": 3,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "An elephant is ___ than a monkey.",
+    "options": [
+      "big",
+      "bigger",
+      "biggest",
+      "more big"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d3_04",
+    "difficulty": 3,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "I am ___ visit my grandma tomorrow.",
+    "options": [
+      "going to",
+      "go to",
+      "went to",
+      "gone to"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d3_05",
+    "difficulty": 3,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "She was very upset because she lost her toy. — What does \"upset\" mean?",
+    "options": [
+      "기쁜",
+      "속상한 / 화난",
+      "피곤한",
+      "배고픈"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d3_06",
+    "difficulty": 3,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"I visited the museum to see old dinosaur bones.\" — Where did the person go?",
+    "options": [
+      "hospital",
+      "museum",
+      "school",
+      "park"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d3_07",
+    "difficulty": 3,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "How many dolphins ___ there?",
+    "options": [
+      "is",
+      "are",
+      "do",
+      "has"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d3_08",
+    "difficulty": 3,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "She ___ to the library after school.",
+    "options": [
+      "goes",
+      "go",
+      "going",
+      "gone"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d3_09",
+    "difficulty": 3,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "I'm thirsty. Let's have some ___.",
+    "options": [
+      "chips",
+      "burgers",
+      "juice",
+      "bread"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d3_10",
+    "difficulty": 3,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "It's time for bed. Put your head on the ___.",
+    "options": [
+      "desk",
+      "pillow",
+      "book",
+      "table"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d4_01",
+    "difficulty": 4,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "My father ___ TV right now.",
+    "options": [
+      "watches",
+      "watch",
+      "is watching",
+      "watched"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d4_02",
+    "difficulty": 4,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "If it ___ tomorrow, we will go to the park.",
+    "options": [
+      "rains",
+      "rained",
+      "raining",
+      "rain"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d4_03",
+    "difficulty": 4,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"Sally went to the zoo. Her favorite animal was the giraffe.\" — Which animal was Sally's favorite?",
+    "options": [
+      "lion",
+      "tiger",
+      "giraffe",
+      "elephant"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d4_04",
+    "difficulty": 4,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"The sun gives us light and heat. Plants need sunlight to grow.\" — Why do plants need the sun?",
+    "options": [
+      "To eat animals",
+      "To sleep",
+      "To grow",
+      "To play"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d4_05",
+    "difficulty": 4,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"Jisu got a new puppy. She fed it every day and taught it to sit and wait.\" — What did Jisu teach the puppy?",
+    "options": [
+      "To run away",
+      "To sit and wait",
+      "To sleep all day",
+      "To bark loudly"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d4_06",
+    "difficulty": 4,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "He is the ___ boy in our class.",
+    "options": [
+      "tall",
+      "taller",
+      "tallest",
+      "most tall"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d4_07",
+    "difficulty": 4,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"The students collected more than 200 bottles and used them to make flower pots.\" — What did they make?",
+    "options": [
+      "books",
+      "robots",
+      "flower pots",
+      "chairs"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d4_08",
+    "difficulty": 4,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "I ___ in Seoul for 5 years.",
+    "options": [
+      "live",
+      "living",
+      "lived",
+      "have lived"
+    ],
+    "answer": 3
+  },
+  {
+    "id": "d4_09",
+    "difficulty": 4,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "\"Let's go, ___?\" — Choose the correct question tag.",
+    "options": [
+      "will we",
+      "don't we",
+      "shall we",
+      "do we"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d4_10",
+    "difficulty": 4,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "A bird can fly, but a dog ___.",
+    "options": [
+      "cannot",
+      "do not",
+      "is not",
+      "does not"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d5_01",
+    "difficulty": 5,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "The movie was very ___. I almost fell asleep.",
+    "options": [
+      "exciting",
+      "funny",
+      "boring",
+      "scary"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d5_02",
+    "difficulty": 5,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "The opposite of \"cheap\" is:",
+    "options": [
+      "expensive",
+      "fast",
+      "heavy",
+      "late"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d5_03",
+    "difficulty": 5,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "Which sentence uses \"travel\" correctly?",
+    "options": [
+      "I travel my homework every night.",
+      "She travel a new bag yesterday.",
+      "He travel the piano every day.",
+      "We travel to Busan by train."
+    ],
+    "answer": 3
+  },
+  {
+    "id": "d5_04",
+    "difficulty": 5,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "I usually ___ breakfast at 7 a.m.",
+    "options": [
+      "has",
+      "had",
+      "have",
+      "having"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d5_05",
+    "difficulty": 5,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"He finished his homework early.\" — What does \"finished\" mean?",
+    "options": [
+      "to stop doing something",
+      "to change something",
+      "to complete something",
+      "to look for something"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d5_06",
+    "difficulty": 5,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"She visits her grandmother every weekend.\" — What does \"visits\" mean?",
+    "options": [
+      "to go and see someone",
+      "to write a letter",
+      "to buy something",
+      "to wait for someone"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d5_07",
+    "difficulty": 5,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "Which word is closest in meaning to \"angry\"?",
+    "options": [
+      "happy",
+      "mad",
+      "tired",
+      "kind"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d5_08",
+    "difficulty": 5,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "Don't forget to bring your ___ to board the airplane.",
+    "options": [
+      "passport",
+      "bicycle",
+      "sofa",
+      "umbrella"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d5_09",
+    "difficulty": 5,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "A ___ works in a hospital and helps sick people.",
+    "options": [
+      "teacher",
+      "doctor",
+      "pilot",
+      "chef"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d5_10",
+    "difficulty": 5,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "She ___ than her brother. (She is taller.)",
+    "options": [
+      "taller is",
+      "is tall",
+      "is taller",
+      "is tallest"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d6_01",
+    "difficulty": 6,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The museum was crowded on Saturday.\" — What does \"crowded\" mean?",
+    "options": [
+      "full of many people",
+      "closed all day",
+      "very quiet",
+      "difficult to find"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d6_02",
+    "difficulty": 6,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"Collecting baseball cards was more popular in the past.\" — What does \"popular\" mean?",
+    "options": [
+      "happening often",
+      "not seen often",
+      "known by many people",
+      "hard to find"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d6_03",
+    "difficulty": 6,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "She was ___ because she won the competition.",
+    "options": [
+      "upset",
+      "excited",
+      "bored",
+      "tired"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d6_04",
+    "difficulty": 6,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "The book was so interesting that I ___ it in one day.",
+    "options": [
+      "read",
+      "reads",
+      "was reading",
+      "have read"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d6_05",
+    "difficulty": 6,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "The experiment ___ by the students last week.",
+    "options": [
+      "conducts",
+      "conducted",
+      "was conducted",
+      "has conducted"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d6_06",
+    "difficulty": 6,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"She regrets not studying harder.\" — What does \"regrets\" mean?",
+    "options": [
+      "feels sorry about",
+      "is happy about",
+      "forgets about",
+      "plans to do"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d6_07",
+    "difficulty": 6,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "My father is known for his generosity. — What does \"generosity\" mean?",
+    "options": [
+      "being very strict",
+      "willingness to give to others",
+      "being very smart",
+      "being very popular"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d6_08",
+    "difficulty": 6,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "The documentary illustrated the importance of environmental conservation. — What does \"conservation\" mean?",
+    "options": [
+      "destruction",
+      "protection",
+      "exploration",
+      "celebration"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d6_09",
+    "difficulty": 6,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "Despite the bad weather, they continued their outdoor activities. — What does \"despite\" mean?",
+    "options": [
+      "because of",
+      "in addition to",
+      "even though",
+      "instead of"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d6_10",
+    "difficulty": 6,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"Taking care of a pet is hard work, but Jisu feels happy when the puppy runs to her.\" — What is the main message?",
+    "options": [
+      "Pets are too much work.",
+      "Caring for a pet can be rewarding.",
+      "Puppies are better than cats.",
+      "Jisu prefers dogs to humans."
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d7_01",
+    "difficulty": 7,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The scientist made a remarkable discovery.\" — What does \"remarkable\" mean?",
+    "options": [
+      "ordinary",
+      "dangerous",
+      "very impressive",
+      "slow"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d7_02",
+    "difficulty": 7,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "If she ___ harder, she would have passed the test.",
+    "options": [
+      "studies",
+      "studied",
+      "had studied",
+      "has studied"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d7_03",
+    "difficulty": 7,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"Not only did he finish the project, but he also helped his teammates.\" — This sentence emphasizes:",
+    "options": [
+      "contrast",
+      "time order",
+      "cause and effect",
+      "addition"
+    ],
+    "answer": 3
+  },
+  {
+    "id": "d7_04",
+    "difficulty": 7,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The author's use of metaphor enhanced the story.\" — What is a \"metaphor\"?",
+    "options": [
+      "a comparison using 'like' or 'as'",
+      "a direct comparison without 'like' or 'as'",
+      "a question asked for effect",
+      "the repetition of sounds"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d7_05",
+    "difficulty": 7,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"He is known for his perseverance.\" — What does \"perseverance\" mean?",
+    "options": [
+      "giving up easily",
+      "continuing despite difficulties",
+      "being very smart",
+      "being very wealthy"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d7_06",
+    "difficulty": 7,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"While technology has made communication easier, it has also led to a decline in face-to-face interaction.\" — What is the author's main point?",
+    "options": [
+      "Technology only has benefits.",
+      "Technology has both benefits and drawbacks.",
+      "Technology should be banned.",
+      "Face-to-face communication is unimportant."
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d7_07",
+    "difficulty": 7,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The government implemented new policies to address climate change.\" — What does \"implemented\" mean?",
+    "options": [
+      "removed",
+      "ignored",
+      "put into action",
+      "discussed only"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d7_08",
+    "difficulty": 7,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"Her argument was compelling, but lacked concrete evidence.\" — What does \"compelling\" mean?",
+    "options": [
+      "weak and unconvincing",
+      "very persuasive",
+      "confusing",
+      "irrelevant"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d7_09",
+    "difficulty": 7,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"Scientists are investigating the link between air pollution and cognitive decline.\" — What does \"cognitive\" relate to?",
+    "options": [
+      "physical health",
+      "mental processes",
+      "emotional wellbeing",
+      "social behavior"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d7_10",
+    "difficulty": 7,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "\"The treaty was ratified by all member states.\" — What does \"ratified\" mean?",
+    "options": [
+      "rejected",
+      "ignored",
+      "formally approved",
+      "written"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d8_01",
+    "difficulty": 8,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"She was lauded for her contribution to scientific research.\" — What does \"lauded\" mean?",
+    "options": [
+      "criticized",
+      "praised",
+      "questioned",
+      "dismissed"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d8_02",
+    "difficulty": 8,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The findings were inconclusive due to insufficient data.\" — What does \"inconclusive\" mean?",
+    "options": [
+      "very clear",
+      "not giving a definite result",
+      "surprising",
+      "detailed"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d8_03",
+    "difficulty": 8,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"His eloquent speech moved the audience to tears.\" — What does \"eloquent\" mean?",
+    "options": [
+      "loud",
+      "technical",
+      "well-expressed and effective",
+      "boring"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d8_04",
+    "difficulty": 8,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The policy was criticized for being too ambiguous.\" — What does \"ambiguous\" mean?",
+    "options": [
+      "strict",
+      "expensive",
+      "effective",
+      "unclear with multiple possible meanings"
+    ],
+    "answer": 3
+  },
+  {
+    "id": "d8_05",
+    "difficulty": 8,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The researcher's hypothesis was subsequently validated.\" — What does \"subsequently\" mean?",
+    "options": [
+      "before",
+      "therefore",
+      "afterward",
+      "however"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d8_06",
+    "difficulty": 8,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The novel's protagonist undergoes a profound transformation.\" — What does \"protagonist\" mean?",
+    "options": [
+      "villain",
+      "main character",
+      "supporting character",
+      "narrator"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d8_07",
+    "difficulty": 8,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The legislation was designed to mitigate the adverse effects of industrialization.\" — What does \"mitigate\" mean?",
+    "options": [
+      "increase",
+      "reduce",
+      "ignore",
+      "celebrate"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d8_08",
+    "difficulty": 8,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"The committee deliberated for hours before reaching a consensus.\" — What does \"deliberated\" mean?",
+    "options": [
+      "argued angrily",
+      "gave up",
+      "thought carefully",
+      "voted immediately"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d8_09",
+    "difficulty": 8,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"Her unprecedented achievement earned her international recognition.\" — What does \"unprecedented\" mean?",
+    "options": [
+      "never done before",
+      "done many times",
+      "very ordinary",
+      "poorly planned"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d8_10",
+    "difficulty": 8,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"The company's disruptive innovation fundamentally altered consumer behavior.\" — What does \"disruptive\" mean here?",
+    "options": [
+      "harmful",
+      "causing a fundamental change",
+      "gradual",
+      "minor"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d9_01",
+    "difficulty": 9,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The philosopher's treatise elucidated the relationship between morality and law.\" — What does \"elucidated\" mean?",
+    "options": [
+      "complicated",
+      "made clear",
+      "questioned",
+      "rejected"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d9_02",
+    "difficulty": 9,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The recession had far-reaching ramifications for the global market.\" — What does \"ramifications\" mean?",
+    "options": [
+      "solutions",
+      "benefits",
+      "consequences",
+      "causes"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d9_03",
+    "difficulty": 9,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The novel employs an epistolary narrative structure.\" — What does \"epistolary\" mean?",
+    "options": [
+      "told through letters",
+      "told in reverse chronology",
+      "told from multiple viewpoints",
+      "told by an unreliable narrator"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d9_04",
+    "difficulty": 9,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The diplomat's judicious response prevented further escalation.\" — What does \"judicious\" mean?",
+    "options": [
+      "reckless",
+      "slow",
+      "showing good judgment",
+      "emotional"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d9_05",
+    "difficulty": 9,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The excavation yielded a plethora of ancient artifacts.\" — What does \"plethora\" mean?",
+    "options": [
+      "small number",
+      "large amount",
+      "poor quality",
+      "great value"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d9_06",
+    "difficulty": 9,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"Her inexorable rise through the corporate ranks inspired her colleagues.\" — What does \"inexorable\" mean?",
+    "options": [
+      "rapid",
+      "impossible to stop",
+      "surprising",
+      "secret"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d9_07",
+    "difficulty": 9,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The satirical work subtly critiqued contemporary societal norms.\" — What does \"satirical\" mean?",
+    "options": [
+      "using humor to criticize",
+      "praising something",
+      "describing in detail",
+      "predicting the future"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "d9_08",
+    "difficulty": 9,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The scientist's seminal research laid the groundwork for future discoveries.\" — What does \"seminal\" mean?",
+    "options": [
+      "final",
+      "failed",
+      "influential and foundational",
+      "widely criticized"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d9_09",
+    "difficulty": 9,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"The paradoxical nature of his argument undermined its credibility.\" — What does \"paradoxical\" mean?",
+    "options": [
+      "well-organized",
+      "self-contradictory",
+      "straightforward",
+      "persuasive"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d9_10",
+    "difficulty": 9,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The government's fiscal policies were deemed imprudent by analysts.\" — What does \"imprudent\" mean?",
+    "options": [
+      "effective",
+      "not wise",
+      "controversial",
+      "innovative"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d10_01",
+    "difficulty": 10,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The legislation engendered significant controversy among constitutional scholars.\" — What does \"engendered\" mean?",
+    "options": [
+      "resolved",
+      "prevented",
+      "caused / produced",
+      "measured"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d10_02",
+    "difficulty": 10,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"His perspicacious analysis earned him widespread respect.\" — What does \"perspicacious\" mean?",
+    "options": [
+      "wrong",
+      "having sharp insight",
+      "overly detailed",
+      "overly simple"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "d10_03",
+    "difficulty": 10,
+    "section": "reading",
+    "type": "reading",
+    "question": "\"The manifesto articulated a cogent argument for systemic reform.\" — What does \"cogent\" mean?",
+    "options": [
+      "weak",
+      "controversial",
+      "clearly expressed and convincing",
+      "extremely long"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d10_04",
+    "difficulty": 10,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The novel's denouement was both unexpected and deeply satisfying.\" — What does \"denouement\" mean?",
+    "options": [
+      "opening scene",
+      "climax",
+      "resolution at the end",
+      "central conflict"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "d10_05",
+    "difficulty": 10,
+    "section": "vocabulary",
+    "type": "vocabulary",
+    "question": "\"The committee's obfuscatory tactics frustrated the investigators.\" — What does \"obfuscatory\" mean?",
+    "options": [
+      "making things clear",
+      "deliberately confusing",
+      "helpful",
+      "systematic"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "g1_11",
+    "difficulty": 1,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "There ___ a dog under the chair.",
+    "options": [
+      "is",
+      "are",
+      "am",
+      "be"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "g1_12",
+    "difficulty": 1,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "___ this your pencil?",
+    "options": [
+      "Is",
+      "Are",
+      "Am",
+      "Do"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "g1_13",
+    "difficulty": 1,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "I have ___ orange in my bag.",
+    "options": [
+      "a",
+      "an",
+      "the",
+      "some"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "g1_14",
+    "difficulty": 1,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "These ___ my books.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "be"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "g2_11",
+    "difficulty": 2,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "Do you ___ a dog at home?",
+    "options": [
+      "have",
+      "has",
+      "had",
+      "having"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "g2_12",
+    "difficulty": 2,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "She ___ like vegetables.",
+    "options": [
+      "doesn't",
+      "don't",
+      "isn't",
+      "aren't"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "g2_13",
+    "difficulty": 2,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "What ___ you usually eat for lunch?",
+    "options": [
+      "do",
+      "does",
+      "are",
+      "is"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "g2_14",
+    "difficulty": 2,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "My brother ___ soccer every Saturday.",
+    "options": [
+      "play",
+      "plays",
+      "playing",
+      "played"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "g3_11",
+    "difficulty": 3,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "Yesterday, I ___ to the park with my friends.",
+    "options": [
+      "go",
+      "goes",
+      "went",
+      "going"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "g3_12",
+    "difficulty": 3,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "This movie is ___ than the last one.",
+    "options": [
+      "interesting",
+      "more interesting",
+      "most interesting",
+      "the most interesting"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "g3_13",
+    "difficulty": 3,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "She ___ her homework when the phone rang.",
+    "options": [
+      "does",
+      "did",
+      "was doing",
+      "has done"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "g3_14",
+    "difficulty": 3,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "We are going to ___ a trip next summer.",
+    "options": [
+      "take",
+      "takes",
+      "taking",
+      "took"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "g4_11",
+    "difficulty": 4,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "I ___ this book before. It's really good!",
+    "options": [
+      "read",
+      "reads",
+      "was reading",
+      "have read"
+    ],
+    "answer": 3
+  },
+  {
+    "id": "g4_12",
+    "difficulty": 4,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "She asked me ___ I liked the food.",
+    "options": [
+      "that",
+      "if",
+      "what",
+      "which"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "g4_13",
+    "difficulty": 4,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "The cookies ___ by my mom last night.",
+    "options": [
+      "make",
+      "made",
+      "were made",
+      "are making"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "g5_11",
+    "difficulty": 5,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "If I ___ more time, I would travel the world.",
+    "options": [
+      "have",
+      "had",
+      "will have",
+      "would have"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "g5_12",
+    "difficulty": 5,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "The student ___ won first place received a trophy.",
+    "options": [
+      "who",
+      "which",
+      "where",
+      "whom"
+    ],
+    "answer": 0
+  },
+  {
+    "id": "g6_11",
+    "difficulty": 6,
+    "section": "grammar",
+    "type": "grammar",
+    "question": "Not only did she pass the exam, ___ she also got the highest score.",
+    "options": [
+      "and",
+      "but",
+      "so",
+      "or"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "r2_01",
+    "difficulty": 2,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"My name is Jenny. I am seven years old. I have one brother and one sister. We live in a small house.\"\nHow many siblings does Jenny have?",
+    "options": [
+      "one",
+      "two",
+      "three",
+      "four"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "r2_02",
+    "difficulty": 2,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"Tom has a cat named Coco. Coco is orange and white. She likes to sleep on the sofa.\"\nWhat color is Coco?",
+    "options": [
+      "orange only",
+      "white only",
+      "orange and white",
+      "black and white"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "r2_03",
+    "difficulty": 2,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"I go to school by bus every morning. School starts at 8 o'clock. My favorite class is art.\"\nHow does this person go to school?",
+    "options": [
+      "by car",
+      "by bicycle",
+      "by bus",
+      "on foot"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "r3_11",
+    "difficulty": 3,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"Last weekend, Mike and his family went to the beach. They played in the sand and swam in the sea. Mike found a big shell and was very happy.\"\nWhat did Mike find at the beach?",
+    "options": [
+      "a big fish",
+      "a big shell",
+      "a boat",
+      "a crab"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "r3_12",
+    "difficulty": 3,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"Lisa is learning to cook. She can make rice, salad, and soup. Her mom helps her every weekend. Lisa wants to be a chef someday.\"\nWhat does Lisa want to be in the future?",
+    "options": [
+      "a teacher",
+      "a doctor",
+      "a chef",
+      "a singer"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "r3_13",
+    "difficulty": 3,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"Korea has four seasons. Summers are hot and humid. Winters are cold and snowy. Spring and fall are mild.\"\nWhich season is hot and humid?",
+    "options": [
+      "spring",
+      "summer",
+      "fall",
+      "winter"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "r4_11",
+    "difficulty": 4,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"Every Saturday, Kevin volunteers at the animal shelter. He feeds the dogs and walks them. Kevin says volunteering is the best part of his week.\"\nWhy does Kevin enjoy Saturdays?",
+    "options": [
+      "He goes shopping",
+      "He volunteers at the shelter",
+      "He plays sports",
+      "He visits friends"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "r4_12",
+    "difficulty": 4,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"Scientists say that reading for just 20 minutes a day can improve your vocabulary and memory. It also helps reduce stress.\"\nAccording to the text, what is one benefit of daily reading?",
+    "options": [
+      "It helps you make friends",
+      "It improves vocabulary and memory",
+      "It helps you write faster",
+      "It makes you sleepy"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "r4_13",
+    "difficulty": 4,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"In 1969, astronauts first walked on the moon. Neil Armstrong was the first person to step on the moon's surface and called it 'one small step for man.'\"\nWho was the first person to walk on the moon?",
+    "options": [
+      "Buzz Aldrin",
+      "John Glenn",
+      "Neil Armstrong",
+      "Yuri Gagarin"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "r5_11",
+    "difficulty": 5,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"Social media helps people stay connected, but research shows it can also lead to feelings of anxiety and loneliness when people constantly compare themselves to others.\"\nWhat is the main concern about social media mentioned?",
+    "options": [
+      "It is too expensive",
+      "It causes anxiety and loneliness",
+      "It wastes battery life",
+      "It is hard to use"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "r5_12",
+    "difficulty": 5,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"The Great Wall of China was built over many centuries to protect against invasions. Today it is one of the most visited tourist attractions in the world.\"\nWhat was the ORIGINAL purpose of the Great Wall?",
+    "options": [
+      "To attract tourists",
+      "To mark the border",
+      "To protect against invasions",
+      "To transport goods"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "r5_13",
+    "difficulty": 5,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"Online learning lets students study at their own pace from any location. However, it requires strong self-discipline and can feel isolating without face-to-face interaction.\"\nWhat is one DISADVANTAGE of online learning?",
+    "options": [
+      "It is too expensive",
+      "Students cannot choose their schedule",
+      "It requires self-discipline and can feel isolating",
+      "There are no qualified teachers"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "r6_11",
+    "difficulty": 6,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"Urban farming—growing food within cities—is gaining popularity as a solution to food insecurity. Rooftop gardens and vertical farms are being developed worldwide.\"\nWhat problem is urban farming trying to solve?",
+    "options": [
+      "Urban noise",
+      "Food insecurity",
+      "Air pollution",
+      "Water shortages"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "r6_12",
+    "difficulty": 6,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"Despite warnings about sleep deprivation, many students sacrifice sleep to study. Research shows that a well-rested brain performs significantly better on memory and problem-solving tasks.\"\nWhat conclusion can be drawn from this text?",
+    "options": [
+      "Students should study more",
+      "Sleeping is more beneficial than studying all night",
+      "Sleep deprivation has no real effects",
+      "Problem-solving is unimportant"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "r7_11",
+    "difficulty": 7,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"Planned obsolescence—designing products to break down quickly—encourages excessive consumption and contributes to environmental waste, yet it remains a common corporate strategy.\"\nWhat is the author's attitude toward planned obsolescence?",
+    "options": [
+      "Supportive",
+      "Neutral",
+      "Critical",
+      "Confused"
+    ],
+    "answer": 2
+  },
+  {
+    "id": "r8_11",
+    "difficulty": 8,
+    "section": "reading",
+    "type": "reading",
+    "question": "Read: \"Technological advancements in AI offer unprecedented efficiencies, yet simultaneously raise profound ethical questions regarding privacy, employment displacement, and the concentration of power among a few corporations.\"\nWhat central tension does this passage describe?",
+    "options": [
+      "AI cost vs. speed",
+      "AI benefits vs. ethical concerns",
+      "Corporate profits vs. employee wages",
+      "Privacy laws vs. individual rights"
+    ],
+    "answer": 1
+  },
+  {
+    "id": "w1_01",
+    "difficulty": 1,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "unscramble",
+    "question": "Put these words in the correct order:",
+    "words": [
+      "I",
+      "am",
+      "a",
+      "student"
+    ],
+    "expected": [
+      "I am a student"
+    ]
+  },
+  {
+    "id": "w1_02",
+    "difficulty": 1,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "unscramble",
+    "question": "Put these words in the correct order:",
+    "words": [
+      "This",
+      "is",
+      "my",
+      "bag"
+    ],
+    "expected": [
+      "This is my bag"
+    ]
+  },
+  {
+    "id": "w1_03",
+    "difficulty": 1,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "unscramble",
+    "question": "Put these words in the correct order:",
+    "words": [
+      "The",
+      "cat",
+      "is",
+      "black"
+    ],
+    "expected": [
+      "The cat is black"
+    ]
+  },
+  {
+    "id": "w1_04",
+    "difficulty": 1,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "unscramble",
+    "question": "Put these words in the correct order:",
+    "words": [
+      "These",
+      "are",
+      "red",
+      "apples"
+    ],
+    "expected": [
+      "These are red apples"
+    ]
+  },
+  {
+    "id": "w2_01",
+    "difficulty": 2,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "She ___ to school every day.\n(Hint: go → correct form for she)",
+    "expected": [
+      "goes"
+    ]
+  },
+  {
+    "id": "w2_02",
+    "difficulty": 2,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "unscramble",
+    "question": "Put these words in the correct order:",
+    "words": [
+      "He",
+      "has",
+      "two",
+      "cats"
+    ],
+    "expected": [
+      "He has two cats"
+    ]
+  },
+  {
+    "id": "w2_03",
+    "difficulty": 2,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "I ___ two cats at home.\n(Hint: have or has?)",
+    "expected": [
+      "have"
+    ]
+  },
+  {
+    "id": "w2_04",
+    "difficulty": 2,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "A fish ___ swim.\n(Hint: ability modal)",
+    "expected": [
+      "can"
+    ]
+  },
+  {
+    "id": "w3_01",
+    "difficulty": 3,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "Yesterday, I ___ to the park.\n(Hint: go → past tense)",
+    "expected": [
+      "went"
+    ]
+  },
+  {
+    "id": "w3_02",
+    "difficulty": 3,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "unscramble",
+    "question": "Put these words in the correct order:",
+    "words": [
+      "She",
+      "is",
+      "taller",
+      "than",
+      "me"
+    ],
+    "expected": [
+      "She is taller than me"
+    ]
+  },
+  {
+    "id": "w3_03",
+    "difficulty": 3,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "They are ___ the piano right now.\n(Hint: play → -ing form)",
+    "expected": [
+      "playing"
+    ]
+  },
+  {
+    "id": "w3_04",
+    "difficulty": 3,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "It is going to ___ tomorrow.\n(Hint: weather verb)",
+    "expected": [
+      "rain"
+    ]
+  },
+  {
+    "id": "w4_01",
+    "difficulty": 4,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "I ___ already read this book. It's great!\n(Hint: have or has?)",
+    "expected": [
+      "have"
+    ]
+  },
+  {
+    "id": "w4_02",
+    "difficulty": 4,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "unscramble",
+    "question": "Put these words in the correct order:",
+    "words": [
+      "The",
+      "cake",
+      "was",
+      "made",
+      "by",
+      "my",
+      "mom"
+    ],
+    "expected": [
+      "The cake was made by my mom"
+    ]
+  },
+  {
+    "id": "w4_03",
+    "difficulty": 4,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "She asked me ___ I liked the food.\n(Hint: a word meaning \"whether\")",
+    "expected": [
+      "if",
+      "whether"
+    ]
+  },
+  {
+    "id": "w4_04",
+    "difficulty": 4,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "unscramble",
+    "question": "Put these words in the correct order:",
+    "words": [
+      "He",
+      "is",
+      "the",
+      "tallest",
+      "student",
+      "in",
+      "class"
+    ],
+    "expected": [
+      "He is the tallest student in class"
+    ]
+  },
+  {
+    "id": "w5_01",
+    "difficulty": 5,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "If I ___ more time, I would travel the world.\n(Hint: have → past form for unreal condition)",
+    "expected": [
+      "had"
+    ]
+  },
+  {
+    "id": "w5_02",
+    "difficulty": 5,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "She has ___ to Paris before.\n(Hint: go → past participle)",
+    "expected": [
+      "gone"
+    ]
+  },
+  {
+    "id": "w5_03",
+    "difficulty": 5,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "Not only did she pass the test, ___ she also got the highest score.",
+    "expected": [
+      "but"
+    ]
+  },
+  {
+    "id": "w5_04",
+    "difficulty": 5,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "unscramble",
+    "question": "Put these words in the correct order:",
+    "words": [
+      "The",
+      "student",
+      "who",
+      "won",
+      "first",
+      "place",
+      "received",
+      "a",
+      "trophy"
+    ],
+    "expected": [
+      "The student who won first place received a trophy"
+    ]
+  },
+  {
+    "id": "w6_01",
+    "difficulty": 6,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "The project ___ finished by the team yesterday.\n(Hint: be → past passive)",
+    "expected": [
+      "was"
+    ]
+  },
+  {
+    "id": "w6_02",
+    "difficulty": 6,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "She suggested that he ___ early.\n(Hint: come → subjunctive mood, no -s)",
+    "expected": [
+      "come"
+    ]
+  },
+  {
+    "id": "w6_03",
+    "difficulty": 6,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "unscramble",
+    "question": "Put these words in the correct order:",
+    "words": [
+      "Had",
+      "they",
+      "arrived",
+      "earlier",
+      "they",
+      "would",
+      "not",
+      "have",
+      "missed",
+      "the",
+      "bus"
+    ],
+    "expected": [
+      "Had they arrived earlier they would not have missed the bus"
+    ]
+  },
+  {
+    "id": "w7_01",
+    "difficulty": 7,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "The report, ___ was submitted late, was still accepted.\n(Hint: relative pronoun for things)",
+    "expected": [
+      "which"
+    ]
+  },
+  {
+    "id": "w7_02",
+    "difficulty": 7,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "By next year, I ___ lived here for ten years.\n(Hint: future perfect = will + have)",
+    "expected": [
+      "will have"
+    ]
+  },
+  {
+    "id": "w7_03",
+    "difficulty": 7,
+    "section": "writing",
+    "type": "writing",
+    "questionType": "fillin",
+    "question": "Despite the bad weather, they ___ their outdoor activities.\n(Hint: continue → past tense)",
+    "expected": [
+      "continued"
+    ]
+  }
+]

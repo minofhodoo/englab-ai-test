@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>잉글랩 AI 레벨테스트 — 관리자</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+           background: #F1F5F9; color: #1E293B; min-height: 100vh; }
+
+    /* ── LOGIN ─────────────────────────────── */
+    #login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px; }
+    .login-card { background:#fff; border-radius:20px; padding:44px 36px; width:100%; max-width:380px;
+                  box-shadow:0 8px 40px rgba(0,0,0,.12); text-align:center; }
+    .login-logo { font-size:44px; margin-bottom:10px; }
+    .login-card h1 { font-size:21px; font-weight:800; margin-bottom:4px; }
+    .login-card p  { font-size:13px; color:#94A3B8; margin-bottom:30px; }
+    .login-card input { width:100%; padding:13px 16px; border:2px solid #E2E8F0; border-radius:10px;
+                        font-size:15px; outline:none; margin-bottom:12px; transition:border-color .2s; }
+    .login-card input:focus { border-color:#6366F1; }
+    .btn-login { width:100%; padding:13px; background:linear-gradient(135deg,#6366F1,#8B5CF6);
+                 color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:700;
+                 cursor:pointer; transition:opacity .2s; }
+    .btn-login:hover { opacity:.9; }
+    .login-error { color:#EF4444; font-size:13px; margin-top:10px; display:none; }
+
+    /* ── SHELL ─────────────────────────────── */
+    #admin-screen { display:none; flex-direction:column; min-height:100vh; }
+    header { background:linear-gradient(135deg,#4F46E5,#7C3AED); color:#fff;
+             padding:14px 24px; display:flex; align-items:center; justify-content:space-between; }
+    header .hd-title h1 { font-size:17px; font-weight:800; }
+    header .hd-title p  { font-size:12px; color:#C7D2FE; margin-top:2px; }
+    .btn-logout { background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.3);
+                  border-radius:8px; padding:7px 16px; font-size:13px; cursor:pointer; }
+    .btn-logout:hover { background:rgba(255,255,255,.25); }
+
+    /* ── TABS ──────────────────────────────── */
+    .tab-bar { background:#fff; border-bottom:2px solid #E2E8F0;
+               display:flex; padding:0 24px; gap:4px; }
+    .tab-btn { padding:14px 18px; border:none; background:none; font-size:14px; font-weight:600;
+               color:#64748B; cursor:pointer; border-bottom:3px solid transparent;
+               margin-bottom:-2px; transition:all .2s; white-space:nowrap; }
+    .tab-btn.active { color:#4F46E5; border-bottom-color:#4F46E5; }
+    .tab-btn:hover:not(.active) { color:#1E293B; }
+
+    .tab-pane { display:none; flex:1; }
+    .tab-pane.active { display:block; }
+
+    /* ── TOOLBAR ────────────────────────────── */
+    .toolbar { background:#fff; padding:12px 24px; display:flex; align-items:center; gap:10px;
+               border-bottom:1px solid #E2E8F0; flex-wrap:wrap; }
+    .toolbar input[type=text], .toolbar select {
+      padding:8px 12px; border:1.5px solid #E2E8F0; border-radius:8px; font-size:14px;
+      outline:none; transition:border-color .2s; background:#fff; }
+    .toolbar input[type=text]:focus, .toolbar select:focus { border-color:#6366F1; }
+    .stat-pill { background:#EEF2FF; color:#4F46E5; border-radius:20px;
+                 padding:5px 14px; font-size:13px; font-weight:700; white-space:nowrap; }
+    .stat-pill.green { background:#DCFCE7; color:#166534; }
+    .stat-pill.orange{ background:#FEF3C7; color:#92400E; }
+    .ml-auto { margin-left:auto; }
+    .btn-sm { padding:8px 14px; border:1.5px solid #E2E8F0; border-radius:8px; background:#F8FAFC;
+              font-size:13px; font-weight:600; cursor:pointer; color:#374151; transition:background .2s; }
+    .btn-sm:hover { background:#E2E8F0; }
+    .btn-sm.primary { background:#6366F1; color:#fff; border-color:#6366F1; }
+    .btn-sm.primary:hover { background:#4F46E5; }
+    .btn-sm.danger { background:#FEF2F2; color:#DC2626; border-color:#FECACA; }
+    .btn-sm.danger:hover { background:#FEE2E2; }
+
+    /* ── TABLE ──────────────────────────────── */
+    .table-wrap { padding:20px 24px; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; background:#fff; border-radius:12px;
+            overflow:hidden; box-shadow:0 1px 6px rgba(0,0,0,.06); min-width:700px; }
+    thead tr { background:#F8FAFC; }
+    th { padding:11px 14px; text-align:left; font-size:12px; font-weight:700; color:#64748B;
+         text-transform:uppercase; letter-spacing:.04em; border-bottom:2px solid #E2E8F0; white-space:nowrap; }
+    td { padding:12px 14px; font-size:14px; color:#374151; border-bottom:1px solid #F1F5F9; vertical-align:middle; }
+    tr:last-child td { border-bottom:none; }
+    tbody tr:hover { background:#F8FAFC; }
+
+    .badge-level { display:inline-block; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:700; white-space:nowrap; }
+    .badge-seeker     { background:#FEF3C7; color:#92400E; }
+    .badge-builder    { background:#DCFCE7; color:#166534; }
+    .badge-challenger { background:#DBEAFE; color:#1E40AF; }
+    .badge-explorer   { background:#EDE9FE; color:#5B21B6; }
+    .badge-inventor   { background:#FCE7F3; color:#9D174D; }
+
+    .event-badge { display:inline-block; padding:3px 9px; border-radius:20px; font-size:12px; font-weight:600; }
+    .event-start         { background:#E0F2FE; color:#0369A1; }
+    .event-complete      { background:#DCFCE7; color:#166534; }
+    .event-survey_select { background:#EDE9FE; color:#7C3AED; }
+    .event-mcq_start     { background:#D1FAE5; color:#065F46; }
+    .event-error         { background:#FEE2E2; color:#991B1B; }
+
+    .pct-wrap { display:flex; align-items:center; gap:6px; }
+    .pct-bar  { flex:1; min-width:50px; height:6px; background:#E2E8F0; border-radius:9999px; overflow:hidden; }
+    .pct-fill { height:100%; border-radius:9999px; }
+    .pct-lbl  { font-size:12px; font-weight:600; min-width:32px; text-align:right; }
+
+    .chip-wrap { display:flex; gap:3px; flex-wrap:wrap; }
+    .chip { font-size:11px; padding:2px 7px; border-radius:9999px; font-weight:600; white-space:nowrap; }
+    .chip-v { background:#FFF3E0; color:#E65100; }
+    .chip-g { background:#E3F2FD; color:#1565C0; }
+    .chip-r { background:#F3E5F5; color:#6A1B9A; }
+    .chip-w { background:#E8F5E9; color:#2E7D32; }
+
+    .btn-icon { background:none; border:none; cursor:pointer; padding:5px 7px;
+                border-radius:6px; font-size:15px; transition:background .15s; }
+    .btn-icon:hover { background:#F1F5F9; }
+    .btn-icon.del:hover { background:#FEE2E2; }
+
+    /* ── EMPTY / LOADING ────────────────────── */
+    .empty { text-align:center; padding:56px 20px; color:#94A3B8; }
+    .empty .ico { font-size:44px; margin-bottom:12px; }
+    .loading-msg { text-align:center; padding:56px; color:#94A3B8; font-size:15px; }
+
+    /* ── ACADEMY PANEL ──────────────────────── */
+    .academy-grid { padding:24px; display:grid; grid-template-columns:360px 1fr; gap:20px;
+                    align-items:start; }
+    @media(max-width:800px){ .academy-grid { grid-template-columns:1fr; } }
+    .panel { background:#fff; border-radius:12px; box-shadow:0 1px 6px rgba(0,0,0,.06); overflow:hidden; }
+    .panel-header { padding:14px 18px; border-bottom:1px solid #E2E8F0; display:flex;
+                    align-items:center; justify-content:space-between; }
+    .panel-header h3 { font-size:15px; font-weight:700; color:#1E293B; }
+    .panel-body { padding:18px; }
+    .add-row { display:flex; gap:8px; }
+    .add-row input { flex:1; padding:10px 12px; border:1.5px solid #E2E8F0; border-radius:8px;
+                     font-size:14px; outline:none; }
+    .add-row input:focus { border-color:#6366F1; }
+    .academy-list { margin-top:14px; display:flex; flex-direction:column; gap:6px; max-height:420px; overflow-y:auto; }
+    .academy-item { display:flex; align-items:center; justify-content:space-between;
+                    padding:10px 12px; background:#F8FAFC; border-radius:8px;
+                    border:1px solid #E2E8F0; }
+    .academy-item-name { font-size:14px; font-weight:600; color:#1E293B; }
+    .academy-item-meta { font-size:12px; color:#94A3B8; margin-top:2px; }
+    .academy-item-count { background:#EEF2FF; color:#4F46E5; border-radius:20px;
+                          padding:3px 10px; font-size:12px; font-weight:700; }
+    .academy-stats-panel .stat-row { display:flex; align-items:center; gap:14px;
+                                      padding:14px 0; border-bottom:1px solid #F1F5F9; }
+    .academy-stats-panel .stat-row:last-child { border:none; }
+    .academy-stat-num { font-size:28px; font-weight:800; color:#4F46E5; min-width:56px; text-align:right; }
+    .academy-stat-label { font-size:14px; color:#374151; }
+    .academy-stat-sub   { font-size:12px; color:#94A3B8; }
+
+    /* ── REPORT MODAL ───────────────────────── */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
+                     z-index:1000; align-items:center; justify-content:center; padding:20px; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background:#fff; border-radius:16px; max-width:660px; width:100%;
+                 max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+    .modal-head { padding:20px 24px; border-bottom:1px solid #E2E8F0; display:flex;
+                  align-items:center; justify-content:space-between; position:sticky; top:0;
+                  background:#fff; z-index:1; border-radius:16px 16px 0 0; }
+    .modal-head h2 { font-size:17px; font-weight:800; }
+    .modal-close { background:none; border:none; font-size:22px; cursor:pointer; color:#64748B;
+                   width:32px; height:32px; border-radius:8px; display:flex; align-items:center;
+                   justify-content:center; }
+    .modal-close:hover { background:#F1F5F9; }
+    .modal-body { padding:24px; }
+    .report-hero { display:flex; align-items:center; gap:16px; margin-bottom:20px;
+                   padding:16px; background:linear-gradient(135deg,#EEF2FF,#F5F3FF);
+                   border-radius:12px; }
+    .report-level-badge { font-size:32px; font-weight:900; }
+    .report-level-badge.seeker    { color:#92400E; }
+    .report-level-badge.builder   { color:#166534; }
+    .report-level-badge.challenger{ color:#1E40AF; }
+    .report-level-badge.explorer  { color:#5B21B6; }
+    .report-level-badge.inventor  { color:#9D174D; }
+    .report-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+    .report-info-item { font-size:13px; }
+    .report-info-label { color:#94A3B8; font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+    .report-section-title { font-size:13px; font-weight:700; color:#374151; text-transform:uppercase;
+                             letter-spacing:.06em; margin:18px 0 10px; padding-bottom:6px;
+                             border-bottom:1px solid #E2E8F0; }
+    .section-bars { display:flex; flex-direction:column; gap:8px; }
+    .section-bar-row { display:grid; grid-template-columns:80px 1fr 40px; gap:8px; align-items:center; }
+    .section-bar-label { font-size:13px; font-weight:600; }
+    .section-bar-track { height:8px; background:#E2E8F0; border-radius:9999px; overflow:hidden; }
+    .section-bar-fill  { height:100%; border-radius:9999px; }
+    .section-bar-pct   { font-size:13px; font-weight:700; text-align:right; }
+    .feedback-block { background:#F8FAFC; border-radius:10px; padding:14px 16px; margin-bottom:10px; }
+    .feedback-block h4 { font-size:12px; font-weight:700; text-transform:uppercase;
+                          letter-spacing:.06em; margin-bottom:6px; }
+    .feedback-block p  { font-size:14px; color:#374151; line-height:1.6; }
+    .chat-log { display:flex; flex-direction:column; gap:6px; }
+    .chat-log-msg { display:flex; gap:8px; }
+    .chat-log-msg.user { flex-direction:row-reverse; }
+    .chat-log-msg .bubble { padding:8px 12px; border-radius:12px; font-size:13px;
+                             line-height:1.5; max-width:80%; }
+    .chat-log-msg.ai   .bubble { background:#EEF2FF; color:#1E1B4B; border-radius:4px 12px 12px 12px; }
+    .chat-log-msg.user .bubble { background:#4F46E5; color:#fff; border-radius:12px 4px 12px 12px; }
+    .chat-log-msg .who { font-size:11px; color:#94A3B8; align-self:flex-end; white-space:nowrap; }
+    .ai-scores { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+    .ai-score-card { background:#F8FAFC; border-radius:8px; padding:10px 14px; text-align:center; }
+    .ai-score-card .sc-val { font-size:22px; font-weight:800; color:#4F46E5; }
+    .ai-score-card .sc-lbl { font-size:11px; color:#94A3B8; margin-top:2px; }
+
+    /* ── LOG PAGE ───────────────────────────── */
+    .log-filter-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .log-dot { width:8px; height:8px; border-radius:9999px; display:inline-block; margin-right:4px; }
+    .dot-start    { background:#0EA5E9; }
+    .dot-complete { background:#22C55E; }
+    .log-detail-panel { animation: fadeIn .15s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN ──────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🎓</div>
+    <h1>관리자 로그인</h1>
+    <p>SDA삼육잉글랩 AI 레벨테스트</p>
+    <input type="password" id="pw-input" placeholder="비밀번호 입력" autofocus>
+    <button class="btn-login" onclick="doLogin()">로그인</button>
+    <div class="login-error" id="login-error">비밀번호가 올바르지 않습니다.</div>
+  </div>
+</div>
+
+<!-- ── ADMIN SHELL ─────────────────────────── -->
+<div id="admin-screen" style="display:none;flex-direction:column;min-height:100vh;">
+  <header>
+    <div class="hd-title">
+      <h1>🎓 AI 레벨테스트 관리자</h1>
+      <p>SDA삼육잉글랩</p>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">로그아웃</button>
+  </header>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('results')">📊 결과 현황</button>
+    <button class="tab-btn" onclick="switchTab('academies')">🏫 학원 관리</button>
+    <button class="tab-btn" onclick="switchTab('logs')">📋 시도 로그</button>
+  </div>
+
+  <!-- ── TAB 1: 결과 현황 ──────────────────── -->
+  <div id="tab-results" class="tab-pane active">
+    <div class="toolbar">
+      <input type="text" id="r-search" placeholder="이름 검색…" oninput="renderResults()">
+      <select id="r-academy" onchange="renderResults()">
+        <option value="">전체 학원</option>
+      </select>
+      <select id="r-level" onchange="renderResults()">
+        <option value="">전체 레벨</option>
+        <option>Seeker 1</option><option>Seeker 2</option>
+        <option>Builder 1</option><option>Builder 2</option>
+        <option>Challenger 1</option><option>Challenger 2</option>
+        <option>Explorer 1</option><option>Explorer 2</option>
+        <option>Inventor 1</option><option>Inventor 2</option>
+      </select>
+      <span class="stat-pill" id="r-count">0명</span>
+      <button class="btn-sm ml-auto" onclick="exportCSV()">⬇ CSV</button>
+    </div>
+    <div class="table-wrap">
+      <div class="loading-msg" id="r-loading">데이터 로딩 중…</div>
+      <table id="r-table" style="display:none">
+        <thead><tr>
+          <th>날짜</th><th>학원</th><th>이름</th><th>학년</th>
+          <th>최종레벨</th><th>정확도</th><th>섹션 점수</th><th></th>
+        </tr></thead>
+        <tbody id="r-tbody"></tbody>
+      </table>
+      <div class="empty" id="r-empty" style="display:none">
+        <div class="ico">📋</div><p>결과가 없습니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB 2: 학원 관리 ──────────────────── -->
+  <div id="tab-academies" class="tab-pane">
+    <div class="academy-grid">
+      <!-- Left: add / list -->
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>🏫 가맹 학원 목록</h3>
+            <span class="stat-pill" id="ac-count">0개</span>
+          </div>
+          <div class="panel-body">
+            <div class="add-row">
+              <input type="text" id="ac-input" placeholder="학원명 입력…"
+                     onkeydown="if(event.key==='Enter') addAcademy()">
+              <button class="btn-sm primary" onclick="addAcademy()">추가</button>
+            </div>
+            <div class="academy-list" id="ac-list">
+              <div class="loading-msg" style="padding:20px 0">로딩 중…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Right: summary stats -->
+      <div class="panel">
+        <div class="panel-header"><h3>📊 학원별 응시 현황</h3></div>
+        <div class="panel-body academy-stats-panel" id="ac-stats">
+          <div class="loading-msg" style="padding:20px 0">로딩 중…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB 3: 시도 로그 ──────────────────── -->
+  <div id="tab-logs" class="tab-pane">
+    <div class="toolbar log-filter-row">
+      <input type="text" id="l-search" placeholder="이름 / 학원 검색…" oninput="renderLogs()">
+      <select id="l-event" onchange="renderLogs()">
+        <option value="">전체 이벤트</option>
+        <option value="start">시작</option>
+        <option value="complete">완료</option>
+      </select>
+      <select id="l-academy" onchange="renderLogs()">
+        <option value="">전체 학원</option>
+      </select>
+      <span class="stat-pill" id="l-count">0건</span>
+      <div class="ml-auto" style="font-size:12px;color:#94A3B8;display:flex;gap:12px;">
+        <span><span class="log-dot dot-start"></span>시작</span>
+        <span><span class="log-dot dot-complete"></span>완료</span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <div class="loading-msg" id="l-loading">데이터 로딩 중…</div>
+      <table id="l-table" style="display:none">
+        <thead><tr>
+          <th>날짜/시간</th><th>학원</th><th>이름</th><th>학년</th>
+          <th>이벤트</th><th>레벨</th><th></th>
+        </tr></thead>
+        <tbody id="l-tbody"></tbody>
+      </table>
+      <div class="empty" id="l-empty" style="display:none">
+        <div class="ico">📋</div><p>로그가 없습니다.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── REPORT MODAL ────────────────────────── -->
+<div class="modal-overlay" id="report-modal" onclick="closeReport(event)">
+  <div class="modal-box" id="report-box">
+    <div class="modal-head">
+      <h2 id="modal-title">평가 리포트</h2>
+      <button class="modal-close" onclick="closeReportDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────────
+   State
+───────────────────────────────────────────────── */
+let pw = '';
+let allResults   = [];
+let allAcademies = [];
+let allLogs      = [];
+// ID → object lookup maps (safe inline onclick 대신 사용)
+const _resultMap = {};
+const _logMap    = {};
+
+/* ─────────────────────────────────────────────────
+   Auth
+───────────────────────────────────────────────── */
+document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key==='Enter') doLogin(); });
+
+async function doLogin() {
+  const input = document.getElementById('pw-input').value.trim();
+  if (!input) return;
+  pw = input;
+  // test auth
+  const r = await fetch(`/api/admin/results?pw=${enc(pw)}`);
+  if (r.status === 401) {
+    document.getElementById('login-error').style.display = 'block'; pw = ''; return;
+  }
+  allResults = await r.json();
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-screen').style.display = 'flex';
+  await loadAcademies();
+  await loadLogs();
+  renderResults();
+  renderAcademies();
+  renderLogs();
+  populateAcademyFilters();
+}
+
+function doLogout() {
+  pw = ''; allResults = []; allAcademies = []; allLogs = [];
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-screen').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+/* ─────────────────────────────────────────────────
+   Loaders
+───────────────────────────────────────────────── */
+async function loadAcademies() {
+  const r = await fetch(`/api/admin/academies?pw=${enc(pw)}`);
+  allAcademies = r.ok ? await r.json() : [];
+}
+async function loadLogs() {
+  document.getElementById('l-loading').style.display = 'block';
+  document.getElementById('l-table').style.display = 'none';
+  const r = await fetch(`/api/admin/logs?pw=${enc(pw)}`);
+  allLogs = r.ok ? await r.json() : [];
+  document.getElementById('l-loading').style.display = 'none';
+}
+
+function populateAcademyFilters() {
+  // collect all distinct academies from results + academies list
+  const names = [...new Set([
+    ...allAcademies.map(a => a.name),
+    ...allResults.map(r => r.academy).filter(Boolean),
+  ])].sort();
+
+  ['r-academy','l-academy'].forEach(id => {
+    const sel = document.getElementById(id);
+    const cur = sel.value;
+    sel.innerHTML = `<option value="">전체 학원</option>` +
+      names.map(n => `<option${n===cur?' selected':''}>${esc(n)}</option>`).join('');
+  });
+}
+
+/* ─────────────────────────────────────────────────
+   Tab switching
+───────────────────────────────────────────────── */
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    const tabs = ['results','academies','logs'];
+    b.classList.toggle('active', tabs[i] === name);
+  });
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+/* ─────────────────────────────────────────────────
+   TAB 1 — Results
+───────────────────────────────────────────────── */
+function filteredResults() {
+  const q  = document.getElementById('r-search').value.toLowerCase();
+  const ac = document.getElementById('r-academy').value;
+  const lv = document.getElementById('r-level').value;
+  return allResults.filter(r =>
+    (!q  || (r.name||'').toLowerCase().includes(q) || (r.grade||'').toLowerCase().includes(q)) &&
+    (!ac || r.academy === ac) &&
+    (!lv || r.finalLevel === lv)
+  );
+}
+
+function renderResults() {
+  document.getElementById('r-loading').style.display = 'none';
+  const rows = filteredResults();
+  document.getElementById('r-count').textContent = rows.length + '명';
+  const tbody = document.getElementById('r-tbody');
+  tbody.innerHTML = '';
+
+  if (!rows.length) {
+    document.getElementById('r-table').style.display = 'none';
+    document.getElementById('r-empty').style.display = 'block';
+    return;
+  }
+  document.getElementById('r-table').style.display = 'table';
+  document.getElementById('r-empty').style.display = 'none';
+
+  rows.forEach(r => {
+    _resultMap[r.id] = r;  // ID 기반 룩업 저장
+    const series = (r.finalLevel||'').split(' ')[0].toLowerCase();
+    const badgeCls = {seeker:'badge-seeker',builder:'badge-builder',challenger:'badge-challenger',
+                      explorer:'badge-explorer',inventor:'badge-inventor'}[series]||'badge-seeker';
+    const dateStr = r.date ? new Date(r.date).toLocaleString('ko-KR',
+      {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : '-';
+    const acc = r.acc ?? 0;
+    const barClr = acc>=70?'#22C55E':acc>=50?'#F59E0B':'#EF4444';
+    const bs = r.bySection || {};
+    const chips = ['vocabulary','grammar','reading','writing'].map(k => {
+      if (!bs[k]||!bs[k].total) return '';
+      const p = Math.round((bs[k].correct/bs[k].total)*100);
+      const cls = {vocabulary:'chip-v',grammar:'chip-g',reading:'chip-r',writing:'chip-w'}[k];
+      const lbl = {vocabulary:'어휘',grammar:'문법',reading:'독해',writing:'쓰기'}[k];
+      return `<span class="chip ${cls}">${lbl} ${p}%</span>`;
+    }).join('');
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-size:12px;color:#64748B;white-space:nowrap">${dateStr}</td>
+      <td style="font-size:13px;color:#475569">${esc(r.academy||'-')}</td>
+      <td style="font-weight:700">${esc(r.name)}</td>
+      <td style="color:#64748B;font-size:13px">${esc(r.grade)}</td>
+      <td><span class="badge-level ${badgeCls}">${esc(r.finalLevel)}</span></td>
+      <td>
+        <div class="pct-wrap">
+          <div class="pct-bar"><div class="pct-fill" style="width:${acc}%;background:${barClr}"></div></div>
+          <span class="pct-lbl" style="color:${barClr}">${acc}%</span>
+        </div>
+        <div style="font-size:11px;color:#94A3B8;margin-top:2px">${r.correct??'?'}/${r.total??'?'}</div>
+      </td>
+      <td><div class="chip-wrap">${chips||'<span style="color:#CBD5E1;font-size:12px">-</span>'}</div></td>
+      <td style="white-space:nowrap">
+        <button class="btn-icon" title="리포트 보기" onclick="openReport('${r.id}')">📄</button>
+        <button class="btn-icon del" title="삭제" onclick="deleteResult('${r.id}',this)">🗑</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+async function deleteResult(id, btn) {
+  if (!confirm('삭제하시겠습니까?')) return;
+  const res = await fetch(`/api/admin/results/${id}?pw=${enc(pw)}`, {method:'DELETE'});
+  if (!res.ok) { alert('삭제 실패'); return; }
+  allResults = allResults.filter(r => String(r.id) !== String(id));
+  renderResults();
+  renderAcademies();
+}
+
+function exportCSV() {
+  const rows = [['날짜','학원','이름','학년','최종레벨','정확도%','어휘%','문법%','독해%','쓰기%','강점','보완','선생님메모']];
+  filteredResults().forEach(r => {
+    const bs = r.bySection||{};
+    const p = k => bs[k] ? Math.round((bs[k].correct/bs[k].total)*100) : '';
+    rows.push([r.date?new Date(r.date).toLocaleString('ko-KR'):'', r.academy||'',
+      r.name, r.grade, r.finalLevel, r.acc??'',
+      p('vocabulary'),p('grammar'),p('reading'),p('writing'),
+      r.strengths, r.growth, r.notes_ko]);
+  });
+  const csv = rows.map(row => row.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='englab_results.csv'; a.click();
+}
+
+/* ─────────────────────────────────────────────────
+   TAB 2 — Academies
+───────────────────────────────────────────────── */
+function renderAcademies() {
+  document.getElementById('ac-count').textContent = allAcademies.length + '개';
+
+  // count results per academy
+  const countMap = {};
+  allResults.forEach(r => { countMap[r.academy||''] = (countMap[r.academy||'']||0)+1; });
+
+  // list
+  const listEl = document.getElementById('ac-list');
+  if (!allAcademies.length) {
+    listEl.innerHTML = '<div style="text-align:center;padding:20px 0;color:#94A3B8;font-size:14px">등록된 학원이 없습니다.<br>위에서 추가해주세요.</div>';
+  } else {
+    listEl.innerHTML = allAcademies.map(a => `
+      <div class="academy-item">
+        <div>
+          <div class="academy-item-name">${esc(a.name)}</div>
+          <div class="academy-item-meta">등록: ${a.addedAt ? new Date(a.addedAt).toLocaleDateString('ko-KR') : '-'}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="academy-item-count">${countMap[a.name]||0}명 응시</span>
+          <button class="btn-icon del" title="삭제" onclick="deleteAcademy('${a.id}')">🗑</button>
+        </div>
+      </div>`).join('');
+  }
+
+  // stats panel
+  const statsEl = document.getElementById('ac-stats');
+  if (!allAcademies.length) {
+    statsEl.innerHTML = '<div style="color:#94A3B8;font-size:14px;padding:10px 0">학원을 먼저 등록해주세요.</div>';
+    return;
+  }
+  statsEl.innerHTML = allAcademies.map(a => {
+    const results = allResults.filter(r => r.academy === a.name);
+    const cnt = results.length;
+    const avgAcc = cnt ? Math.round(results.reduce((s,r)=>s+(r.acc||0),0)/cnt) : 0;
+    const levelDist = {};
+    results.forEach(r => { levelDist[r.finalLevel] = (levelDist[r.finalLevel]||0)+1; });
+    const topLevel = Object.entries(levelDist).sort((a,b)=>b[1]-a[1])[0];
+    return `
+      <div class="stat-row">
+        <div class="academy-stat-num">${cnt}</div>
+        <div>
+          <div class="academy-stat-label">${esc(a.name)}</div>
+          <div class="academy-stat-sub">
+            평균 정확도 ${avgAcc}%
+            ${topLevel ? `· 최다 레벨 <strong>${topLevel[0]}</strong>` : ''}
+          </div>
+        </div>
+        <button class="btn-sm" style="margin-left:auto;white-space:nowrap"
+          onclick="filterByAcademy('${a.name.replace(/'/g,"\\'")}')">결과 보기</button>
+      </div>`;
+  }).join('');
+}
+
+async function addAcademy() {
+  const input = document.getElementById('ac-input');
+  const name = input.value.trim();
+  if (!name) return;
+  const r = await fetch(`/api/admin/academies?pw=${enc(pw)}`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({name}),
+  });
+  const data = await r.json();
+  if (!r.ok) { alert(data.error); return; }
+  input.value = '';
+  await loadAcademies();
+  renderAcademies();
+  populateAcademyFilters();
+}
+
+async function deleteAcademy(id) {
+  if (!confirm('이 학원을 목록에서 삭제하시겠습니까?\n(기존 응시 데이터는 유지됩니다.)')) return;
+  await fetch(`/api/admin/academies/${id}?pw=${enc(pw)}`, {method:'DELETE'});
+  await loadAcademies();
+  renderAcademies();
+  populateAcademyFilters();
+}
+
+function filterByAcademy(name) {
+  switchTab('results');
+  document.getElementById('r-academy').value = name;
+  renderResults();
+}
+
+/* ─────────────────────────────────────────────────
+   TAB 3 — Logs
+───────────────────────────────────────────────── */
+function renderLogs() {
+  document.getElementById('l-loading').style.display = 'none';
+  const q  = document.getElementById('l-search').value.toLowerCase();
+  const ev = document.getElementById('l-event').value;
+  const ac = document.getElementById('l-academy').value;
+
+  const filtered = allLogs.filter(l =>
+    (!q  || (l.name||'').toLowerCase().includes(q) || (l.academy||'').toLowerCase().includes(q)) &&
+    (!ev || l.event === ev) &&
+    (!ac || l.academy === ac)
+  );
+  document.getElementById('l-count').textContent = filtered.length + '건';
+
+  const tbody = document.getElementById('l-tbody');
+  tbody.innerHTML = '';
+  if (!filtered.length) {
+    document.getElementById('l-table').style.display = 'none';
+    document.getElementById('l-empty').style.display = 'block';
+    return;
+  }
+  document.getElementById('l-table').style.display = 'table';
+  document.getElementById('l-empty').style.display = 'none';
+
+  filtered.forEach((l, idx) => {
+    _logMap[l.id] = l;
+    const dateStr = l.date ? new Date(l.date).toLocaleString('ko-KR',
+      {year:'numeric',month:'2-digit',day:'2-digit',
+       hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '-';
+    const EVT_LABEL = {start:'▶ 시작', survey_select:'📋 설문', mcq_start:'📝 문항시작',
+                       complete:'✅ 완료', error:'❌ 오류'};
+    const evCls   = `event-${l.event}`;
+    const evLabel = EVT_LABEL[l.event] || l.event;
+
+    // 완료 이벤트면 매칭되는 결과 리포트가 있는지 확인
+    const matchedResult = l.event === 'complete'
+      ? allResults.find(r => r.name === l.name && r.academy === l.academy
+          && Math.abs(new Date(r.date) - new Date(l.date)) < 5000)
+      : null;
+
+    const mainTr = document.createElement('tr');
+    mainTr.dataset.logId = l.id;
+    mainTr.innerHTML = `
+      <td style="font-size:12px;color:#64748B;white-space:nowrap">${dateStr}</td>
+      <td style="font-size:13px">${esc(l.academy||'-')}</td>
+      <td style="font-weight:600">${esc(l.name||'-')}</td>
+      <td style="font-size:13px;color:#64748B">${esc(l.grade||'-')}</td>
+      <td><span class="event-badge ${evCls}">${evLabel}</span></td>
+      <td style="font-size:13px;color:#64748B">${esc(l.finalLevel||'-')}</td>
+      <td style="white-space:nowrap">
+        <button class="btn-icon" title="데이터 보기" onclick="toggleLogDetail('${l.id}',this)">🔍</button>
+        ${matchedResult ? `<button class="btn-icon" title="리포트 보기" onclick="openReport('${matchedResult.id}')">📄</button>` : ''}
+      </td>`;
+
+    // 상세 행 (기본 숨김)
+    const detailTr = document.createElement('tr');
+    detailTr.id = `log-detail-${l.id}`;
+    detailTr.style.display = 'none';
+    detailTr.innerHTML = `<td colspan="7" style="padding:0;background:#F8FAFC;border-bottom:2px solid #E2E8F0;">
+      <div id="log-detail-body-${l.id}" class="log-detail-panel"></div>
+    </td>`;
+
+    tbody.appendChild(mainTr);
+    tbody.appendChild(detailTr);
+  });
+}
+
+function toggleLogDetail(id, btn) {
+  const detailTr   = document.getElementById(`log-detail-${id}`);
+  const detailBody = document.getElementById(`log-detail-body-${id}`);
+  const isOpen = detailTr.style.display !== 'none';
+  if (isOpen) { detailTr.style.display = 'none'; btn.textContent = '🔍'; return; }
+
+  const l = _logMap[id];
+  if (!l) return;
+
+  // 같은 세션 ID로 연결된 전체 이벤트
+  const sessionEvents = l.sessionId
+    ? allLogs.filter(x => x.sessionId === l.sessionId).sort((a,b) => new Date(a.date)-new Date(b.date))
+    : [];
+
+  // 리포트 링크: sessionId 또는 이름+시간으로 매칭
+  const linked = allResults.find(r =>
+    (l.sessionId && r.sessionId === l.sessionId) ||
+    (r.name === l.name && r.academy === l.academy &&
+     Math.abs(new Date(r.date) - new Date(l.date)) < 30000)
+  );
+
+  // ── 이벤트 유형별 컬러/아이콘
+  const EVT = {
+    start:         { icon:'▶',  color:'#0369A1', bg:'#E0F2FE', label:'시작' },
+    survey_select: { icon:'📋', color:'#7C3AED', bg:'#EDE9FE', label:'설문 선택' },
+    mcq_start:     { icon:'📝', color:'#065F46', bg:'#DCFCE7', label:'문항 시작' },
+    complete:      { icon:'✅', color:'#166534', bg:'#DCFCE7', label:'완료' },
+    error:         { icon:'❌', color:'#991B1B', bg:'#FEE2E2', label:'오류' },
+  };
+  const evInfo = EVT[l.event] || { icon:'•', color:'#64748B', bg:'#F1F5F9', label: l.event };
+
+  // ── 카드 데이터 (있는 필드만 표시)
+  const cardDefs = [
+    { label:'이벤트',    value: evInfo.label,                  show: true },
+    { label:'세션 ID',   value: l.sessionId || '-',            show: true },
+    { label:'일시',      value: l.date ? new Date(l.date).toLocaleString('ko-KR') : '-', show: true },
+    { label:'이름',      value: l.name    || '-',              show: true },
+    { label:'학년',      value: l.grade   || '-',              show: true },
+    { label:'학원',      value: l.academy || '-',              show: true },
+    { label:'IP',        value: l.ip      || '-',              show: !!l.ip },
+    { label:'브라우저',  value: l.ua ? l.ua.slice(0,60)+'…' : '-', show: !!l.ua },
+    { label:'화면',      value: l.extra?.screenW ? `${l.extra.screenW}×${l.extra.screenH}` : '-', show: !!(l.extra?.screenW) },
+    { label:'언어',      value: l.extra?.lang || '-',          show: !!(l.extra?.lang) },
+    { label:'플랫폼',    value: l.extra?.platform || '-',      show: !!(l.extra?.platform) },
+    { label:'설문 Theta',value: l.surveyTheta ?? '-',          show: l.surveyTheta != null },
+    { label:'총 문항',   value: l.extra?.totalQ ?? '-',        show: l.extra?.totalQ != null },
+    { label:'최종 레벨', value: l.finalLevel || '-',           show: !!l.finalLevel },
+    { label:'정확도',    value: l.acc != null ? `${l.acc}% (${l.correct}/${l.total})` : '-', show: l.acc != null },
+    { label:'소요 시간', value: l.durationSec != null ? fmtDur(l.durationSec) : '-', show: l.durationSec != null },
+    { label:'오류 단계', value: l.errorStep || '-',            show: !!l.errorStep },
+    { label:'오류 내용', value: l.errorMsg  || '-',            show: !!l.errorMsg },
+  ].filter(d => d.show);
+
+  // ── 섹션 점수 (complete만)
+  const sectionHtml = l.bySection ? (() => {
+    const SMETA = {vocabulary:'어휘',grammar:'문법',reading:'독해',writing:'쓰기'};
+    const rows = Object.entries(l.bySection).filter(([,v])=>v.total).map(([k,v]) => {
+      const p = Math.round((v.correct/v.total)*100);
+      const c = p>=70?'#22C55E':p>=50?'#F59E0B':'#EF4444';
+      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="width:36px;font-size:12px;color:#64748B">${SMETA[k]||k}</span>
+        <div style="flex:1;height:6px;background:#E2E8F0;border-radius:9999px;overflow:hidden;">
+          <div style="width:${p}%;height:100%;background:${c};border-radius:9999px;"></div></div>
+        <span style="font-size:12px;font-weight:700;color:${c};min-width:34px;text-align:right">${p}%</span>
+        <span style="font-size:11px;color:#94A3B8">${v.correct}/${v.total}</span>
+      </div>`;
+    }).join('');
+    return rows ? `<div style="margin-top:12px;">
+      <div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;
+                  letter-spacing:.06em;margin-bottom:8px;">섹션별 점수</div>${rows}</div>` : '';
+  })() : '';
+
+  // ── 세션 타임라인
+  const timelineHtml = sessionEvents.length > 1 ? `
+    <div style="margin-top:14px;">
+      <div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;
+                  letter-spacing:.06em;margin-bottom:8px;">세션 타임라인 (${sessionEvents.length}개 이벤트)</div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        ${sessionEvents.map(e => {
+          const ei = EVT[e.event]||{icon:'•',color:'#64748B',bg:'#F1F5F9',label:e.event};
+          const t  = e.date ? new Date(e.date).toLocaleTimeString('ko-KR') : '';
+          const isCur = String(e.id) === String(l.id);
+          return `<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;
+                              background:${isCur?ei.bg:'#F8FAFC'};border-radius:6px;
+                              ${isCur?'border:1px solid '+ei.color:''}">
+            <span style="font-size:13px">${ei.icon}</span>
+            <span style="font-size:12px;font-weight:600;color:${ei.color}">${ei.label}</span>
+            <span style="font-size:11px;color:#94A3B8">${t}</span>
+            ${e.finalLevel?`<span style="font-size:11px;color:#4F46E5;font-weight:600;margin-left:auto">${esc(e.finalLevel)}</span>`:''}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>` : '';
+
+  detailBody.innerHTML = `
+    <div style="padding:16px 20px;">
+      <!-- 헤더 -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <span style="background:${evInfo.bg};color:${evInfo.color};padding:4px 12px;
+                     border-radius:20px;font-size:12px;font-weight:700;">
+          ${evInfo.icon} ${evInfo.label}
+        </span>
+        <span style="font-size:12px;color:#94A3B8">Log ID: ${l.id}</span>
+      </div>
+
+      <!-- 카드 그리드 -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:7px;margin-bottom:4px;">
+        ${cardDefs.map(f => `
+          <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:8px 12px;">
+            <div style="font-size:10px;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em">${esc(f.label)}</div>
+            <div style="font-size:13px;font-weight:600;color:#1E293B;margin-top:2px;word-break:break-all">${esc(String(f.value))}</div>
+          </div>`).join('')}
+      </div>
+
+      ${sectionHtml}
+      ${timelineHtml}
+
+      <!-- 리포트 연결 -->
+      ${linked ? `
+        <div style="margin-top:12px;padding:10px 14px;background:#EEF2FF;border-radius:8px;
+                    display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <span style="font-size:13px;color:#4F46E5;font-weight:600;">📄 연결된 평가 리포트 있음</span>
+          <button class="btn-sm primary" onclick="openReport('${linked.id}')">리포트 열기</button>
+        </div>` : ''}
+
+      <!-- Raw JSON -->
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:#6366F1;font-weight:600;
+                        padding:6px 0;user-select:none;list-style:none;">
+          ▸ { } Raw JSON 전체 보기
+        </summary>
+        <pre style="margin-top:8px;background:#0F172A;color:#94A3B8;padding:14px 16px;
+                    border-radius:8px;font-size:11.5px;overflow-x:auto;line-height:1.7;
+                    max-height:320px;overflow-y:auto;">${esc(JSON.stringify(l,null,2))}</pre>
+      </details>
+    </div>`;
+
+  detailTr.style.display = 'table-row';
+  btn.textContent = '🔼';
+}
+
+function fmtDur(sec) {
+  if (!sec) return '-';
+  const m = Math.floor(sec / 60), s = sec % 60;
+  return m > 0 ? `${m}분 ${s}초` : `${s}초`;
+}
+
+/* ─────────────────────────────────────────────────
+   Report Modal
+───────────────────────────────────────────────── */
+function openReport(id) {
+  const r = _resultMap[id];
+  if (!r) { alert('리포트 데이터를 찾을 수 없습니다.'); return; }
+  document.getElementById('modal-title').textContent = `${esc(r.name)} 님의 평가 리포트`;
+  const body = document.getElementById('modal-body');
+
+  const series = (r.finalLevel||'').split(' ')[0].toLowerCase();
+  const dateStr = r.date ? new Date(r.date).toLocaleString('ko-KR') : '-';
+
+  const SECTION_META = {
+    vocabulary:{ label:'어휘 & 표현', color:'#E65100' },
+    grammar:   { label:'문법 & 구조', color:'#1565C0' },
+    reading:   { label:'독해',        color:'#6A1B9A' },
+    writing:   { label:'쓰기',        color:'#2E7D32' },
+  };
+  const bs = r.bySection || {};
+  const sectionBars = Object.entries(SECTION_META).map(([k,m]) => {
+    if (!bs[k]||!bs[k].total) return '';
+    const p = Math.round((bs[k].correct/bs[k].total)*100);
+    const clr = p>=70?'#22C55E':p>=50?'#F59E0B':'#EF4444';
+    return `<div class="section-bar-row">
+      <div class="section-bar-label" style="color:${m.color};font-size:12px">${m.label}</div>
+      <div class="section-bar-track"><div class="section-bar-fill" style="width:${p}%;background:${clr}"></div></div>
+      <div class="section-bar-pct" style="color:${clr}">${p}%</div>
+    </div>`;
+  }).join('');
+
+  const aiScores = (r.ai_vocab||r.ai_grammar||r.ai_overall) ? `
+    <div class="report-section-title">AI 대화 평가</div>
+    <div class="ai-scores">
+      <div class="ai-score-card"><div class="sc-val">${r.ai_vocab??'-'}</div><div class="sc-lbl">어휘력</div></div>
+      <div class="ai-score-card"><div class="sc-val">${r.ai_grammar??'-'}</div><div class="sc-lbl">문법</div></div>
+      <div class="ai-score-card"><div class="sc-val">${r.ai_complex??'-'}</div><div class="sc-lbl">복잡도</div></div>
+      <div class="ai-score-card"><div class="sc-val">${r.ai_overall??'-'}</div><div class="sc-lbl">종합</div></div>
+    </div>` : '';
+
+  const convHtml = (r.conversation||[]).length ? `
+    <div class="report-section-title">AI 대화 내용</div>
+    <div class="chat-log">
+      ${r.conversation.map(m => `
+        <div class="chat-log-msg ${m.role==='assistant'?'ai':'user'}">
+          <div class="bubble">${esc(m.content)}</div>
+          <div class="who">${m.role==='assistant'?'AI':'학생'}</div>
+        </div>`).join('')}
+    </div>` : '';
+
+  body.innerHTML = `
+    <!-- Hero -->
+    <div class="report-hero">
+      <div>
+        <div class="report-level-badge ${series}">${esc(r.finalLevel)}</div>
+        <div style="font-size:12px;color:#64748B;margin-top:4px">최종 배치 레벨</div>
+      </div>
+      <div class="report-info-grid">
+        <div class="report-info-item"><div class="report-info-label">이름</div><strong>${esc(r.name)}</strong></div>
+        <div class="report-info-item"><div class="report-info-label">학년</div><strong>${esc(r.grade)}</strong></div>
+        <div class="report-info-item"><div class="report-info-label">학원</div><strong>${esc(r.academy||'-')}</strong></div>
+        <div class="report-info-item"><div class="report-info-label">일시</div><span style="font-size:12px">${dateStr}</span></div>
+        <div class="report-info-item"><div class="report-info-label">정확도</div><strong>${r.acc??0}%</strong> (${r.correct??0}/${r.total??0})</div>
+      </div>
+    </div>
+
+    <!-- Section scores -->
+    <div class="report-section-title">섹션별 점수</div>
+    <div class="section-bars">${sectionBars||'<span style="color:#94A3B8;font-size:13px">데이터 없음</span>'}</div>
+
+    ${aiScores}
+
+    <!-- Feedback -->
+    ${r.strengths ? `<div class="report-section-title">종합 피드백</div>
+      <div class="feedback-block"><h4 style="color:#166534">✓ 강점</h4><p>${esc(r.strengths)}</p></div>` : ''}
+    ${r.growth ? `<div class="feedback-block"><h4 style="color:#92400E">→ 보완 영역</h4><p>${esc(r.growth)}</p></div>` : ''}
+    ${r.notes_ko ? `<div class="feedback-block" style="background:#FFFBEB;border-left:3px solid #F59E0B">
+      <h4 style="color:#92400E">선생님 메모</h4><p>${esc(r.notes_ko)}</p></div>` : ''}
+
+    ${convHtml}
+  `;
+  document.getElementById('report-modal').classList.add('open');
+}
+
+function closeReport(e) {
+  if (e.target === document.getElementById('report-modal')) closeReportDirect();
+}
+function closeReportDirect() {
+  document.getElementById('report-modal').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if (e.key==='Escape') closeReportDirect(); });
+
+/* ─────────────────────────────────────────────────
+   Utils
+───────────────────────────────────────────────── */
+function enc(s) { return encodeURIComponent(s); }
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
