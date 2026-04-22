@@ -140,9 +140,8 @@
     <form id="info-form" onsubmit="App.startTest(event)">
       <div class="field-group">
         <label for="f-academy">학원명 *</label>
-        <input type="text" id="f-academy" list="academy-datalist"
+        <input type="text" id="f-academy"
                placeholder="학원 이름을 입력하세요" required autocomplete="off" />
-        <datalist id="academy-datalist"></datalist>
         <div class="field-error" id="academy-error" style="display:none">
           죄송합니다. AI 레벨테스트는 SDA삼육잉글랩 가맹학원에서만 사용이 가능합니다.
         </div>
@@ -356,6 +355,13 @@
      SCREEN 6 · AI Chat
 ════════════════════════════════════════════ -->
 <div id="screen-chat" class="screen">
+  <!-- 오디오 활성화 배너 (모바일 첫 TTS 버그 우회) -->
+  <div id="audio-banner" onclick="App._activateAudio()" style="
+    display:none; cursor:pointer; background:#4F46E5; color:#fff;
+    text-align:center; padding:10px 16px; font-size:14px; font-weight:600;
+    letter-spacing:0.3px; user-select:none;">
+    🔊 탭하여 AI 선생님 음성 켜기
+  </div>
   <div class="chat-header">
     <img src="logo.png" class="logo-img logo-img--small" alt="SDA삼육잉글랩">
     <div class="chat-turn-badge">💬 대화 <span id="chat-turn-current">1</span> / 6</div>

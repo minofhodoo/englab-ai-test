@@ -1,0 +1,8 @@
+
+🎓 SDA삼육잉글랩 AI 레벨테스트
+   📱 학생용 서버  : http://localhost:3000
+   이메일 설정: ✅ min.kim@hodoolabs.ai
+   결과 수신 이메일: min.kim@hodoolabs.ai
+   🔒 관리자 서버  : http://localhost:3001
+   (ngrok으로 외부 공개 시 관리자 URL은 내부 공유용으로만 사용하세요)
+

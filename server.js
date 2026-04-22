@@ -204,13 +204,28 @@ One brief reaction + one analytical question. Max 2 sentences. English only.`;
   if (isFinalTurn) {
     systemPrompt += `
 
-FINAL TURN: Write one short closing sentence (max 10 words), then on a NEW LINE output ONLY this JSON:
-{"assessment_complete":true,"vocabulary":N,"grammar":N,"complexity":N,"overall":N,"final_level":"X N","strengths":"...","growth":"...","notes_ko":"..."}
-- Scores 1-10: (1-2=Seeker, 3-4=Builder, 5-6=Challenger, 7-8=Explorer, 9-10=Inventor)
+FINAL TURN: Write one warm closing sentence (max 12 words), then on a NEW LINE output ONLY this JSON (no markdown, no code block):
+{"assessment_complete":true,"vocabulary":N,"grammar":N,"complexity":N,"overall":N,"final_level":"X N","strengths":"...","growth":"...","recommendation_ko":"...","notes_ko":"..."}
+
+Field rules:
 - final_level: one of "Seeker 1","Seeker 2","Builder 1","Builder 2","Challenger 1","Challenger 2","Explorer 1","Explorer 2","Inventor 1","Inventor 2"
-- MCQ weight 40% (theta ${theta.toFixed(1)}), conversation 60%
-- strengths/growth: 1 sentence each in English
-- notes_ko: 1 sentence in Korean for teacher`;
+- MCQ theta ${theta.toFixed(1)} counts 40%, this conversation 60%
+
+SCORING PHILOSOPHY — scores are LEVEL-RELATIVE, NOT absolute:
+Score how well this student performed FOR THEIR OWN LEVEL (theta ${theta.toFixed(1)}).
+A Seeker who perfectly names all emojis and answers simple questions deserves 8-9.
+A Builder who responds fluently with correct simple sentences deserves 8-9.
+Only give low scores (1-4) if the student STRUGGLED even for their level.
+Scale: 1-4=below expectations for level, 5-6=meets expectations, 7-9=exceeds expectations, 10=exceptional
+- vocabulary: how rich/appropriate was their word choice FOR THIS LEVEL?
+- grammar: how accurate was their grammar FOR THIS LEVEL?
+- complexity: how complex were their sentences FOR THIS LEVEL?
+- overall: holistic performance FOR THIS LEVEL
+
+- strengths: 2-3 sentences in English — cite SPECIFIC evidence from the conversation (actual words/phrases the student used). What did they do well?
+- growth: 2-3 sentences in English — identify SPECIFIC patterns observed (e.g. tense errors, limited connector use). What exact areas need work?
+- recommendation_ko: 2-3 sentences in Korean — concrete, actionable study tips matched to this student's level and observed weaknesses (e.g. "매일 영어 일기 쓰기", "현재완료 시제 집중 연습" etc.)
+- notes_ko: 2-3 sentences in Korean for the teacher — overall impression, attitude during the test, and any notable observations the teacher should know`;
   }
 
   // ── 메시지 구성 ──────────────────────────────
@@ -246,7 +261,7 @@ FINAL TURN: Write one short closing sentence (max 10 words), then on a NEW LINE 
   try {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: isFinalTurn ? 380 : 80,
+      max_tokens: isFinalTurn ? 900 : 80,
       system: systemPrompt,
       messages: messagesForAPI,
     });
@@ -255,11 +270,16 @@ FINAL TURN: Write one short closing sentence (max 10 words), then on a NEW LINE 
     const fullText = response.content[0].text;
     let assessment = null;
     let displayText = fullText;
-    const jsonMatch = fullText.match(/\{[\s\S]*"assessment_complete"\s*:\s*true[\s\S]*\}/);
+    // 마크다운 코드블록 제거 후 JSON 추출
+    const cleaned = fullText.replace(/```(?:json)?\s*/g, '').replace(/```/g, '');
+    const jsonMatch = cleaned.match(/\{[\s\S]*"assessment_complete"\s*:\s*true[\s\S]*\}/);
     if (jsonMatch) {
       try {
         assessment = JSON.parse(jsonMatch[0]);
-        displayText = fullText.replace(jsonMatch[0], '').trim();
+        displayText = fullText
+          .replace(/```(?:json)?[\s\S]*?```/g, '')  // 코드블록 전체 제거
+          .replace(jsonMatch[0], '')
+          .trim();
       } catch {
         // JSON parse failed — keep full text, no assessment
       }
@@ -315,9 +335,10 @@ app.post('/api/complete', async (req, res) => {
       ai_grammar:   assessment?.grammar     || null,
       ai_complex:   assessment?.complexity  || null,
       ai_overall:   assessment?.overall     || null,
-      strengths:    assessment?.strengths   || '',
-      growth:       assessment?.growth      || '',
-      notes_ko:     assessment?.notes_ko    || '',
+      strengths:        assessment?.strengths        || '',
+      growth:           assessment?.growth           || '',
+      recommendation_ko: assessment?.recommendation_ko || '',
+      notes_ko:         assessment?.notes_ko         || '',
       durationSec:  durationSec || null,
       // conversation log
       conversation: (conversationMessages || []).filter(m => m.role === 'user' || m.role === 'assistant'),
@@ -576,20 +597,29 @@ function buildEmailHtml({ studentInfo, mcqResults, mcqLevel, conversationMessage
   <!-- Feedback -->
   <tr><td style="background:#FFFFFF;padding:0 32px 24px;border-left:1px solid #E2E8F0;border-right:1px solid #E2E8F0;">
     <h2 style="margin:0 0 16px;font-size:16px;color:#111827;border-left:4px solid #10B981;padding-left:12px;">종합 피드백</h2>
+
     ${assessment?.strengths ? `
-    <div style="margin-bottom:12px;">
-      <p style="margin:0 0 6px;font-size:13px;font-weight:600;color:#065F46;">✓ 강점</p>
-      <p style="margin:0;font-size:14px;color:#374151;line-height:1.6;">${escapeHtml(assessment.strengths)}</p>
+    <div style="background:#F0FDF4;border-left:4px solid #22C55E;border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:14px;">
+      <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:0.5px;">✓ 강점 (Strengths)</p>
+      <p style="margin:0;font-size:14px;color:#15803D;line-height:1.8;">${escapeHtml(assessment.strengths)}</p>
     </div>` : ''}
+
     ${assessment?.growth ? `
-    <div style="margin-bottom:12px;">
-      <p style="margin:0 0 6px;font-size:13px;font-weight:600;color:#92400E;">→ 보완 영역</p>
-      <p style="margin:0;font-size:14px;color:#374151;line-height:1.6;">${escapeHtml(assessment.growth)}</p>
+    <div style="background:#FFF7ED;border-left:4px solid #F97316;border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:14px;">
+      <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#9A3412;text-transform:uppercase;letter-spacing:0.5px;">→ 보완 영역 (Areas for Growth)</p>
+      <p style="margin:0;font-size:14px;color:#C2410C;line-height:1.8;">${escapeHtml(assessment.growth)}</p>
     </div>` : ''}
+
+    ${assessment?.recommendation_ko ? `
+    <div style="background:#EFF6FF;border-left:4px solid #3B82F6;border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:14px;">
+      <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#1D4ED8;text-transform:uppercase;letter-spacing:0.5px;">📚 학습 추천</p>
+      <p style="margin:0;font-size:14px;color:#1E40AF;line-height:1.8;">${escapeHtml(assessment.recommendation_ko)}</p>
+    </div>` : ''}
+
     ${assessment?.notes_ko ? `
-    <div style="background:#FFFBEB;border-left:3px solid #F59E0B;padding:12px 16px;border-radius:0 8px 8px 0;">
-      <p style="margin:0 0 4px;font-size:12px;font-weight:600;color:#92400E;">선생님 메모</p>
-      <p style="margin:0;font-size:14px;color:#78350F;line-height:1.6;">${escapeHtml(assessment.notes_ko)}</p>
+    <div style="background:#FFFBEB;border-left:4px solid #F59E0B;border-radius:0 10px 10px 0;padding:14px 18px;">
+      <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:0.5px;">📝 선생님 메모</p>
+      <p style="margin:0;font-size:14px;color:#78350F;line-height:1.8;">${escapeHtml(assessment.notes_ko)}</p>
     </div>` : ''}
   </td></tr>
 
@@ -616,7 +646,14 @@ function escapeHtml(str) {
 }
 
 // ──────────────────────────────────────────────
-//  Admin — Academies CRUD
+//  Admin — 페이지 라우트
+// ──────────────────────────────────────────────
+app.get('/admin', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+// ──────────────────────────────────────────────
+//  Admin — 인증 헬퍼
 // ──────────────────────────────────────────────
 function adminAuth(req, res) {
   const pw = process.env.ADMIN_PASSWORD || 'englab2024';
@@ -624,11 +661,29 @@ function adminAuth(req, res) {
   return true;
 }
 
+// GET /api/admin/results
+app.get('/api/admin/results', (req, res) => {
+  if (!adminAuth(req, res)) return;
+  try { res.json(readJSON(RESULTS_FILE).reverse()); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// DELETE /api/admin/results/:id
+app.delete('/api/admin/results/:id', (req, res) => {
+  if (!adminAuth(req, res)) return;
+  try {
+    writeJSON(RESULTS_FILE, readJSON(RESULTS_FILE).filter(r => String(r.id) !== String(req.params.id)));
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// GET /api/admin/academies
 app.get('/api/admin/academies', (req, res) => {
   if (!adminAuth(req, res)) return;
   res.json(readJSON(ACADEMIES_FILE));
 });
 
+// POST /api/admin/academies
 app.post('/api/admin/academies', (req, res) => {
   if (!adminAuth(req, res)) return;
   const name = (req.body.name || '').trim();
@@ -640,6 +695,7 @@ app.post('/api/admin/academies', (req, res) => {
   res.json({ ok: true });
 });
 
+// DELETE /api/admin/academies/:id
 app.delete('/api/admin/academies/:id', (req, res) => {
   if (!adminAuth(req, res)) return;
   const list = readJSON(ACADEMIES_FILE);
@@ -647,51 +703,17 @@ app.delete('/api/admin/academies/:id', (req, res) => {
   res.json({ ok: true });
 });
 
-// ──────────────────────────────────────────────
-//  Admin — Logs
-// ──────────────────────────────────────────────
+// GET /api/admin/logs
 app.get('/api/admin/logs', (req, res) => {
   if (!adminAuth(req, res)) return;
   res.json(readJSON(LOGS_FILE).reverse());
 });
 
 // ──────────────────────────────────────────────
-//  GET /admin  — protected admin review page
-// ──────────────────────────────────────────────
-app.get('/admin', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-});
-
-// GET /api/admin/results?pw=xxx
-app.get('/api/admin/results', (req, res) => {
-  const pw = process.env.ADMIN_PASSWORD || 'englab2024';
-  if (req.query.pw !== pw) return res.status(401).json({ error: '비밀번호가 틀렸습니다.' });
-  try {
-    const data = JSON.parse(fs.readFileSync(RESULTS_FILE, 'utf8') || '[]');
-    res.json(data.reverse()); // newest first
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-// DELETE /api/admin/results/:id?pw=xxx
-app.delete('/api/admin/results/:id', (req, res) => {
-  const pw = process.env.ADMIN_PASSWORD || 'englab2024';
-  if (req.query.pw !== pw) return res.status(401).json({ error: '비밀번호가 틀렸습니다.' });
-  try {
-    const data = JSON.parse(fs.readFileSync(RESULTS_FILE, 'utf8') || '[]');
-    const filtered = data.filter(r => String(r.id) !== String(req.params.id));
-    fs.writeFileSync(RESULTS_FILE, JSON.stringify(filtered, null, 2), 'utf8');
-    res.json({ ok: true });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-// ──────────────────────────────────────────────
 //  Start
 // ──────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`\n🎓 SDA삼육잉글랩 AI 레벨테스트`);
   console.log(`   서버 주소: http://localhost:${PORT}`);

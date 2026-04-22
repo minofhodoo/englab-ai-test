@@ -261,14 +261,7 @@ let _academies = [];   // string[]
 async function loadAcademies() {
   try {
     const res = await fetch('/api/academies');
-    if (res.ok) {
-      _academies = await res.json();
-      // populate datalist
-      const dl = document.getElementById('academy-datalist');
-      if (dl) {
-        dl.innerHTML = _academies.map(n => `<option value="${n.replace(/"/g,'&quot;')}">`).join('');
-      }
-    }
+    if (res.ok) _academies = await res.json();
   } catch { /* offline — skip validation */ }
 }
 loadAcademies();
@@ -552,8 +545,48 @@ const App = {
     state.chatMessages = [];
     state.chatTurn = 0;
     document.getElementById('chat-messages').innerHTML = '';
+    App._ttsUnlocked = false;
+    App._pendingFirstMsg = null;
     App.goTo('screen-chat');
+    const banner = document.getElementById('audio-banner');
+    if (banner) banner.style.display = 'block';
+    App._primeAudio();
     App.getAIMessage();
+  },
+
+  // TTS unlock — 반드시 click 핸들러에서 동기적으로 호출 (모바일 autoplay 정책 우회)
+  _unlockTTS() {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.getVoices();
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0; u.rate = 10;
+    window.speechSynthesis.speak(u);
+    App._ttsUnlocked = true;
+  },
+
+  // 오디오 배너 탭 → TTS 활성화 + 첫 메시지 재생
+  _activateAudio() {
+    const banner = document.getElementById('audio-banner');
+    if (banner) banner.style.display = 'none';
+    window.speechSynthesis.cancel();
+    App._ttsUnlocked = true;
+    // 대기 중인 첫 메시지가 있으면 재생
+    if (App._pendingFirstMsg) {
+      const txt = App._pendingFirstMsg;
+      App._pendingFirstMsg = null;
+      App.speakText(txt);
+    }
+  },
+
+  // 마이크 권한 사전 획득
+  async _primeAudio() {
+    if (!App._micPrimed && navigator.mediaDevices?.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach(t => t.stop());
+        App._micPrimed = true;
+      } catch(e) { /* 권한 거부 — 나중에 마이크 버튼에서 처리 */ }
+    }
   },
 
   async getAIMessage() {
@@ -634,54 +667,84 @@ const App = {
       return;
     }
 
-    const rec  = new SpeechRec();
-    rec.lang   = 'en-US';
-    rec.continuous     = false;
-    rec.interimResults = true;
-
     const micBtn = document.getElementById('btn-mic');
     const input  = document.getElementById('chat-input');
     const status = document.getElementById('voice-status');
 
-    rec.onstart = () => {
-      App._voiceActive = true;
-      App._recognition = rec;
-      micBtn.classList.add('recording');
-      micBtn.textContent = '⏹';
-      if (status) { status.style.display = 'flex'; }
-      input.value = '';
-      input.placeholder = '듣고 있어요... 영어로 말해보세요 🎤';
+    const SILENCE_MS   = 2200;  // 마지막 발화 후 이 시간(ms) 지나면 자동 전송
+    const RESTART_MS   = 200;   // onend 후 재시작 대기 (모바일 continuous 우회)
+
+    App._voiceActive   = true;
+    App._voiceFinal    = '';    // 확정 텍스트 (재시작 간 유지)
+    App._silenceTimer  = null;
+
+    micBtn.classList.add('recording');
+    micBtn.textContent = '⏹';
+    if (status) { status.style.display = 'flex'; }
+    input.value = '';
+    input.placeholder = '듣고 있어요... 영어로 말해보세요 🎤';
+
+    const startRec = () => {
+      if (!App._voiceActive) return;
+      const rec = new SpeechRec();
+      rec.lang           = 'en-US';
+      rec.continuous     = false;  // 모바일 호환성
+      rec.interimResults = true;
+      App._recognition   = rec;
+
+      rec.onresult = (e) => {
+        let interim = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          if (e.results[i].isFinal) {
+            App._voiceFinal += e.results[i][0].transcript + ' ';
+          } else {
+            interim += e.results[i][0].transcript;
+          }
+        }
+        input.value = (App._voiceFinal + interim).trim();
+
+        // 확정 결과마다 침묵 타이머 리셋
+        if (Array.from(e.results).slice(e.resultIndex).some(r => r.isFinal)) {
+          clearTimeout(App._silenceTimer);
+          App._silenceTimer = setTimeout(() => {
+            App._stopVoice();
+            setTimeout(() => { if (input.value.trim()) App.sendChat(); }, 300);
+          }, SILENCE_MS);
+        }
+      };
+
+      rec.onerror = (e) => {
+        console.warn('Voice error:', e.error);
+        if (e.error === 'not-allowed') {
+          App._stopVoice();
+          alert('마이크 권한이 필요해요. 브라우저 주소창 왼쪽의 🔒 아이콘을 눌러 마이크를 허용해주세요.');
+        }
+        // not-allowed 외 오류는 재시작 (onend가 후속 처리)
+      };
+
+      // onend: 수동 중단이 아니면 재시작하여 continuous 효과
+      rec.onend = () => {
+        App._recognition = null;
+        if (!App._voiceActive) return;         // 수동 중단됨 → 재시작 안 함
+        if (App._silenceTimer) return;         // 침묵 타이머 대기 중 → 재시작 안 함
+        setTimeout(startRec, RESTART_MS);      // 잠깐 끊겼을 뿐 → 재시작
+      };
+
+      try { rec.start(); } catch(e) { console.warn('rec.start error:', e); }
     };
 
-    rec.onresult = (e) => {
-      const transcript = Array.from(e.results)
-        .map(r => r[0].transcript).join('');
-      input.value = transcript;
-      // 최종 결과면 1초 후 자동 전송
-      if (e.results[e.results.length - 1].isFinal) {
-        App._stopVoice();
-        setTimeout(() => { if (input.value.trim()) App.sendChat(); }, 800);
-      }
-    };
-
-    rec.onerror = (e) => {
-      console.warn('Voice error:', e.error);
-      App._stopVoice();
-      if (e.error === 'not-allowed') {
-        alert('마이크 권한이 필요해요. 브라우저 주소창 왼쪽의 🔒 아이콘을 눌러 마이크를 허용해주세요.');
-      }
-    };
-
-    rec.onend = () => App._stopVoice();
-    rec.start();
+    startRec();
   },
 
   _stopVoice() {
+    App._voiceActive = false;                          // 먼저 false → onend 재시작 방지
+    clearTimeout(App._silenceTimer);
+    App._silenceTimer = null;
+    if (App._recognition) { try { App._recognition.stop(); } catch(e){} App._recognition = null; }
+    App._voiceFinal = '';
     const micBtn = document.getElementById('btn-mic');
     const input  = document.getElementById('chat-input');
     const status = document.getElementById('voice-status');
-    if (App._recognition) { try { App._recognition.stop(); } catch(e){} App._recognition = null; }
-    App._voiceActive = false;
     if (micBtn) { micBtn.classList.remove('recording'); micBtn.textContent = '🎤'; }
     if (status) status.style.display = 'none';
     if (input)  input.placeholder = '영어로 말해보세요... (🎤 누르거나 직접 입력)';
@@ -711,13 +774,31 @@ const App = {
     container.appendChild(wrap);
     container.scrollTop = container.scrollHeight;
 
-    // AI 메시지는 자동으로 음성 출력
-    if (role === 'ai') App.speakText(text);
+    // AI 메시지 음성 출력 — 오디오 미활성화 시 배너 대기
+    if (role === 'ai') {
+      if (App._ttsUnlocked) {
+        App.speakText(text);
+      } else {
+        App._pendingFirstMsg = text;  // 배너 탭 시 재생
+      }
+    }
   },
 
   // ─── TTS (AI 음성 출력 — 한국어 + 영어 지원) ─
   speakText(text) {
     if (!window.speechSynthesis) return;
+    // 음성 목록이 아직 안 로드됐으면 재시도 (onvoiceschanged + 타임아웃 이중 보장)
+    if (window.speechSynthesis.getVoices().length === 0) {
+      let done = false;
+      const retry = () => {
+        if (done) return; done = true;
+        window.speechSynthesis.onvoiceschanged = null;
+        App.speakText(text);
+      };
+      window.speechSynthesis.onvoiceschanged = retry;
+      setTimeout(retry, 800);  // onvoiceschanged 안 오는 브라우저 fallback
+      return;
+    }
     window.speechSynthesis.cancel();
 
     // 이모지·특수기호·구두점 제거 (TTS 엔진이 "exclamation mark" 등으로 읽는 것 방지)
@@ -730,58 +811,48 @@ const App = {
     if (!cleaned) return;
 
     // 한국어 / 영어 구간 분리
-    // ★ 핵심: 공백·숫자·중립문자는 현재 구간에 그냥 포함 → 단어 단위 끊김 방지
-    //   오직 "반대 언어 글자"가 나올 때만 구간을 나눔
     const segments = [];
     let buf = '', bufKo = null;
     for (const ch of cleaned) {
       const isKo = /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(ch);
       const isEn = /[a-zA-Z]/.test(ch);
-
       if (bufKo === null) {
-        // 첫 글자가 한국어/영어일 때 언어 확정
         if (isKo)      bufKo = true;
         else if (isEn) bufKo = false;
-        buf += ch;
-        continue;
+        buf += ch; continue;
       }
-
-      // 반대 언어 글자가 나올 때만 구간 전환
       if ((isKo && !bufKo) || (isEn && bufKo)) {
         if (buf.trim()) segments.push({ t: buf.trim(), ko: bufKo });
-        buf = ch;
-        bufKo = isKo ? true : false;
-      } else {
-        buf += ch;
-      }
+        buf = ch; bufKo = isKo ? true : false;
+      } else { buf += ch; }
     }
     if (buf.trim()) segments.push({ t: buf.trim(), ko: bufKo ?? false });
 
-    const voices = window.speechSynthesis.getVoices();
+    const doSpeak = () => {
+      window.speechSynthesis.resume();
+      const voices = window.speechSynthesis.getVoices();
+      const koVoice =
+        voices.find(v => v.lang.startsWith('ko') && v.name === 'Google 한국어') ||
+        voices.find(v => v.lang.startsWith('ko') && v.name.toLowerCase().includes('google')) ||
+        voices.find(v => v.lang.startsWith('ko') && !v.localService) ||
+        voices.find(v => v.lang.startsWith('ko'));
+      const enVoice =
+        voices.find(v => v.lang === 'en-US' && /Samantha|Google US English|Ava|Zira/i.test(v.name)) ||
+        voices.find(v => v.lang === 'en-US' && !v.localService) ||
+        voices.find(v => v.lang === 'en-US');
+      segments.forEach(seg => {
+        const utter = new SpeechSynthesisUtterance(seg.t);
+        utter.lang  = seg.ko ? 'ko-KR' : 'en-US';
+        utter.rate  = seg.ko ? 0.92 : 0.88;
+        utter.pitch = seg.ko ? 1.0 : 1.05;
+        const voice = seg.ko ? koVoice : enVoice;
+        if (voice) utter.voice = voice;
+        window.speechSynthesis.speak(utter);
+      });
+    };
 
-    // 한국어: Google 한국어 > 네트워크 기반(non-local) > 그 외 순으로 우선
-    const koVoice =
-      voices.find(v => v.lang.startsWith('ko') && v.name === 'Google 한국어') ||
-      voices.find(v => v.lang.startsWith('ko') && v.name.toLowerCase().includes('google')) ||
-      voices.find(v => v.lang.startsWith('ko') && v.localService === false) ||
-      voices.find(v => v.lang.startsWith('ko'));
-
-    // 영어: 자연스러운 음성 우선
-    const enVoice =
-      voices.find(v => v.lang === 'en-US' && /Samantha|Google US English|Ava|Zira/i.test(v.name)) ||
-      voices.find(v => v.lang === 'en-US' && v.localService === false) ||
-      voices.find(v => v.lang === 'en-US');
-
-    segments.forEach(seg => {
-      const utter  = new SpeechSynthesisUtterance(seg.t);
-      utter.lang   = seg.ko ? 'ko-KR' : 'en-US';
-      // Google 한국어는 rate 0.95가 자연스럽고, 로컬 음성은 조금 느리게
-      utter.rate   = seg.ko ? 0.92 : 0.88;
-      utter.pitch  = seg.ko ? 1.0 : 1.05;
-      const voice  = seg.ko ? koVoice : enVoice;
-      if (voice) utter.voice = voice;
-      window.speechSynthesis.speak(utter);
-    });
+    // Samsung Browser: cancel() 직후 speak()가 무시되는 버그 → 100ms 딜레이
+    setTimeout(doSpeak, 100);
   },
 
   stopSpeech() {

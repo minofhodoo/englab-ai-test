@@ -901,11 +901,23 @@ function openReport(id) {
     ${aiScores}
 
     <!-- Feedback -->
-    ${r.strengths ? `<div class="report-section-title">종합 피드백</div>
-      <div class="feedback-block"><h4 style="color:#166534">✓ 강점</h4><p>${esc(r.strengths)}</p></div>` : ''}
-    ${r.growth ? `<div class="feedback-block"><h4 style="color:#92400E">→ 보완 영역</h4><p>${esc(r.growth)}</p></div>` : ''}
-    ${r.notes_ko ? `<div class="feedback-block" style="background:#FFFBEB;border-left:3px solid #F59E0B">
-      <h4 style="color:#92400E">선생님 메모</h4><p>${esc(r.notes_ko)}</p></div>` : ''}
+    ${(r.strengths || r.growth || r.recommendation_ko || r.notes_ko) ? `<div class="report-section-title">종합 피드백</div>` : ''}
+    ${r.strengths ? `
+      <div class="feedback-block" style="background:#F0FDF4;border-left:3px solid #22C55E">
+        <h4 style="color:#166534">✓ 강점 (Strengths)</h4><p>${esc(r.strengths)}</p>
+      </div>` : ''}
+    ${r.growth ? `
+      <div class="feedback-block" style="background:#FFF7ED;border-left:3px solid #F97316">
+        <h4 style="color:#9A3412">→ 보완 영역 (Areas for Growth)</h4><p>${esc(r.growth)}</p>
+      </div>` : ''}
+    ${r.recommendation_ko ? `
+      <div class="feedback-block" style="background:#EFF6FF;border-left:3px solid #3B82F6">
+        <h4 style="color:#1D4ED8">📚 학습 추천</h4><p>${esc(r.recommendation_ko)}</p>
+      </div>` : ''}
+    ${r.notes_ko ? `
+      <div class="feedback-block" style="background:#FFFBEB;border-left:3px solid #F59E0B">
+        <h4 style="color:#92400E">📝 선생님 메모</h4><p>${esc(r.notes_ko)}</p>
+      </div>` : ''}
 
     ${convHtml}
   `;
