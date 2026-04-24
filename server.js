@@ -261,7 +261,7 @@ Scale: 1-4=below expectations for level, 5-6=meets expectations, 7-9=exceeds exp
   try {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: isFinalTurn ? 900 : 80,
+      max_tokens: isFinalTurn ? 600 : 80,
       system: systemPrompt,
       messages: messagesForAPI,
     });
