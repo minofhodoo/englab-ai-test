@@ -391,7 +391,7 @@ app.post('/api/complete', async (req, res) => {
     try {
       const transporter = createMailTransport();
       await transporter.sendMail({
-        from: `"잉글랩 AI 레벨테스트" <${process.env.EMAIL_USER}>`,
+        from: `"잉글랩 AI 레벨테스트" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
         to: recipientEmail,
         subject: `[잉글랩 AI 레벨테스트] ${studentInfo.name} 학생 결과 — ${finalLevel} (${dateStr})`,
         html: emailHtml,
