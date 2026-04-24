@@ -101,6 +101,24 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
+// ── 이메일 테스트 (브라우저에서 바로 확인)
+app.get('/api/test-email', async (_req, res) => {
+  const to = process.env.TEACHER_EMAIL;
+  if (!to) return res.json({ ok: false, error: 'TEACHER_EMAIL 미설정' });
+  try {
+    const transporter = createMailTransport();
+    await transporter.sendMail({
+      from: `"잉글랩 테스트" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+      to,
+      subject: '[잉글랩] 이메일 테스트',
+      text: '이메일 전송 테스트입니다. 정상 수신되었습니다.',
+    });
+    res.json({ ok: true, sentTo: to });
+  } catch (e) {
+    res.json({ ok: false, error: e.message });
+  }
+});
+
 // ──────────────────────────────────────────────
 //  POST /api/chat
 //  Proxy a single conversation turn to Claude
