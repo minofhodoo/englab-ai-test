@@ -1,0 +1,170 @@
+{
+  "2": [
+    {
+      "id": "spk-2-1",
+      "level": 2,
+      "prompt": "What is your name?",
+      "promptKo": "이름이 무엇인가요?",
+      "anyResponseValid": true,
+      "expectedKeywords": ["name", "i'm", "i am", "called", "call me", "my"],
+      "examples": ["My name is ___.", "I'm ___."],
+      "scoringNote": "이름을 말하는 어떤 표현이든 허용"
+    },
+    {
+      "id": "spk-2-2",
+      "level": 2,
+      "prompt": "What is your favorite color?",
+      "promptKo": "가장 좋아하는 색이 무엇인가요?",
+      "anyResponseValid": false,
+      "expectedKeywords": ["red","blue","green","yellow","orange","purple","pink","black","white","brown","gray","colour","color","like","love","favorite","favourite"],
+      "examples": ["My favorite color is blue.", "I like red."],
+      "scoringNote": "색 이름 또는 선호 표현"
+    },
+    {
+      "id": "spk-2-3",
+      "level": 2,
+      "prompt": "Do you have a pet? Tell me about it.",
+      "promptKo": "반려동물이 있나요? 있다면 말해보세요.",
+      "anyResponseValid": false,
+      "expectedKeywords": ["yes","no","dog","cat","fish","bird","rabbit","hamster","turtle","pet","have","don't","do not","animal"],
+      "examples": ["Yes, I have a dog.", "No, I don't have a pet."],
+      "scoringNote": "있음/없음 표현 또는 동물 이름"
+    },
+    {
+      "id": "spk-2-4",
+      "level": 2,
+      "prompt": "What do you do after school?",
+      "promptKo": "방과 후에 무엇을 하나요?",
+      "anyResponseValid": false,
+      "expectedKeywords": ["play","study","read","watch","go","eat","sleep","homework","game","sport","soccer","basketball","friend","home","swim","draw","music","piano"],
+      "examples": ["I play soccer.", "I study and watch TV."],
+      "scoringNote": "방과 후 활동 관련 동사 또는 명사"
+    }
+  ],
+  "3": [
+    {
+      "id": "spk-3-1",
+      "level": 3,
+      "prompt": "Can you describe your bedroom?",
+      "promptKo": "자신의 방을 묘사해 보세요.",
+      "anyResponseValid": false,
+      "expectedKeywords": ["bed","desk","chair","room","wall","window","door","small","big","large","color","have","there","bookshelf","lamp","clean","messy"],
+      "examples": ["My bedroom is small. It has a bed and a desk.", "There is a big window in my room."],
+      "scoringNote": "방 구성 요소 또는 묘사 단어"
+    },
+    {
+      "id": "spk-3-2",
+      "level": 3,
+      "prompt": "What is your favorite season and why do you like it?",
+      "promptKo": "가장 좋아하는 계절과 그 이유를 말해보세요.",
+      "anyResponseValid": false,
+      "expectedKeywords": ["spring","summer","autumn","fall","winter","season","like","love","because","hot","cold","warm","cool","snow","rain","flower","beach","vacation","holiday"],
+      "examples": ["I love summer because I can go to the beach.", "My favorite season is spring because the flowers bloom."],
+      "scoringNote": "계절 이름 + 이유 표현"
+    },
+    {
+      "id": "spk-3-3",
+      "level": 3,
+      "prompt": "How do you usually get to school?",
+      "promptKo": "보통 어떻게 학교에 가나요?",
+      "anyResponseValid": false,
+      "expectedKeywords": ["walk","bus","subway","metro","car","bike","bicycle","taxi","train","ride","take","drive","school","go","usually","every day","foot"],
+      "examples": ["I take the bus to school.", "I walk to school every day."],
+      "scoringNote": "이동 수단 또는 관련 동사"
+    },
+    {
+      "id": "spk-3-4",
+      "level": 3,
+      "prompt": "Tell me about your best friend.",
+      "promptKo": "가장 친한 친구에 대해 말해보세요.",
+      "anyResponseValid": false,
+      "expectedKeywords": ["friend","name","funny","kind","smart","nice","tall","short","like","together","play","school","meet","he","she","they","class","year"],
+      "examples": ["My best friend is Sarah. She is kind and funny.", "His name is Tom and we play basketball together."],
+      "scoringNote": "친구 이름 또는 묘사 단어"
+    }
+  ],
+  "4": [
+    {
+      "id": "spk-4-1",
+      "level": 4,
+      "prompt": "What do you think is the most important subject at school? Why?",
+      "promptKo": "학교에서 가장 중요한 과목은 무엇이라고 생각하나요? 이유도 말해보세요.",
+      "anyResponseValid": false,
+      "expectedKeywords": ["math","english","science","history","art","music","physical","pe","subject","important","because","think","learn","future","help","need","useful","career","life"],
+      "examples": ["I think math is the most important because it helps in everyday life.", "English is essential for communicating globally."],
+      "scoringNote": "과목명 + 이유 표현"
+    },
+    {
+      "id": "spk-4-2",
+      "level": 4,
+      "prompt": "If you could travel anywhere in the world, where would you go and why?",
+      "promptKo": "세계 어디든 여행할 수 있다면 어디에 가고 싶나요? 이유를 말해보세요.",
+      "anyResponseValid": false,
+      "expectedKeywords": ["go","travel","country","city","place","visit","because","want","like","food","culture","beautiful","famous","see","experience","dream","history","nature"],
+      "examples": ["I would go to Japan because I love Japanese food and culture.", "I want to visit Paris to see the Eiffel Tower."],
+      "scoringNote": "장소 + 이유 표현"
+    },
+    {
+      "id": "spk-4-3",
+      "level": 4,
+      "prompt": "Describe a typical weekend for you.",
+      "promptKo": "주말에 보통 어떻게 지내는지 설명해 보세요.",
+      "anyResponseValid": false,
+      "expectedKeywords": ["weekend","saturday","sunday","morning","afternoon","evening","usually","often","sometimes","friend","family","go","watch","play","read","rest","sleep","exercise","hobby","sport"],
+      "examples": ["On weekends I usually wake up late then meet friends.", "I often go hiking with my family on Saturdays."],
+      "scoringNote": "주말 활동 + 시간 표현"
+    },
+    {
+      "id": "spk-4-4",
+      "level": 4,
+      "prompt": "What technology do you use most in your daily life and how does it help you?",
+      "promptKo": "일상에서 가장 많이 사용하는 기술은 무엇이고 어떻게 도움이 되나요?",
+      "anyResponseValid": false,
+      "expectedKeywords": ["phone","computer","smartphone","laptop","tablet","internet","app","technology","use","help","study","communicate","social","media","search","watch","connect","information"],
+      "examples": ["I use my smartphone the most. It helps me stay connected.", "The internet is essential for my studies and entertainment."],
+      "scoringNote": "기술/기기명 + 용도 표현"
+    }
+  ],
+  "5": [
+    {
+      "id": "spk-5-1",
+      "level": 5,
+      "prompt": "Do you think social media has more positive or negative effects on society? Explain your view.",
+      "promptKo": "소셜 미디어가 사회에 미치는 영향이 긍정적인가요, 부정적인가요? 의견을 설명해 보세요.",
+      "anyResponseValid": false,
+      "expectedKeywords": ["social","media","positive","negative","effect","society","people","connect","communicate","information","mental","health","addiction","influence","however","although","both","think","believe","argue"],
+      "examples": ["Social media has both positive and negative effects. It connects people but can harm mental health.", "I believe social media is more harmful due to its addictive nature."],
+      "scoringNote": "입장 표현(긍정/부정/혼재) + 근거"
+    },
+    {
+      "id": "spk-5-2",
+      "level": 5,
+      "prompt": "Describe a significant challenge you have overcome and what you learned from it.",
+      "promptKo": "극복한 어려움과 그 경험에서 배운 것을 이야기해 보세요.",
+      "anyResponseValid": false,
+      "expectedKeywords": ["challenge","difficult","hard","problem","overcome","learn","experience","grow","improve","try","fail","success","lesson","help","time","achieve","strength","confidence","skill"],
+      "examples": ["I struggled with public speaking but joined a debate club and improved.", "Managing my time was challenging but I learned to prioritize tasks."],
+      "scoringNote": "어려움 묘사 + 극복 과정 + 배운 점"
+    },
+    {
+      "id": "spk-5-3",
+      "level": 5,
+      "prompt": "What changes would you make to improve the education system? Give specific reasons.",
+      "promptKo": "교육 시스템을 개선하기 위해 어떤 변화가 필요한가요? 구체적인 이유를 말해보세요.",
+      "anyResponseValid": false,
+      "expectedKeywords": ["education","school","student","teacher","learn","improve","change","system","think","because","should","more","less","focus","practical","creative","pressure","exam","curriculum","assessment","critical"],
+      "examples": ["I would reduce exam pressure and introduce more project-based learning.", "Teachers should receive better training and students should have more creative freedom."],
+      "scoringNote": "교육 변화 제안 + 이유"
+    },
+    {
+      "id": "spk-5-4",
+      "level": 5,
+      "prompt": "How important is learning a foreign language in today's globalized world? Support your answer with examples.",
+      "promptKo": "오늘날 세계화된 세상에서 외국어 학습이 얼마나 중요한가요? 예시를 들어 설명해 보세요.",
+      "anyResponseValid": false,
+      "expectedKeywords": ["language","foreign","important","global","world","communicate","culture","job","career","opportunity","travel","understand","example","for instance","such as","business","international","bilingual","multilingual"],
+      "examples": ["Learning a foreign language is vital in today's globalized world because it opens career opportunities.", "For example, knowing English allows you to communicate with people from over 50 countries."],
+      "scoringNote": "중요성 주장 + 예시 또는 근거"
+    }
+  ]
+}

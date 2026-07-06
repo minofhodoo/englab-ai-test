@@ -1,0 +1,30 @@
+{
+  "Builder": {
+    "1-8": [
+      {
+        "score_min": 0,
+        "score_max": 7,
+        "recommended": "Builder Lv 1-2",
+        "diagnosis": "단어 위주의 이해 단계. 지시대명사(this/that) 및 be동사 등 문장의 가장 기초적인 결합 규칙부터의 학습 권장"
+      },
+      {
+        "score_min": 8,
+        "score_max": 15,
+        "recommended": "Builder Lv 3-4",
+        "diagnosis": "단어 의미는 인지하나 주어-동사 수 일치 등 문장 뼈대가 불안정함. 구문 독해를 통한 구조 확립이 필요한 단계"
+      },
+      {
+        "score_min": 16,
+        "score_max": 23,
+        "recommended": "Builder Lv 5-6",
+        "diagnosis": "문맥파악은 원활하나 소유격 활용과 일반동사 변화에서 오류가 잦음. 문장 쓰기 중심의 규칙 내면화가 필요한 단계"
+      },
+      {
+        "score_min": 24,
+        "score_max": 30,
+        "recommended": "Builder Lv 7-8",
+        "diagnosis": "기초 문장 구조 이해가 우수함. 3인칭 단수 변화 및 조동사 활용 능력이 우수하여 실전 응용이 가능한 단계"
+      }
+    ]
+  }
+}

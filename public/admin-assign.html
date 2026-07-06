@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>잉글랩 — 학생 배정 관리</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+           background: #F1F5F9; color: #1E293B; min-height: 100vh; }
+
+    /* ── LOGIN ─────────────────────────────── */
+    #login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px; }
+    .login-card { background:#fff; border-radius:20px; padding:44px 36px; width:100%; max-width:400px;
+                  box-shadow:0 8px 40px rgba(0,0,0,.12); text-align:center; }
+    .login-logo { font-size:44px; margin-bottom:10px; }
+    .login-card h1 { font-size:20px; font-weight:800; margin-bottom:4px; }
+    .login-card p  { font-size:13px; color:#94A3B8; margin-bottom:28px; }
+    .form-group { text-align:left; margin-bottom:14px; }
+    .form-group label { display:block; font-size:13px; font-weight:600; color:#475569; margin-bottom:6px; }
+    .form-group select, .form-group input {
+      width:100%; padding:12px 14px; border:2px solid #E2E8F0; border-radius:10px;
+      font-size:15px; outline:none; transition:border-color .2s; background:#fff; }
+    .form-group select:focus, .form-group input:focus { border-color:#6366F1; }
+    .btn-primary { width:100%; padding:13px; background:linear-gradient(135deg,#6366F1,#8B5CF6);
+                   color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:700;
+                   cursor:pointer; transition:opacity .2s; margin-top:8px; }
+    .btn-primary:hover { opacity:.9; }
+    .error-msg { color:#EF4444; font-size:13px; margin-top:10px; min-height:20px; }
+
+    /* ── APP SHELL ─────────────────────────── */
+    #app-screen { display:none; flex-direction:column; min-height:100vh; }
+    header { background:linear-gradient(135deg,#4F46E5,#7C3AED); color:#fff;
+             padding:14px 24px; display:flex; align-items:center; justify-content:space-between;
+             flex-wrap:wrap; gap:10px; }
+    header .hd-left h1 { font-size:17px; font-weight:800; }
+    header .hd-left p  { font-size:12px; color:#C7D2FE; margin-top:2px; }
+    .btn-logout { background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.3);
+                  border-radius:8px; padding:7px 16px; font-size:13px; cursor:pointer; }
+    .btn-logout:hover { background:rgba(255,255,255,.25); }
+
+    /* ── TABS ──────────────────────────────── */
+    .tab-bar { background:#fff; border-bottom:2px solid #E2E8F0;
+               display:flex; padding:0 24px; gap:4px; overflow-x:auto; }
+    .tab-btn { padding:14px 20px; border:none; background:none; font-size:14px; font-weight:600;
+               color:#64748B; cursor:pointer; border-bottom:3px solid transparent;
+               margin-bottom:-2px; transition:all .2s; white-space:nowrap; }
+    .tab-btn.active { color:#4F46E5; border-bottom-color:#4F46E5; }
+    .tab-pane { display:none; }
+    .tab-pane.active { display:block; }
+
+    /* ── CONTENT ────────────────────────────── */
+    .content { padding:24px; max-width:900px; margin:0 auto; }
+    .section-title { font-size:16px; font-weight:700; color:#1E293B; margin-bottom:16px;
+                     padding-bottom:10px; border-bottom:2px solid #E2E8F0; }
+
+    /* ── ADD FORM ───────────────────────────── */
+    .add-form { background:#fff; border-radius:14px; padding:20px 24px;
+                box-shadow:0 1px 6px rgba(0,0,0,.06); margin-bottom:20px; }
+    .add-form h3 { font-size:14px; font-weight:700; color:#475569; margin-bottom:14px; }
+    .form-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+    .form-row .form-group { flex:1; min-width:160px; margin-bottom:0; }
+    .form-row .form-group label { font-size:12px; color:#64748B; }
+    .form-row .form-group input { padding:10px 12px; font-size:14px; }
+    .btn-add { padding:10px 20px; background:#4F46E5; color:#fff; border:none; border-radius:8px;
+               font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap; }
+    .btn-add:hover { background:#4338CA; }
+    .form-hint { font-size:12px; color:#EF4444; margin-top:6px; display:none; }
+
+    /* ── TABLE ──────────────────────────────── */
+    .table-wrap { background:#fff; border-radius:14px; overflow:hidden;
+                  box-shadow:0 1px 6px rgba(0,0,0,.06); }
+    table { width:100%; border-collapse:collapse; font-size:14px; }
+    thead { background:#F8FAFC; }
+    th { padding:12px 16px; text-align:left; font-size:12px; font-weight:700;
+         color:#64748B; border-bottom:1px solid #E2E8F0; white-space:nowrap; }
+    td { padding:12px 16px; border-bottom:1px solid #F1F5F9; }
+    tr:last-child td { border-bottom:none; }
+    .empty-row td { text-align:center; color:#94A3B8; padding:40px; }
+
+    /* ── STATUS PILLS ───────────────────────── */
+    .pill { display:inline-block; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:600; }
+    .pill-assigned    { background:#EEF2FF; color:#4338CA; }
+    .pill-in_progress { background:#FEF3C7; color:#92400E; }
+    .pill-done        { background:#DCFCE7; color:#166534; }
+
+    .code-badge { font-family:monospace; font-size:14px; font-weight:700; color:#1E293B;
+                  background:#F1F5F9; padding:4px 10px; border-radius:6px;
+                  cursor:pointer; border:1px solid #E2E8F0; }
+    .code-badge:hover { background:#E2E8F0; }
+
+    .btn-sm { padding:5px 12px; border-radius:6px; font-size:12px; font-weight:600;
+              cursor:pointer; border:none; }
+    .btn-danger  { background:#FEE2E2; color:#991B1B; }
+    .btn-danger:hover  { background:#FECACA; }
+    .btn-assign  { background:#EEF2FF; color:#4338CA; }
+    .btn-assign:hover  { background:#E0E7FF; }
+    .btn-report  { background:#F0FDF4; color:#166534; }
+    .btn-report:hover  { background:#DCFCE7; }
+
+    /* ── REPORT MODAL ───────────────────────────── */
+    .report-modal { background:#fff; border-radius:20px; padding:28px; width:100%;
+                    max-width:560px; max-height:88vh; overflow-y:auto;
+                    box-shadow:0 20px 60px rgba(0,0,0,.2); }
+    .report-modal h2 { font-size:17px; font-weight:800; margin-bottom:4px; }
+    .report-modal .r-meta { font-size:13px; color:#64748B; margin-bottom:20px; }
+    .r-score-box { background:#F1F5F9; border-radius:12px; padding:18px; text-align:center; margin-bottom:16px; }
+    .r-score-num { font-size:52px; font-weight:800; color:#4F46E5; line-height:1; }
+    .r-score-sub { font-size:13px; color:#64748B; margin-top:6px; }
+    .r-level-box { background:#F0FDF4; border-left:4px solid #22C55E; border-radius:0 10px 10px 0;
+                   padding:12px 16px; margin-bottom:10px; }
+    .r-level-box .r-label { font-size:11px; font-weight:700; color:#166534; text-transform:uppercase; margin-bottom:4px; }
+    .r-level-box .r-val   { font-size:15px; font-weight:700; color:#15803D; }
+    .r-diag-box  { background:#F8FAFC; border-left:4px solid #94A3B8; border-radius:0 10px 10px 0;
+                   padding:12px 16px; margin-bottom:16px; font-size:13px; color:#475569; line-height:1.7; }
+    .r-challenge-box { background:#EEF2FF; border-radius:10px; padding:12px 16px;
+                       margin-bottom:16px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .r-sec-title { font-size:11px; font-weight:700; color:#64748B; text-transform:uppercase;
+                   letter-spacing:.5px; margin:14px 0 8px; }
+    .r-sec-bar   { display:flex; align-items:center; gap:10px; margin:6px 0; }
+    .r-sec-name  { width:36px; font-size:13px; color:#64748B; flex-shrink:0; }
+    .r-sec-track { flex:1; height:8px; background:#E2E8F0; border-radius:4px; overflow:hidden; }
+    .r-sec-fill  { height:100%; background:linear-gradient(90deg,#4F46E5,#7C3AED); border-radius:4px; }
+    .r-sec-val   { width:70px; font-size:12px; font-weight:700; text-align:right; flex-shrink:0; color:#1E293B; }
+    .r-placeholder { background:#F8FAFC; border:2px dashed #E2E8F0; border-radius:10px;
+                     padding:16px; text-align:center; color:#94A3B8; font-size:13px; margin-bottom:10px; }
+    .r-placeholder .r-ph-label { font-size:11px; font-weight:700; text-transform:uppercase;
+                                  letter-spacing:.5px; color:#CBD5E1; margin-bottom:6px; }
+    .r-section-divider { height:1px; background:#E2E8F0; margin:18px 0; }
+    .r-bonus-badge { background:#FEF3C7; color:#92400E; border-radius:20px; padding:3px 12px;
+                     font-size:12px; font-weight:700; display:inline-block; margin-top:4px; }
+    /* ── 경쟁사 비교표 ── */
+    .r-comp-wrap { border:1px solid #E2E8F0; border-radius:10px; overflow:hidden; margin-bottom:8px; }
+    .r-comp-header { background:#F1F5F9; padding:10px 14px; font-size:12px; color:#475569;
+                     font-weight:600; display:flex; justify-content:space-between; align-items:center; }
+    .r-comp-updated { font-size:11px; color:#94A3B8; }
+    .r-comp-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .r-comp-table th { background:#F8FAFC; padding:8px 12px; text-align:center; font-weight:700;
+                       color:#475569; border-bottom:1px solid #E2E8F0; white-space:nowrap; }
+    .r-comp-table th:first-child { text-align:left; }
+    .r-comp-table td { padding:8px 12px; border-bottom:1px solid #F1F5F9; text-align:center;
+                       color:#1E293B; }
+    .r-comp-table td:first-child { font-weight:600; color:#475569; text-align:left; }
+    .r-comp-table tr:last-child td { border-bottom:none; }
+    .r-comp-our  { background:#EEF2FF; }
+    .r-comp-note { padding:8px 14px; font-size:11px; color:#94A3B8; border-top:1px solid #F1F5F9;
+                   font-style:italic; }
+
+    /* ── STAGE ASSIGN MODAL ─────────────────── */
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.4);
+                     display:none; align-items:center; justify-content:center; z-index:100; padding:20px; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:#fff; border-radius:20px; padding:32px; width:100%; max-width:500px;
+             box-shadow:0 20px 60px rgba(0,0,0,.2); }
+    .modal h2 { font-size:18px; font-weight:800; margin-bottom:6px; }
+    .modal .modal-sub { font-size:13px; color:#64748B; margin-bottom:24px; }
+    .stage-grid { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+    .stage-card { border:2px solid #E2E8F0; border-radius:12px; padding:14px 16px;
+                  cursor:pointer; transition:all .18s; background:#fff; text-align:left; }
+    .stage-card:hover:not(.disabled) { border-color:#6366F1; background:#F5F3FF; }
+    .stage-card.selected { border-color:#4F46E5; background:#EEF2FF; }
+    .stage-card.disabled { cursor:not-allowed; opacity:.45; background:#F8FAFC; }
+    .stage-card .stage-header { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+    .stage-num { width:28px; height:28px; background:#E0E7FF; color:#3730A3; border-radius:8px;
+                 font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .stage-card.selected .stage-num { background:#4F46E5; color:#fff; }
+    .stage-name { font-weight:700; font-size:15px; }
+    .stage-inactive-badge { font-size:11px; font-weight:600; color:#94A3B8; margin-left:auto;
+                            background:#F1F5F9; padding:2px 8px; border-radius:20px; }
+    .stage-guide { font-size:13px; color:#64748B; line-height:1.5; }
+    .modal-actions { display:flex; gap:10px; justify-content:flex-end; }
+    .btn-cancel { padding:10px 20px; background:#F1F5F9; color:#475569; border:none;
+                  border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; }
+    .btn-cancel:hover { background:#E2E8F0; }
+    .btn-confirm { padding:10px 24px; background:#4F46E5; color:#fff; border:none;
+                   border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; }
+    .btn-confirm:hover { background:#4338CA; }
+    .btn-confirm:disabled { opacity:.4; cursor:not-allowed; }
+
+    /* ── TOAST ──────────────────────────────── */
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px);
+             background:#1E293B; color:#fff; padding:12px 22px; border-radius:12px; font-size:14px;
+             font-weight:600; opacity:0; transition:all .3s; z-index:200; white-space:nowrap; }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- 로그인 화면 -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🏫</div>
+    <h1>잉글랩 학생 배정</h1>
+    <p>원장 로그인 후 학생을 관리하세요</p>
+    <div class="form-group">
+      <label>학원 선택</label>
+      <select id="academy-select"><option value="">학원을 선택하세요</option></select>
+    </div>
+    <div class="form-group">
+      <label>비밀번호</label>
+      <input type="password" id="login-pw" placeholder="비밀번호 입력" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" onclick="doLogin()">로그인</button>
+    <p class="error-msg" id="login-error"></p>
+  </div>
+</div>
+
+<!-- 앱 화면 -->
+<div id="app-screen">
+  <header>
+    <div class="hd-left">
+      <h1>🏫 잉글랩 배정 관리</h1>
+      <p id="hd-academy-name">학원명</p>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">로그아웃</button>
+  </header>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('students')">학생 관리</button>
+    <button class="tab-btn"        onclick="switchTab('assignments')">배정 현황</button>
+  </div>
+
+  <!-- 학생 관리 탭 -->
+  <div id="tab-students" class="tab-pane active">
+    <div class="content">
+      <div class="add-form">
+        <h3>+ 학생 추가</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>이름</label>
+            <input type="text" id="new-name" placeholder="홍길동">
+          </div>
+          <div class="form-group">
+            <label>이메일 <span style="color:#EF4444;">*필수</span></label>
+            <input type="email" id="new-email" placeholder="student@example.com">
+          </div>
+          <button class="btn-add" onclick="addStudent()">추가</button>
+        </div>
+        <p class="form-hint" id="student-add-error"></p>
+      </div>
+      <div class="section-title">학생 목록</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>이름</th><th>이메일</th><th>등록일</th><th>배정</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="students-tbody">
+            <tr class="empty-row"><td colspan="5">로딩 중…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 배정 현황 탭 -->
+  <div id="tab-assignments" class="tab-pane">
+    <div class="content">
+      <div class="section-title">배정 현황</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>학생</th><th>단계</th><th>상태</th><th>접근 코드</th><th>배정일</th><th>리포트</th>
+            </tr>
+          </thead>
+          <tbody id="assignments-tbody">
+            <tr class="empty-row"><td colspan="6">로딩 중…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 단계 배정 모달 -->
+<div class="modal-overlay" id="assign-modal">
+  <div class="modal">
+    <h2>📋 단계 배정</h2>
+    <p class="modal-sub" id="assign-modal-sub">학생 이름</p>
+    <div class="stage-grid" id="stage-grid"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-confirm" id="btn-confirm-assign" onclick="confirmAssign()" disabled>배정 확정</button>
+    </div>
+  </div>
+</div>
+
+<!-- 리포트 모달 -->
+<div class="modal-overlay" id="report-modal">
+  <div class="report-modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <h2>📊 시험 리포트</h2>
+      <button class="btn-cancel" onclick="closeReportModal()" style="width:auto;padding:6px 16px;">닫기</button>
+    </div>
+    <p class="r-meta" id="report-meta">—</p>
+    <div id="report-body">로딩 중…</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+let _token = null;
+let _academyId = null;
+let _academyName = '';
+let _selectedStage = null;
+let _modalStudent = null; // { id, name, email }
+
+// ── 학원 목록 로드 ────────────────────────────────────────────────────────
+(async () => {
+  try {
+    const pubRes = await fetch('/api/academies').then(r => r.json());
+    const sel = document.getElementById('academy-select');
+    (Array.isArray(pubRes) ? pubRes : []).forEach(ac => {
+      const opt = document.createElement('option');
+      opt.value = ac.id; opt.textContent = ac.name;
+      sel.appendChild(opt);
+    });
+  } catch(e) { console.warn('학원 목록 로드 실패', e); }
+})();
+
+// ── 로그인 ────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const academyId = document.getElementById('academy-select').value;
+  const password  = document.getElementById('login-pw').value;
+  const errEl     = document.getElementById('login-error');
+  errEl.textContent = '';
+
+  if (!academyId) { errEl.textContent = '학원을 선택해주세요.'; return; }
+  if (!password)  { errEl.textContent = '비밀번호를 입력해주세요.'; return; }
+
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ academyId, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || '로그인 실패'; return; }
+
+    _token      = data.token;
+    _academyId  = data.academy.id;
+    _academyName = data.academy.name;
+    sessionStorage.setItem('assign_token', _token);
+    sessionStorage.setItem('assign_academy', JSON.stringify(data.academy));
+
+    document.getElementById('hd-academy-name').textContent = _academyName;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'flex';
+    loadStudents();
+  } catch (e) {
+    errEl.textContent = '서버 오류가 발생했습니다.';
+  }
+}
+
+document.getElementById('login-pw').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+function doLogout() {
+  sessionStorage.clear();
+  _token = null; _academyId = null;
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-pw').value = '';
+}
+
+// 세션 복원
+(() => {
+  const t = sessionStorage.getItem('assign_token');
+  const a = sessionStorage.getItem('assign_academy');
+  if (t && a) {
+    _token = t;
+    const academy = JSON.parse(a);
+    _academyId   = academy.id;
+    _academyName = academy.name;
+    document.getElementById('hd-academy-name').textContent = _academyName;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'flex';
+    loadStudents();
+  }
+})();
+
+// ── 탭 전환 ───────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) =>
+    b.classList.toggle('active', ['students','assignments'][i] === name));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'students')    loadStudents();
+  if (name === 'assignments') loadAssignments();
+}
+
+// ── 학생 목록 ─────────────────────────────────────────────────────────────
+async function loadStudents() {
+  const tbody = document.getElementById('students-tbody');
+  try {
+    const list = await authedGet('/api/admin/students');
+    if (!list.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="5">등록된 학생이 없습니다.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(s => `
+      <tr>
+        <td><strong>${esc(s.name)}</strong></td>
+        <td style="color:#64748B;">${esc(s.email)}</td>
+        <td style="color:#94A3B8;font-size:12px;">${new Date(s.createdAt).toLocaleDateString('ko-KR')}</td>
+        <td><button class="btn-sm btn-assign" onclick='openAssignModal(${JSON.stringify({id:s.id,name:s.name,email:s.email})})'>단계 배정</button></td>
+        <td><button class="btn-sm btn-danger" onclick="deleteStudent(${s.id})">삭제</button></td>
+      </tr>`).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="5">불러오기 실패</td></tr>';
+  }
+}
+
+async function addStudent() {
+  const name   = document.getElementById('new-name').value.trim();
+  const email  = document.getElementById('new-email').value.trim();
+  const errEl  = document.getElementById('student-add-error');
+  errEl.style.display = 'none';
+
+  if (!name || !email) {
+    errEl.textContent = '이름과 이메일을 모두 입력해주세요.';
+    errEl.style.display = 'block'; return;
+  }
+
+  try {
+    await authedPost('/api/admin/students', { name, email });
+    document.getElementById('new-name').value  = '';
+    document.getElementById('new-email').value = '';
+    showToast('학생이 추가되었습니다.');
+    loadStudents();
+  } catch(e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+  }
+}
+
+async function deleteStudent(id) {
+  if (!confirm('이 학생을 삭제하시겠습니까?')) return;
+  try {
+    await authedDel('/api/admin/students/' + id);
+    showToast('삭제되었습니다.');
+    loadStudents();
+  } catch(e) { alert(e.message); }
+}
+
+// ── 배정 현황 ─────────────────────────────────────────────────────────────
+async function loadAssignments() {
+  const tbody = document.getElementById('assignments-tbody');
+  try {
+    const list = await authedGet('/api/admin/assignments');
+    if (!list.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">배정 내역이 없습니다.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(a => `
+      <tr>
+        <td><strong>${esc(a.studentName)}</strong><br><span style="font-size:12px;color:#94A3B8;">${esc(a.studentEmail)}</span></td>
+        <td><strong>단계 ${a.stage}</strong> ${esc(a.stageName)}</td>
+        <td><span class="pill pill-${a.status}">${statusLabel(a.status)}</span></td>
+        <td>
+          <span class="code-badge" title="클릭하면 복사됩니다" onclick="copyCode('${esc(a.accessCode)}')">${esc(a.accessCode)}</span>
+          <br><a href="/test?code=${esc(a.accessCode)}" target="_blank" style="font-size:11px;color:#6366F1;margin-top:4px;display:inline-block;">시험 링크 ↗</a>
+        </td>
+        <td style="font-size:12px;color:#94A3B8;">${new Date(a.createdAt).toLocaleDateString('ko-KR')}</td>
+        <td>${a.status === 'done'
+          ? `<button class="btn-sm btn-report" onclick='openReport(${JSON.stringify(a.accessCode)})'>리포트 보기</button>`
+          : '<span style="font-size:12px;color:#CBD5E1;">—</span>'}</td>
+      </tr>`).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="5">불러오기 실패</td></tr>';
+  }
+}
+
+function statusLabel(s) {
+  return { assigned:'대기', in_progress:'진행 중', done:'완료' }[s] || s;
+}
+
+function copyCode(code) {
+  navigator.clipboard.writeText(code).then(() => showToast('코드가 복사되었습니다: ' + code));
+}
+
+// ── 단계 배정 모달 ────────────────────────────────────────────────────────
+let _stageGuide = null;
+
+async function openAssignModal(student) {
+  _modalStudent = student;
+  _selectedStage = null;
+  document.getElementById('assign-modal-sub').textContent = student.name + ' 학생의 단계를 선택하세요';
+  document.getElementById('btn-confirm-assign').disabled = true;
+
+  if (!_stageGuide) {
+    _stageGuide = await fetch('/api/stage-guide').then(r => r.json());
+  }
+  const grid = document.getElementById('stage-grid');
+  grid.innerHTML = Object.entries(_stageGuide).map(([num, g]) => `
+    <button class="stage-card${g.active ? '' : ' disabled'}" data-stage="${num}"
+      ${g.active ? `onclick="selectStage(${num})"` : 'disabled'}>
+      <div class="stage-header">
+        <div class="stage-num">${num}</div>
+        <span class="stage-name">${g.label}</span>
+        ${!g.active ? '<span class="stage-inactive-badge">비활성</span>' : ''}
+      </div>
+      <div class="stage-guide">${g.guide}</div>
+    </button>`).join('');
+
+  document.getElementById('assign-modal').classList.add('open');
+}
+
+function selectStage(num) {
+  _selectedStage = num;
+  document.querySelectorAll('.stage-card').forEach(c =>
+    c.classList.toggle('selected', parseInt(c.dataset.stage) === num));
+  document.getElementById('btn-confirm-assign').disabled = false;
+}
+
+function closeModal() {
+  document.getElementById('assign-modal').classList.remove('open');
+  _modalStudent = null; _selectedStage = null;
+}
+
+async function confirmAssign() {
+  if (!_modalStudent || !_selectedStage) return;
+  document.getElementById('btn-confirm-assign').disabled = true;
+  try {
+    const res = await authedPost('/api/admin/assignments', {
+      studentId:    _modalStudent.id,
+      studentName:  _modalStudent.name,
+      studentEmail: _modalStudent.email,
+      stage:        _selectedStage,
+    });
+    closeModal();
+    showToast('배정 완료! 코드: ' + res.accessCode);
+    switchTab('assignments');
+  } catch(e) {
+    alert('배정 실패: ' + e.message);
+    document.getElementById('btn-confirm-assign').disabled = false;
+  }
+}
+
+// ── API 헬퍼 ──────────────────────────────────────────────────────────────
+async function authedGet(url) {
+  const res = await fetch(url, { headers: { Authorization: 'Bearer ' + _token } });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || '요청 실패');
+  return data;
+}
+
+async function authedPost(url, body) {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + _token },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || '요청 실패');
+  return data;
+}
+
+async function authedDel(url) {
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: { Authorization: 'Bearer ' + _token },
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || '요청 실패');
+  return data;
+}
+
+// ── 리포트 모달 ───────────────────────────────────────────────────────────
+const R_SEC_KR  = { vocabulary:'어휘', grammar:'문법', reading:'독해', writing:'쓰기' };
+const R_SIG_LBL = { advance:'▲ 상위 단계 추천', borderline:'△ 경계 수준', stay:'→ 현재 단계 유지' };
+const R_SIG_CLS = { advance:'signal-advance', borderline:'signal-borderline', stay:'signal-stay' };
+
+// 전사 공통 경쟁사 비교표 캐시 (세션 중 1회 로드)
+let _competitorMap = null;
+
+async function openReport(code) {
+  document.getElementById('report-modal').classList.add('open');
+  document.getElementById('report-meta').textContent = '불러오는 중…';
+  document.getElementById('report-body').innerHTML = '';
+  try {
+    // 리포트 + 경쟁사 비교표 병렬 로드
+    const [data, cMap] = await Promise.all([
+      authedGet('/api/admin/assignments/' + code + '/report'),
+      _competitorMap !== null
+        ? Promise.resolve(_competitorMap)
+        : authedGet('/api/competitor-map').then(m => { _competitorMap = m; return m; }).catch(() => null),
+    ]);
+    const a = data.assessment || {};
+    document.getElementById('report-meta').textContent =
+      esc(data.studentName) + ' · 단계 ' + data.stage + ' ' + esc(data.stageName) +
+      ' · ' + (data.completedAt ? new Date(data.completedAt).toLocaleString('ko-KR') : '—');
+    document.getElementById('report-body').innerHTML = renderReportBody(data, a, cMap);
+  } catch(e) {
+    document.getElementById('report-meta').textContent = '불러오기 실패';
+    document.getElementById('report-body').innerHTML =
+      '<p style="color:#EF4444;font-size:13px;">' + esc(e.message) + '</p>';
+  }
+}
+
+/** 적정 레벨 문자열로 경쟁사 비교표 행 검색 */
+function findCompetitorRow(mapData, ourLevel) {
+  if (!mapData || !Array.isArray(mapData.rows) || !ourLevel) return null;
+  return mapData.rows.find(r => r.ourLevel === ourLevel) || null;
+}
+
+/** 경쟁사 비교 HTML 렌더 (원장 전용) */
+function renderCompetitorSection(mapData, ourLevel) {
+  const row = findCompetitorRow(mapData, ourLevel);
+  const names = (mapData && mapData.competitorNames) || [];
+
+  if (!row || names.length === 0) {
+    return `<div class="r-placeholder">
+      <div class="r-ph-label">비교 데이터</div>
+      <div>경쟁사 비교표 준비 중</div>
+    </div>`;
+  }
+
+  const thCells = names.map(n => `<th>${esc(n)}</th>`).join('');
+  const tdCells = names.map(n => `<td>${esc(row.competitors[n] || '—')}</td>`).join('');
+  const noteHtml = row.note
+    ? `<div class="r-comp-note">${esc(row.note)}</div>`
+    : '';
+  const updatedHtml = mapData.updatedAt
+    ? `<span class="r-comp-updated">기준일: ${esc(mapData.updatedAt)}</span>`
+    : '';
+
+  return `
+  <div class="r-comp-wrap">
+    <div class="r-comp-header">
+      <span>우리 레벨: <strong>${esc(ourLevel)}</strong> 기준</span>
+      ${updatedHtml}
+    </div>
+    <div style="overflow-x:auto">
+      <table class="r-comp-table">
+        <thead>
+          <tr class="r-comp-our"><th>구분</th>${thCells}</tr>
+        </thead>
+        <tbody>
+          <tr><td>경쟁사 레벨</td>${tdCells}</tr>
+        </tbody>
+      </table>
+    </div>
+    ${noteHtml}
+  </div>`;
+}
+
+function renderReportBody(data, a, competitorMap) {
+  const sig   = (a.challenge || {}).signal || 'stay';
+  const cefr  = (a.appropriate || {}).cefr || '';
+  const next  = a.challenge || {};
+
+  // 섹션 바
+  const secBars = a.sections
+    ? Object.entries(a.sections).map(([k, v]) =>
+        `<div class="r-sec-bar">
+           <div class="r-sec-name">${R_SEC_KR[k]||k}</div>
+           <div class="r-sec-track"><div class="r-sec-fill" style="width:${v.pct}%"></div></div>
+           <div class="r-sec-val">${v.correct}/${v.total} (${v.pct}%)</div>
+         </div>`).join('')
+    : '';
+
+  return `
+    <!-- 총점 -->
+    <div class="r-score-box">
+      <div class="r-score-num">${a.score ?? '—'}<span style="font-size:26px;color:#94A3B8;font-weight:400"> / ${a.total ?? 30}</span></div>
+      <div class="r-score-sub">
+        ${a.scorePct ?? 0}% &nbsp;·&nbsp; ${cefr ? 'CEFR ' + esc(cefr) + ' &nbsp;·&nbsp;' : ''}
+        <span class="signal-badge ${R_SIG_CLS[sig]}">${R_SIG_LBL[sig]||sig}</span>
+        ${a.bonusEligible ? '<span class="r-bonus-badge" style="margin-left:6px;">⭐ 보너스 대상</span>' : ''}
+      </div>
+    </div>
+
+    <!-- 적정 레벨 -->
+    ${a.appropriate && a.appropriate.recommended ? `
+    <div class="r-level-box">
+      <div class="r-label">추천 교재 레벨</div>
+      <div class="r-val">${esc(a.appropriate.recommended)}</div>
+    </div>
+    <div class="r-diag-box">${esc(a.appropriate.diagnosis || '')}</div>` : ''}
+
+    <!-- 도전 레벨 -->
+    ${next.nextStageName ? `
+    <div class="r-challenge-box">
+      <span style="font-size:11px;font-weight:700;color:#4338CA;flex-basis:100%;">도전 레벨</span>
+      <span style="font-size:15px;font-weight:700;color:#312E81;">${esc(next.nextStageName)}</span>
+      ${next.nextCefr ? `<span style="font-size:12px;color:#6366F1;">(${esc(next.nextCefr)})</span>` : ''}
+      <span style="font-size:12px;color:#64748B;margin-left:auto;">Upper 정답률 ${next.upperCorrectRate ?? 0}%</span>
+    </div>` : ''}
+
+    <!-- 영역별 성취도 -->
+    <div class="r-sec-title">영역별 성취도</div>
+    ${secBars || '<p style="font-size:13px;color:#94A3B8;">섹션 데이터 없음</p>'}
+
+    <div class="r-section-divider"></div>
+
+    <!-- 스피킹 보조지표 (원장 전용) -->
+    <div class="r-sec-title">스피킹 — Listen &amp; Speak</div>
+    ${(function() {
+      const spk = data.assessment && data.assessment.speaking;
+      const rate = spk && spk.responseRate != null ? spk.responseRate : null;
+      const stt  = spk && spk.sttText ? spk.sttText : null;
+      const rateHtml = rate != null
+        ? `<div style="font-size:22px;font-weight:800;color:#4F46E5">${rate}%</div>
+           <div style="font-size:12px;color:#64748B;margin-top:2px">음성 응답률</div>`
+        : `<div style="color:#94A3B8">미응시 또는 데이터 없음</div>`;
+      const sttHtml = stt
+        ? `<pre style="font-size:12px;line-height:1.7;white-space:pre-wrap;word-break:break-all;margin:0">${esc(stt)}</pre>`
+        : `<span style="color:#94A3B8">—  (음성 인식 데이터 없음)</span>`;
+      return `
+      <div class="r-placeholder" style="text-align:center;padding:14px 16px;">
+        ${rateHtml}
+      </div>
+      <div class="r-placeholder" style="margin-top:8px;text-align:left;">
+        <div class="r-ph-label">STT 텍스트 (원장 전용)</div>
+        ${sttHtml}
+      </div>`;
+    })()}
+
+    <div class="r-section-divider"></div>
+
+    <!-- 경쟁사 레벨 비교표 (원장 전용) -->
+    <div class="r-sec-title">경쟁사 레벨 비교표</div>
+    ${renderCompetitorSection(competitorMap, a.appropriate && a.appropriate.recommended)}`;
+}
+
+function closeReportModal() {
+  document.getElementById('report-modal').classList.remove('open');
+}
+
+// ── UI 유틸 ───────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+let _toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

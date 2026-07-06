@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>잉글랩 AI 레벨테스트</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #4F46E5; --primary-light: #EEF2FF;
+      --success: #22C55E; --danger: #EF4444;
+      --gray-50:#F8FAFC; --gray-100:#F1F5F9; --gray-200:#E2E8F0;
+      --gray-500:#64748B; --gray-800:#1E293B;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+           background: var(--gray-50); color: var(--gray-800); min-height: 100vh; }
+
+    /* ── 공통 ── */
+    .screen { display:none; min-height:100vh; align-items:center; justify-content:center;
+              padding:24px; flex-direction:column; }
+    .screen.active { display:flex; }
+    .card { background:#fff; border-radius:20px; padding:36px 32px; width:100%;
+            max-width:480px; box-shadow:0 4px 24px rgba(0,0,0,.1); }
+    .logo { font-size:36px; margin-bottom:10px; text-align:center; }
+    h1 { font-size:20px; font-weight:800; text-align:center; margin-bottom:6px; }
+    .sub { font-size:14px; color:var(--gray-500); text-align:center; margin-bottom:28px; }
+    input[type=text] { width:100%; padding:13px 16px; border:2px solid var(--gray-200);
+                       border-radius:12px; font-size:20px; font-weight:700; text-align:center;
+                       letter-spacing:4px; text-transform:uppercase; outline:none;
+                       transition:border-color .2s; }
+    input[type=text]:focus { border-color:var(--primary); }
+    .btn { width:100%; padding:14px; border:none; border-radius:12px; font-size:16px;
+           font-weight:700; cursor:pointer; transition:opacity .2s; margin-top:12px; }
+    .btn-primary { background:linear-gradient(135deg,#4F46E5,#7C3AED); color:#fff; }
+    .btn-primary:hover { opacity:.9; }
+    .btn-primary:disabled { opacity:.4; cursor:not-allowed; }
+    .err { color:var(--danger); font-size:13px; text-align:center; margin-top:10px;
+           min-height:20px; }
+
+    /* ── 확인 화면 ── */
+    .info-box { background:var(--primary-light); border-radius:14px; padding:20px 24px;
+                margin-bottom:20px; text-align:center; }
+    .info-box .stage-label { font-size:13px; color:var(--gray-500); margin-bottom:6px; }
+    .info-box .stage-name  { font-size:28px; font-weight:800; color:var(--primary); }
+    .info-box .student-name { font-size:16px; color:var(--gray-800); margin-top:8px; font-weight:600; }
+    .guide-text { font-size:13px; color:var(--gray-500); line-height:1.6;
+                  background:var(--gray-100); padding:14px 16px; border-radius:10px;
+                  margin-bottom:20px; }
+
+    /* ── 시험 화면 ── */
+    #screen-test { display:none; flex-direction:column; min-height:100vh; padding:0; }
+    #screen-test.active { display:flex; }
+    .test-header { background:#fff; border-bottom:1px solid var(--gray-200);
+                   padding:14px 20px; display:flex; align-items:center; gap:12px; }
+    .q-counter { font-size:13px; font-weight:700; color:var(--gray-500); white-space:nowrap; }
+    .progress-bar { flex:1; height:6px; background:var(--gray-200); border-radius:10px; overflow:hidden; }
+    .progress-fill { height:100%; background:linear-gradient(90deg,#4F46E5,#7C3AED);
+                     border-radius:10px; transition:width .4s ease; }
+
+    .test-body { flex:1; overflow-y:auto; padding:24px 20px; max-width:680px;
+                 width:100%; margin:0 auto; }
+
+    /* 문제 카드 */
+    .q-card { background:#fff; border-radius:16px; padding:24px;
+              box-shadow:0 2px 10px rgba(0,0,0,.07); margin-bottom:20px; }
+    .q-section-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px;
+                       font-weight:700; margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px; }
+    .badge-vocabulary { background:#FEF3C7; color:#92400E; }
+    .badge-grammar    { background:#DBEAFE; color:#1E40AF; }
+    .badge-reading    { background:#F3E8FF; color:#6B21A8; }
+    .badge-writing    { background:#DCFCE7; color:#166534; }
+    .passage { background:#F8FAFC; border-left:3px solid var(--gray-200); padding:14px 16px;
+               border-radius:0 10px 10px 0; font-size:14px; line-height:1.7; color:#374151;
+               margin-bottom:16px; }
+    .q-text { font-size:16px; font-weight:600; line-height:1.6; color:var(--gray-800);
+              margin-bottom:18px; }
+    .choices { display:flex; flex-direction:column; gap:10px; }
+    .choice-btn { width:100%; padding:13px 16px; text-align:left; border:2px solid var(--gray-200);
+                  border-radius:10px; font-size:15px; background:#fff; cursor:pointer;
+                  transition:all .15s; line-height:1.4; }
+    .choice-btn:hover { border-color:var(--primary); background:var(--primary-light); }
+    .choice-btn.selected { border-color:var(--primary); background:var(--primary-light);
+                           color:var(--primary); font-weight:600; }
+    /* 이미지 문항 */
+    .img-placeholder { background:var(--gray-100); border-radius:10px; padding:20px;
+                       text-align:center; color:var(--gray-500); font-size:13px; margin-bottom:14px; }
+    /* image_prompt_choice: 그림이 문제 */
+    .img-prompt-box { text-align:center; margin-bottom:14px; }
+    .img-prompt { max-width:100%; max-height:260px; border-radius:12px;
+                  border:2px solid var(--gray-200); object-fit:contain; background:#fff; }
+    .img-missing { background:var(--gray-100); border-radius:10px; padding:24px;
+                   color:var(--gray-500); font-size:13px; }
+    .badge-phonics { background:#FFF3CD; color:#856404; }
+    /* 단어 배열 (D&D) */
+    .dnd-hint { font-size:12px; color:#94A3B8; margin:0 0 10px; }
+    .dnd-answer-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+    .answer-area { flex:1; min-height:52px; border:2px dashed var(--gray-200); border-radius:10px;
+                   padding:8px 12px; display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+                   transition:border-color .15s, background .15s; }
+    .answer-area.drag-over { border-color:var(--primary); background:var(--primary-light); }
+    .area-placeholder { font-size:13px; color:#94A3B8; pointer-events:none; }
+    .punct-badge { font-size:22px; font-weight:800; color:var(--gray-500); flex-shrink:0; line-height:1; }
+    .word-pool { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; min-height:38px;
+                 padding:6px 0; transition:background .15s; border-radius:10px; }
+    .word-pool.drag-over { background:var(--gray-50); }
+    .word-chip { padding:8px 14px; background:var(--gray-100); border:2px solid var(--gray-200);
+                 border-radius:8px; font-size:14px; cursor:grab; transition:all .15s; user-select:none; }
+    .word-chip:hover { border-color:var(--primary); background:var(--primary-light); }
+    .word-chip:active { cursor:grabbing; }
+    .placed-chip { padding:8px 14px; background:var(--primary-light); border:2px solid var(--primary);
+                   border-radius:8px; font-size:14px; cursor:grab; color:var(--primary);
+                   font-weight:600; user-select:none; transition:border .1s, opacity .1s; }
+    .placed-chip:active { cursor:grabbing; }
+    .placed-chip.drop-before { border-left:3px solid #7C3AED; padding-left:11px; }
+    .placed-chip.drop-after  { border-right:3px solid #7C3AED; padding-right:11px; }
+    .chip-dragging { opacity:.3 !important; }
+    .btn-dnd-reset { padding:4px 10px; background:var(--gray-100); color:var(--gray-500);
+                     border:none; border-radius:6px; font-size:12px; cursor:pointer; margin-top:2px; }
+    .btn-dnd-reset:hover { background:var(--gray-200); }
+
+    /* 내비게이션 */
+    .test-nav { background:#fff; border-top:1px solid var(--gray-200);
+                padding:14px 20px; display:flex; gap:12px; justify-content:space-between;
+                max-width:680px; width:100%; margin:0 auto; }
+    .btn-nav { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:700;
+               border:none; cursor:pointer; }
+    .btn-prev { background:var(--gray-100); color:var(--gray-500); }
+    .btn-prev:hover { background:var(--gray-200); }
+    .btn-next { background:var(--primary); color:#fff; }
+    .btn-next:hover { opacity:.9; }
+    .btn-next:disabled { opacity:.4; cursor:not-allowed; }
+    .btn-submit { background:linear-gradient(135deg,#22C55E,#16A34A); color:#fff; }
+    .btn-submit:hover { opacity:.9; }
+
+    /* ── 결과 화면 ── */
+    .result-card { max-height:calc(100vh - 48px); overflow-y:auto; }
+    .score-row   { display:flex; align-items:center; justify-content:center; gap:16px; margin:10px 0; }
+    .score-meta  { text-align:left; }
+    .result-score { font-size:72px; font-weight:800; color:var(--primary); line-height:1; }
+    .result-total { font-size:18px; color:var(--gray-500); }
+    .cefr-badge   { display:inline-block; padding:3px 10px; border-radius:12px;
+                    background:#F0FDF4; color:#166534; font-size:12px; font-weight:700; margin-top:4px; }
+    .result-level { background:var(--primary-light); border-radius:14px; padding:18px 20px; margin:16px 0; }
+    .result-level .label { font-size:12px; color:var(--gray-500); font-weight:600; margin-bottom:4px; }
+    .result-level .value { font-size:20px; font-weight:800; color:var(--primary); }
+    .challenge-row  { background:var(--gray-100); border-radius:12px; padding:12px 16px;
+                      margin:0 0 14px; display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+    .challenge-lbl  { font-size:11px; color:var(--gray-500); font-weight:700;
+                      flex-basis:100%; text-transform:uppercase; letter-spacing:.5px; }
+    .challenge-name { font-size:16px; font-weight:700; color:var(--gray-800); }
+    .challenge-cefr { font-size:12px; color:var(--gray-500); }
+    .signal-badge { display:inline-block; padding:4px 12px; border-radius:20px; font-size:12px;
+                    font-weight:700; margin-left:auto; }
+    .signal-advance    { background:#DCFCE7; color:#166534; }
+    .signal-borderline { background:#FEF3C7; color:#92400E; }
+    .signal-stay       { background:#F1F5F9; color:#475569; }
+    .sec-title { font-size:12px; font-weight:700; color:var(--gray-500); margin:14px 0 8px;
+                 text-transform:uppercase; letter-spacing:.5px; }
+    .sec-bar   { display:flex; align-items:center; gap:10px; margin:7px 0; }
+    .sec-name  { width:34px; font-size:13px; color:var(--gray-500); flex-shrink:0; }
+    .sec-track { flex:1; height:8px; background:var(--gray-200); border-radius:4px; overflow:hidden; }
+    .sec-fill  { height:100%; background:linear-gradient(90deg,#4F46E5,#7C3AED); border-radius:4px; transition:width .4s; }
+    .sec-pct   { width:38px; font-size:13px; font-weight:700; text-align:right; flex-shrink:0; }
+    .diag-text { font-size:13px; color:var(--gray-500); line-height:1.7;
+                 background:var(--gray-100); padding:14px 16px; border-radius:12px; margin-top:4px; }
+    .bonus-badge { background:#FEF3C7; color:#92400E; border-radius:20px; padding:4px 14px;
+                   font-size:12px; font-weight:700; display:inline-block; margin-top:12px; }
+    .result-footer { font-size:12px; color:#94A3B8; text-align:center; margin-top:16px; line-height:1.6; }
+
+    /* ── 스피킹 ── */
+    .spk-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px;
+                 font-weight:700; background:#F3E8FF; color:#6B21A8; margin-bottom:12px;
+                 text-transform:uppercase; letter-spacing:.5px; }
+    .spk-prompt { font-size:17px; font-weight:700; line-height:1.55; color:var(--gray-800); margin-bottom:4px; }
+    .spk-prompt-ko { font-size:13px; color:var(--gray-500); margin-bottom:18px; line-height:1.5; }
+    .spk-note { font-size:11px; color:#94A3B8; margin:6px 0 0; line-height:1.5; }
+    .spk-controls { display:flex; gap:10px; margin:16px 0; flex-wrap:wrap; }
+    .spk-btn { flex:1; min-width:120px; padding:12px 10px; border-radius:12px; font-size:14px;
+               font-weight:700; cursor:pointer; transition:all .2s; display:flex;
+               align-items:center; justify-content:center; gap:6px; border:2px solid transparent; }
+    .spk-btn-listen { background:var(--primary-light); color:var(--primary); border-color:var(--primary); }
+    .spk-btn-listen:hover { background:var(--primary); color:#fff; }
+    .spk-btn-listen:disabled { opacity:.4; cursor:default; }
+    .spk-btn-record { background:#FEF3C7; color:#92400E; border-color:#F59E0B; }
+    .spk-btn-record:hover { background:#F59E0B; color:#fff; }
+    .spk-btn-record.recording { background:#FEE2E2; color:#991B1B; border-color:#EF4444;
+                                animation:spk-pulse .9s ease-in-out infinite; }
+    .spk-btn-record:disabled { opacity:.4; cursor:default; }
+    @keyframes spk-pulse { 0%,100%{opacity:1} 50%{opacity:.55} }
+    .spk-transcript { min-height:54px; border:2px solid var(--gray-200); border-radius:10px;
+                      padding:12px 16px; font-size:14px; color:var(--gray-800); margin:10px 0;
+                      background:var(--gray-50); line-height:1.6; }
+    .spk-transcript.empty { color:#94A3B8; font-style:italic; }
+    .spk-transcript.has-result { border-color:var(--success); background:#F0FDF4; color:#166534; }
+    .spk-status { font-size:12px; color:var(--gray-500); text-align:center; min-height:18px; }
+    .spk-fallback-row { display:flex; gap:8px; align-items:center; margin-top:14px;
+                        padding-top:14px; border-top:1px dashed var(--gray-200); }
+    .spk-fallback-label { font-size:12px; color:var(--gray-500); flex-shrink:0; }
+    .spk-fallback-input { flex:1; padding:9px 13px; border:2px solid var(--gray-200);
+                          border-radius:10px; font-size:14px; outline:none; transition:border-color .2s; }
+    .spk-fallback-input:focus { border-color:var(--primary); }
+    .spk-fallback-btn { padding:9px 14px; background:var(--gray-100); border:none; border-radius:10px;
+                        font-size:13px; font-weight:700; cursor:pointer; color:var(--gray-500);
+                        white-space:nowrap; }
+    .spk-fallback-btn:hover { background:var(--gray-200); }
+  </style>
+</head>
+<body>
+
+<!-- ①코드 입력 -->
+<div class="screen active" id="screen-code">
+  <div class="card">
+    <div class="logo">📝</div>
+    <h1>잉글랩 레벨테스트</h1>
+    <p class="sub">선생님이 알려준 접근 코드를 입력하세요</p>
+    <input type="text" id="code-input" maxlength="8" placeholder="코드 입력"
+           oninput="this.value=this.value.toUpperCase()"
+           onkeydown="if(event.key==='Enter') lookupCode()">
+    <button class="btn btn-primary" onclick="lookupCode()">확인</button>
+    <p class="err" id="code-err"></p>
+  </div>
+</div>
+
+<!-- ②배정 확인 -->
+<div class="screen" id="screen-confirm">
+  <div class="card">
+    <div class="logo">🎯</div>
+    <h1>시험 배정 확인</h1>
+    <p class="sub">아래 정보를 확인한 뒤 시험을 시작하세요</p>
+    <div class="info-box">
+      <div class="stage-label">배정 단계</div>
+      <div class="stage-name" id="confirm-stage">—</div>
+      <div class="student-name" id="confirm-name">—</div>
+    </div>
+    <div class="guide-text" id="confirm-guide"></div>
+    <button class="btn btn-primary" onclick="startTest()">시험 시작하기 →</button>
+    <p class="err" id="confirm-err"></p>
+  </div>
+</div>
+
+<!-- ③시험 -->
+<div class="screen" id="screen-test">
+  <div class="test-header">
+    <span class="q-counter" id="q-counter">1 / 30</span>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:3%;"></div></div>
+  </div>
+  <div class="test-body" id="test-body"></div>
+  <div class="test-nav">
+    <button class="btn-nav btn-prev" id="btn-prev" onclick="prevQ()" style="display:none">← 이전</button>
+    <button class="btn-nav btn-next" id="btn-next" onclick="nextQ()">다음 →</button>
+    <button class="btn-nav btn-submit btn-next" id="btn-submit" onclick="goToSpeakingPrep()"
+            style="display:none">제출하기 ✓</button>
+  </div>
+</div>
+
+<!-- ③-a 스피킹 준비 -->
+<div class="screen" id="screen-spk-prep">
+  <div class="card">
+    <div class="logo">🎙</div>
+    <h1>스피킹 영역</h1>
+    <p class="sub">Listen &amp; Speak — 총 <span id="spk-total-count">4</span>문항</p>
+    <div class="guide-text" style="text-align:left;line-height:1.9">
+      <b>📍 응시 전 확인</b><br>
+      조용한 공간에서 응시하세요<br>
+      마이크가 정상 작동하는지 확인하세요<br><br>
+      <b>📢 답변 방법</b><br>
+      🔊 버튼으로 질문을 들은 뒤, 🎙 버튼을 눌러 영어로 말해 답하세요<br>
+      마이크 오류 시 아래 텍스트 입력으로도 답할 수 있습니다<br><br>
+      <span style="color:#94A3B8;font-size:12px">스피킹은 레벨 결정에 영향을 주지 않는 보조 지표입니다</span>
+    </div>
+    <button class="btn btn-primary" onclick="startSpeakingQuestions()">시작하기 →</button>
+    <button class="btn" style="background:var(--gray-100);color:var(--gray-500);margin-top:8px"
+            onclick="skipAllSpeaking()">건너뛰기 (스피킹 미응시)</button>
+  </div>
+</div>
+
+<!-- ③-b 스피킹 문항 -->
+<div class="screen" id="screen-speaking">
+  <div class="test-header">
+    <span class="q-counter" id="spk-counter">스피킹 1 / 4</span>
+    <div class="progress-bar"><div class="progress-fill" id="spk-progress" style="width:25%"></div></div>
+  </div>
+  <div class="test-body" id="spk-body"></div>
+  <div class="test-nav">
+    <button class="btn-nav btn-next" id="btn-spk-next" onclick="nextSpeaking()">다음 →</button>
+    <button class="btn-nav btn-submit" id="btn-spk-submit" onclick="doSubmit()" style="display:none">제출하기 ✓</button>
+  </div>
+</div>
+
+<!-- ④결과 -->
+<div class="screen" id="screen-result">
+  <div class="card result-card">
+    <div class="logo">🎉</div>
+    <h1>시험 완료!</h1>
+
+    <!-- 총점 + CEFR -->
+    <div class="score-row">
+      <div class="result-score" id="res-score">—</div>
+      <div class="score-meta">
+        <div class="result-total" id="res-total">/ 30</div>
+        <span class="cefr-badge" id="res-cefr"></span>
+      </div>
+    </div>
+
+    <!-- 추천 교재 레벨 -->
+    <div class="result-level">
+      <div class="label">추천 교재 레벨</div>
+      <div class="value" id="res-level">—</div>
+    </div>
+
+    <!-- 도전 레벨 -->
+    <div class="challenge-row" id="res-challenge-row" style="display:none">
+      <div class="challenge-lbl">도전 레벨</div>
+      <span class="challenge-name" id="res-challenge-name"></span>
+      <span class="challenge-cefr" id="res-challenge-cefr"></span>
+      <span class="signal-badge" id="res-signal"></span>
+    </div>
+
+    <!-- 영역별 성취도 -->
+    <div class="sec-title">영역별 성취도</div>
+    <div id="res-sections"></div>
+
+    <!-- 종합 진단 -->
+    <div class="diag-text" id="res-diag" style="display:none"></div>
+
+    <!-- 보너스 대상 -->
+    <div style="text-align:center" id="res-bonus" style="display:none"></div>
+
+    <p class="result-footer">
+      결과가 이메일로 발송되었습니다.<br>선생님의 최종 배치 결정에 따라 조정될 수 있습니다.
+    </p>
+  </div>
+</div>
+
+<script src="/answer-utils.js"></script>
+<script src="/speaking-utils.js"></script>
+<script>
+'use strict';
+const STAGE_GUIDE_MAP = {
+  1: '알파벳·기초 단어 단계 — 현재 준비 중',
+  2: '기초 단어는 알지만 문장이 서툰 학생. 간단한 생활 표현을 익히기 시작한 수준.',
+  3: '짧은 문장을 읽고 쓸 수 있으며 일상 주제로 간단한 대화가 가능한 학생.',
+  4: '복합 문장 구성이 가능하고 다양한 주제의 지문을 읽고 이해할 수 있는 학생.',
+  5: '고급 어휘·복잡한 구문을 이해하며 논리적으로 글을 쓰고 말할 수 있는 학생.',
+};
+
+let _code = '';
+let _assignment = null;
+let _questions  = [];
+let _answers    = {}; // { questionId → answer }
+let _qIdx = 0;
+// unscramble state per question: { questionId → { placed:[], pool:[] } }
+let _scrambleState = {};
+// speaking state
+let _speakingQuestions = [];
+let _speakingAnswers   = {}; // { qid → { text, method:'voice'|'typing' } }
+let _speakingIdx       = 0;
+let _spkRecognition    = null;
+let _spkSynthActive    = false;
+const _hasSR = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+const _hasTTS = !!window.speechSynthesis;
+
+// URL에서 코드 자동 추출
+const urlCode = new URLSearchParams(location.search).get('code');
+if (urlCode) {
+  document.getElementById('code-input').value = urlCode.toUpperCase();
+  setTimeout(lookupCode, 100);
+}
+
+// ── 화면 전환 ─────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── ① 코드 확인 ──────────────────────────────────────────────────────────
+async function lookupCode() {
+  const code = document.getElementById('code-input').value.trim().toUpperCase();
+  const errEl = document.getElementById('code-err');
+  errEl.textContent = '';
+  if (code.length < 6) { errEl.textContent = '코드를 올바르게 입력해주세요.'; return; }
+  _code = code;
+  try {
+    const res  = await fetch('/api/assignment/' + code);
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || '코드를 찾을 수 없습니다.'; return; }
+    if (data.status === 'done') { errEl.textContent = '이미 완료된 시험입니다.'; return; }
+    _assignment = data;
+    document.getElementById('confirm-stage').textContent = `단계 ${data.stage} — ${data.stageName}`;
+    document.getElementById('confirm-name').textContent  = data.studentName + ' 학생';
+    document.getElementById('confirm-guide').textContent  = STAGE_GUIDE_MAP[data.stage] || '';
+    showScreen('screen-confirm');
+  } catch (e) {
+    errEl.textContent = '서버 연결에 실패했습니다.';
+  }
+}
+
+// ── ② 시험 시작 ──────────────────────────────────────────────────────────
+async function startTest() {
+  const errEl = document.getElementById('confirm-err');
+  errEl.textContent = '';
+  try {
+    const res  = await fetch('/api/assignment/' + _code + '/questions');
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || '문항 로드 실패'; return; }
+    _questions = data.questions;
+    _qIdx      = 0;
+    _answers   = {};
+    _scrambleState = {};
+    _speakingQuestions = []; _speakingAnswers = {}; _speakingIdx = 0;
+    showScreen('screen-test');
+    renderQuestion();
+  } catch (e) {
+    errEl.textContent = '서버 연결에 실패했습니다.';
+  }
+}
+
+// ── ③ 문항 렌더링 ─────────────────────────────────────────────────────────
+function renderQuestion() {
+  const q    = _questions[_qIdx];
+  const n    = _qIdx + 1;
+  const tot  = _questions.length;
+
+  document.getElementById('q-counter').textContent = n + ' / ' + tot;
+  document.getElementById('progress-fill').style.width = Math.round((n / tot) * 100) + '%';
+  document.getElementById('btn-prev').style.display = _qIdx > 0 ? '' : 'none';
+
+  const isLast = _qIdx === tot - 1;
+  document.getElementById('btn-next').style.display   = isLast ? 'none' : '';
+  document.getElementById('btn-submit').style.display = isLast ? '' : 'none';
+
+  const body = document.getElementById('test-body');
+  body.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.className = 'q-card';
+
+  // 섹션 배지
+  const badge = document.createElement('div');
+  badge.className = 'q-section-badge badge-' + (q.section || 'vocabulary');
+  const sectionKo = { vocabulary:'어휘', grammar:'문법', reading:'독해', writing:'쓰기', phonics:'파닉스' };
+  badge.textContent = (sectionKo[q.section] || q.section) + ' ' + n;
+  card.appendChild(badge);
+
+  // 지문 (독해)
+  if (q.passage) {
+    const p = document.createElement('div');
+    p.className = 'passage';
+    p.textContent = q.passage;
+    card.appendChild(p);
+  }
+
+  // 이미지 프롬프트 (image_prompt_choice: 그림이 문제 → 질문 텍스트 위에 크게 표시)
+  if (q.questionType === 'image_prompt_choice' && q.image) {
+    const imgBox = document.createElement('div');
+    imgBox.className = 'img-prompt-box';
+    const img = document.createElement('img');
+    img.src = '/img/' + q.image;
+    img.alt = '문항 이미지';
+    img.className = 'img-prompt';
+    img.onerror = () => {
+      imgBox.innerHTML = '<div class="img-missing">🖼️ 이미지 준비 중: ' + q.image + '</div>';
+    };
+    imgBox.appendChild(img);
+    card.appendChild(imgBox);
+  }
+
+  // 질문
+  const qt = document.createElement('div');
+  qt.className = 'q-text';
+  qt.textContent = q.question;
+  card.appendChild(qt);
+
+  // 유형별 입력
+  if (q.questionType === 'multiple_choice') {
+    renderChoices(card, q);
+  } else if (q.questionType === 'picture_choice') {
+    renderPictureChoice(card, q);
+  } else if (q.questionType === 'image_prompt_choice') {
+    renderChoices(card, q);
+  } else if (q.questionType === 'unscramble') {
+    renderUnscramble(card, q);
+  }
+
+  body.appendChild(card);
+  body.scrollTop = 0;
+}
+
+function renderChoices(card, q) {
+  const wrap = document.createElement('div');
+  wrap.className = 'choices';
+  const saved = _answers[q.id];
+  (q.options || []).forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn' + (saved === i ? ' selected' : '');
+    btn.textContent = opt;
+    btn.onclick = () => {
+      _answers[q.id] = i;
+      card.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    };
+    wrap.appendChild(btn);
+  });
+  card.appendChild(wrap);
+}
+
+function renderPictureChoice(card, q) {
+  // 이미지 placeholder (실제 이미지 파일 미존재 시 안내)
+  const imgWrap = document.createElement('div');
+  imgWrap.className = 'img-placeholder';
+  const img = document.createElement('img');
+  img.src   = '/img/' + (q.imageFile || '');
+  img.alt   = '문항 이미지';
+  img.style.cssText = 'max-width:100%;max-height:220px;border-radius:8px;';
+  img.onerror = () => { imgWrap.textContent = '🖼️ 이미지: ' + (q.imageFile || '준비 중'); };
+  imgWrap.appendChild(img);
+  card.appendChild(imgWrap);
+  renderChoices(card, q);
+}
+
+function renderUnscramble(card, q) {
+  const qid = q.id;
+  const AU  = window.AnswerUtils || {};
+
+  // 마지막 문장 종결 부호 (.?!) — words[] 에는 없고 expected[0] 에만 있음
+  const trailingPunct = AU.extractTrailingPunct
+    ? AU.extractTrailingPunct(q.expected)
+    : (function(a) {
+        const exp = (Array.isArray(a) ? a[0] : a) || '';
+        return /[.?!]$/.test(exp) ? exp[exp.length - 1] : '';
+      })(q.expected);
+
+  // FY-shuffle 초기화 (한 번만)
+  if (!_scrambleState[qid]) {
+    const arr = (q.words || []).slice();
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    _scrambleState[qid] = { shuffled: arr, placed: [] };
+  }
+  const st = _scrambleState[qid];
+
+  function syncAnswer() {
+    const sentence = st.placed.map(p => p.word).join(' ');
+    _answers[qid] = sentence ? (sentence + trailingPunct) : '';
+  }
+
+  // ── 힌트 ──────────────────────────────────────────────────────────────────
+  const hint = document.createElement('p');
+  hint.className = 'dnd-hint';
+  hint.textContent = '단어를 드래그하거나 탭해서 순서에 맞게 배열하세요';
+  card.appendChild(hint);
+
+  // ── 답변 영역 (area + 종결 부호 배지) ────────────────────────────────────
+  const answerRow = document.createElement('div');
+  answerRow.className = 'dnd-answer-row';
+  card.appendChild(answerRow);
+
+  const area = document.createElement('div');
+  area.className = 'answer-area';
+  area.id = 'area-' + qid;
+  answerRow.appendChild(area);
+
+  if (trailingPunct) {
+    const badge = document.createElement('span');
+    badge.className = 'punct-badge';
+    badge.textContent = trailingPunct;
+    answerRow.appendChild(badge);
+  }
+
+  // ── 초기화 버튼 ──────────────────────────────────────────────────────────
+  const ctrlRow = document.createElement('div');
+  ctrlRow.style.cssText = 'margin:6px 0;';
+  card.appendChild(ctrlRow);
+  const resetBtn = document.createElement('button');
+  resetBtn.className = 'btn-dnd-reset';
+  resetBtn.textContent = '↺ 초기화';
+  resetBtn.onclick = () => { st.placed = []; redraw(); };
+  ctrlRow.appendChild(resetBtn);
+
+  // ── 단어 풀 ──────────────────────────────────────────────────────────────
+  const pool = document.createElement('div');
+  pool.className = 'word-pool';
+  pool.id = 'pool-' + qid;
+  card.appendChild(pool);
+
+  // ── HTML5 D&D 상태 ────────────────────────────────────────────────────────
+  let _drag = null; // { source:'pool'|'answer', pi, poolIdx, word }
+
+  function clearDropHints() {
+    area.querySelectorAll('.drop-before,.drop-after')
+        .forEach(el => el.classList.remove('drop-before', 'drop-after'));
+  }
+
+  function performDrop(targetPi, before) {
+    if (!_drag) return;
+    const insertAt = before ? targetPi : targetPi + 1;
+    if (_drag.source === 'pool') {
+      st.placed.splice(insertAt, 0, { idx: _drag.poolIdx, word: _drag.word });
+    } else if (_drag.source === 'answer' && _drag.pi !== targetPi) {
+      const from = _drag.pi;
+      const [moved] = st.placed.splice(from, 1);
+      const adj = from < insertAt ? insertAt - 1 : insertAt;
+      st.placed.splice(adj, 0, moved);
+    }
+    redraw();
+  }
+
+  function makeChip(source, pi, word, poolIdx) {
+    const chip = document.createElement('span');
+    chip.className   = source === 'answer' ? 'placed-chip' : 'word-chip';
+    chip.textContent = word;
+    chip.draggable   = true;
+    chip.dataset.source = source;
+    chip.dataset.pi     = String(pi);
+
+    // ── 탭/클릭 폴백 ────────────────────────────────────────────────────────
+    chip.addEventListener('click', () => {
+      if (source === 'pool') st.placed.push({ idx: poolIdx, word });
+      else                   st.placed.splice(pi, 1);
+      redraw();
+    });
+
+    // ── HTML5 Drag ───────────────────────────────────────────────────────────
+    chip.addEventListener('dragstart', e => {
+      _drag = { source, pi, word, poolIdx };
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', '1'); // Firefox 필수
+      setTimeout(() => chip.classList.add('chip-dragging'), 0);
+    });
+    chip.addEventListener('dragend', () => {
+      chip.classList.remove('chip-dragging');
+      _drag = null;
+      clearDropHints();
+      area.classList.remove('drag-over');
+      pool.classList.remove('drag-over');
+    });
+
+    // placed 칩 위에 드롭: 위치 지정 삽입/재배치
+    if (source === 'answer') {
+      chip.addEventListener('dragover', e => {
+        if (!_drag) return;
+        e.preventDefault(); e.stopPropagation();
+        clearDropHints();
+        const rect = chip.getBoundingClientRect();
+        chip.classList.add(e.clientX < rect.left + rect.width / 2 ? 'drop-before' : 'drop-after');
+      });
+      chip.addEventListener('dragleave', () =>
+        chip.classList.remove('drop-before', 'drop-after'));
+      chip.addEventListener('drop', e => {
+        e.preventDefault(); e.stopPropagation();
+        if (!_drag) return;
+        clearDropHints();
+        const rect = chip.getBoundingClientRect();
+        performDrop(pi, e.clientX < rect.left + rect.width / 2);
+      });
+    }
+
+    // ── Touch Drag (lazy clone: 8px 이상 이동 시 활성화) ────────────────────
+    let _ts = null;
+    chip.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      _ts = { startX: t.clientX, startY: t.clientY, moved: false, clone: null };
+    }, { passive: true });
+
+    chip.addEventListener('touchmove', e => {
+      if (!_ts) return;
+      const t  = e.touches[0];
+      const dx = Math.abs(t.clientX - _ts.startX);
+      const dy = Math.abs(t.clientY - _ts.startY);
+
+      if (!_ts.moved && (dx > 8 || dy > 8)) {
+        _ts.moved = true;
+        const rect = chip.getBoundingClientRect();
+        _ts.clone = chip.cloneNode(true);
+        Object.assign(_ts.clone.style, {
+          position:'fixed', zIndex:'9999', pointerEvents:'none',
+          left:rect.left+'px', top:rect.top+'px', width:rect.width+'px',
+          opacity:'0.88', transform:'scale(1.1)',
+          boxShadow:'0 4px 16px rgba(0,0,0,.25)', transition:'none',
+        });
+        document.body.appendChild(_ts.clone);
+        chip.classList.add('chip-dragging');
+      }
+      if (_ts.moved) {
+        e.preventDefault();
+        if (_ts.clone) {
+          _ts.clone.style.left = (t.clientX - _ts.clone.offsetWidth / 2) + 'px';
+          _ts.clone.style.top  = (t.clientY - _ts.clone.offsetHeight / 2) + 'px';
+        }
+      }
+    }, { passive: false });
+
+    chip.addEventListener('touchend', e => {
+      if (!_ts) return;
+      if (!_ts.moved) { _ts = null; return; } // tap → click 이벤트에게 위임
+
+      if (_ts.clone) _ts.clone.style.display = 'none';
+      const t   = e.changedTouches[0];
+      const hit = document.elementFromPoint(t.clientX, t.clientY);
+      if (_ts.clone) { _ts.clone.remove(); _ts.clone = null; }
+      chip.classList.remove('chip-dragging');
+      const ts = _ts; _ts = null;
+
+      if (!hit) return;
+      const overAnswerChip = hit.closest('.placed-chip');
+      const overArea = hit.closest('#area-' + qid);
+      const overPool = hit.closest('#pool-' + qid);
+
+      if (overAnswerChip && overAnswerChip !== chip) {
+        const tPi  = parseInt(overAnswerChip.dataset.pi);
+        const rect = overAnswerChip.getBoundingClientRect();
+        _drag = { source, pi, word, poolIdx };
+        performDrop(tPi, t.clientX < rect.left + rect.width / 2);
+        _drag = null;
+      } else if (overArea) {
+        if (source === 'pool') {
+          st.placed.push({ idx: poolIdx, word });
+        } else {
+          const [moved] = st.placed.splice(pi, 1);
+          st.placed.push(moved);
+        }
+        redraw();
+      } else if (overPool && source === 'answer') {
+        st.placed.splice(pi, 1);
+        redraw();
+      }
+    }, { passive: true });
+
+    return chip;
+  }
+
+  // ── Area: 끝에 추가 (칩 사이가 아닌 빈 영역에 드롭) ─────────────────────
+  area.addEventListener('dragover', e => {
+    if (!_drag) return;
+    e.preventDefault();
+    area.classList.add('drag-over');
+  });
+  area.addEventListener('dragleave', e => {
+    if (!area.contains(e.relatedTarget)) area.classList.remove('drag-over');
+  });
+  area.addEventListener('drop', e => {
+    e.preventDefault();
+    area.classList.remove('drag-over');
+    if (!_drag) return;
+    if (_drag.source === 'pool') {
+      st.placed.push({ idx: _drag.poolIdx, word: _drag.word });
+    } else if (_drag.source === 'answer') {
+      const [moved] = st.placed.splice(_drag.pi, 1);
+      st.placed.push(moved);
+    }
+    redraw();
+  });
+
+  // ── Pool: 답변에서 제거 ───────────────────────────────────────────────────
+  pool.addEventListener('dragover', e => {
+    if (!_drag || _drag.source !== 'answer') return;
+    e.preventDefault();
+    pool.classList.add('drag-over');
+  });
+  pool.addEventListener('dragleave', e => {
+    if (!pool.contains(e.relatedTarget)) pool.classList.remove('drag-over');
+  });
+  pool.addEventListener('drop', e => {
+    e.preventDefault();
+    pool.classList.remove('drag-over');
+    if (!_drag || _drag.source !== 'answer') return;
+    st.placed.splice(_drag.pi, 1);
+    redraw();
+  });
+
+  // ── Redraw ────────────────────────────────────────────────────────────────
+  function redraw() {
+    area.innerHTML = '';
+    pool.innerHTML = '';
+    const usedSet = new Set(st.placed.map(p => p.idx));
+
+    if (st.placed.length === 0) {
+      const ph = document.createElement('span');
+      ph.className = 'area-placeholder';
+      ph.textContent = '여기에 배열하세요';
+      area.appendChild(ph);
+    } else {
+      st.placed.forEach((item, pi) =>
+        area.appendChild(makeChip('answer', pi, item.word, item.idx)));
+    }
+
+    st.shuffled.forEach((word, wi) => {
+      if (!usedSet.has(wi))
+        pool.appendChild(makeChip('pool', wi, word, wi));
+    });
+
+    syncAnswer();
+  }
+
+  redraw();
+}
+
+// ── 이전/다음 ─────────────────────────────────────────────────────────────
+function nextQ() {
+  if (_qIdx < _questions.length - 1) { _qIdx++; renderQuestion(); }
+}
+function prevQ() {
+  if (_qIdx > 0) { _qIdx--; renderQuestion(); }
+}
+
+// ── ④-a 스피킹 플로우 ────────────────────────────────────────────────────
+
+/** 마지막 문제 "제출하기" → 스피킹 준비 화면으로 */
+async function goToSpeakingPrep() {
+  const answered = Object.keys(_answers).length;
+  if (answered < _questions.length) {
+    if (!confirm(`아직 ${_questions.length - answered}개 문항에 답하지 않았습니다.\n그래도 계속하시겠습니까?`)) return;
+  }
+  try {
+    const res = await fetch('/questions.speaking.json');
+    const all = await res.json();
+    _speakingQuestions = all[String(_assignment.stage)] || [];
+  } catch (e) {
+    _speakingQuestions = [];
+  }
+  if (_speakingQuestions.length === 0) { doSubmit(); return; }
+  document.getElementById('spk-total-count').textContent = _speakingQuestions.length;
+  showScreen('screen-spk-prep');
+}
+
+function skipAllSpeaking() { stopRecording(); doSubmit(); }
+
+function startSpeakingQuestions() {
+  _speakingIdx = 0;
+  showScreen('screen-speaking');
+  renderSpeakingQuestion();
+}
+
+function renderSpeakingQuestion() {
+  const idx = _speakingIdx;
+  const tot = _speakingQuestions.length;
+  const q   = _speakingQuestions[idx];
+
+  document.getElementById('spk-counter').textContent = `스피킹 ${idx + 1} / ${tot}`;
+  document.getElementById('spk-progress').style.width = Math.round(((idx + 1) / tot) * 100) + '%';
+  document.getElementById('btn-spk-next').style.display   = idx < tot - 1 ? '' : 'none';
+  document.getElementById('btn-spk-submit').style.display = idx === tot - 1 ? '' : 'none';
+
+  const body = document.getElementById('spk-body');
+  body.innerHTML = ''; body.scrollTop = 0;
+
+  const card = document.createElement('div');
+  card.className = 'q-card';
+
+  const badge = document.createElement('div');
+  badge.className = 'spk-badge';
+  badge.textContent = `스피킹 ${idx + 1}`;
+  card.appendChild(badge);
+
+  const promptEl = document.createElement('div');
+  promptEl.className = 'spk-prompt';
+  promptEl.textContent = q.prompt;
+  card.appendChild(promptEl);
+
+  const promptKoEl = document.createElement('div');
+  promptKoEl.className = 'spk-prompt-ko';
+  promptKoEl.textContent = q.promptKo;
+  card.appendChild(promptKoEl);
+
+  // 버튼 행
+  const ctrl = document.createElement('div');
+  ctrl.className = 'spk-controls';
+
+  const listenBtn = document.createElement('button');
+  listenBtn.className = 'spk-btn spk-btn-listen';
+  listenBtn.innerHTML = '🔊 질문 듣기';
+  listenBtn.disabled = !_hasTTS;
+  listenBtn.onclick = () => speakQuestion(q.prompt, listenBtn);
+  ctrl.appendChild(listenBtn);
+
+  const recBtn = document.createElement('button');
+  recBtn.className = 'spk-btn spk-btn-record';
+  recBtn.innerHTML = _hasSR ? '🎙 녹음 시작' : '🎙 미지원';
+  recBtn.disabled = !_hasSR;
+  card.appendChild(ctrl);
+
+  // 상태 + 트랜스크립트
+  const statusEl = document.createElement('div');
+  statusEl.className = 'spk-status';
+
+  const transcriptEl = document.createElement('div');
+  const saved = _speakingAnswers[q.id];
+  transcriptEl.className = 'spk-transcript' + (saved && saved.text ? ' has-result' : ' empty');
+  transcriptEl.textContent = (saved && saved.text) ? saved.text : '여기에 음성 인식 결과가 표시됩니다';
+  if (saved) statusEl.textContent = saved.method === 'voice' ? '✓ 음성으로 답변 완료' : '✓ 타이핑으로 답변 완료';
+
+  recBtn.onclick = () => toggleRecording(q.id, recBtn, transcriptEl, statusEl);
+  ctrl.appendChild(recBtn);
+
+  card.appendChild(statusEl);
+  card.appendChild(transcriptEl);
+
+  const note = document.createElement('p');
+  note.className = 'spk-note';
+  note.textContent = _hasSR
+    ? '마이크 오류 시 아래 텍스트로 입력할 수 있습니다'
+    : '이 브라우저는 음성 인식을 지원하지 않습니다. 아래에 타이핑해 주세요.';
+  card.appendChild(note);
+
+  // 타이핑 폴백
+  const fbRow = document.createElement('div');
+  fbRow.className = 'spk-fallback-row';
+  const fbLabel = document.createElement('span');
+  fbLabel.className = 'spk-fallback-label'; fbLabel.textContent = '직접 입력:';
+  const fbInput = document.createElement('input');
+  fbInput.type = 'text'; fbInput.className = 'spk-fallback-input';
+  fbInput.placeholder = 'Type your answer here...';
+  fbInput.value = (saved && saved.method === 'typing') ? saved.text : '';
+  const fbBtn = document.createElement('button');
+  fbBtn.className = 'spk-fallback-btn'; fbBtn.textContent = '완료';
+  fbBtn.onclick = () => {
+    const txt = fbInput.value.trim(); if (!txt) return;
+    _speakingAnswers[q.id] = { text: txt, method: 'typing' };
+    transcriptEl.textContent = txt;
+    transcriptEl.className = 'spk-transcript has-result';
+    statusEl.textContent = '✓ 타이핑으로 답변 완료';
+  };
+  fbRow.appendChild(fbLabel); fbRow.appendChild(fbInput); fbRow.appendChild(fbBtn);
+  card.appendChild(fbRow);
+  body.appendChild(card);
+}
+
+function nextSpeaking() {
+  if (_speakingIdx < _speakingQuestions.length - 1) {
+    stopRecording(); _speakingIdx++; renderSpeakingQuestion();
+  }
+}
+
+function speakQuestion(text, btn) {
+  if (!_hasTTS) return;
+  speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'en-US'; utt.rate = 0.85; utt.pitch = 1;
+  const voices = speechSynthesis.getVoices();
+  const enVoice = voices.find(v => v.lang.startsWith('en'));
+  if (enVoice) utt.voice = enVoice;
+  if (btn) { btn.disabled = true; utt.onend = () => { btn.disabled = false; }; }
+  speechSynthesis.speak(utt);
+}
+
+function toggleRecording(qid, recBtn, transcriptEl, statusEl) {
+  if (_spkRecognition) { stopRecording(recBtn); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return;
+  _spkRecognition = new SR();
+  _spkRecognition.lang = 'en-US';
+  _spkRecognition.continuous = false;
+  _spkRecognition.interimResults = true;
+  _spkRecognition.maxAlternatives = 1;
+  recBtn.classList.add('recording'); recBtn.innerHTML = '⏹ 녹음 중지';
+  statusEl.textContent = '🎙 듣고 있습니다...';
+  _spkRecognition.onresult = e => {
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    const isFinal = e.results[e.results.length - 1].isFinal;
+    transcriptEl.textContent = transcript;
+    transcriptEl.className = 'spk-transcript' + (isFinal ? ' has-result' : '');
+    if (isFinal) {
+      _speakingAnswers[qid] = { text: transcript, method: 'voice' };
+      statusEl.textContent = '✓ 음성으로 답변 완료';
+    }
+  };
+  _spkRecognition.onerror = e => {
+    statusEl.textContent = '마이크 오류: ' + e.error + ' — 아래 텍스트로 입력해 주세요';
+    stopRecording(recBtn);
+  };
+  _spkRecognition.onend = () => stopRecording(recBtn);
+  _spkRecognition.start();
+}
+
+function stopRecording(recBtn) {
+  if (_spkRecognition) { try { _spkRecognition.stop(); } catch(e){} _spkRecognition = null; }
+  if (!recBtn) recBtn = document.querySelector('.spk-btn-record.recording');
+  if (recBtn) { recBtn.classList.remove('recording'); recBtn.innerHTML = '🎙 다시 녹음'; }
+}
+
+// ── ④-b 실제 제출 ─────────────────────────────────────────────────────────
+async function doSubmit() {
+  stopRecording();
+  const submitBtn = document.getElementById('btn-spk-submit') || document.getElementById('btn-submit');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '제출 중…'; }
+
+  const submittedAnswers = _questions.map(q => ({
+    questionId: q.id,
+    answer:     _answers[q.id] !== undefined ? _answers[q.id] : null,
+  }));
+
+  const payload = { submittedAnswers };
+  if (_speakingQuestions.length > 0) {
+    payload.speakingData = { questions: _speakingQuestions, answers: _speakingAnswers };
+  }
+
+  try {
+    const res  = await fetch('/api/assignment/' + _code + '/submit', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) { alert(data.error || '제출 실패'); return; }
+    showResult(data.assessment);
+  } catch (e) {
+    alert('서버 오류가 발생했습니다. 다시 시도해주세요.');
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '제출하기 ✓'; }
+  }
+}
+
+const SEC_KR = { vocabulary:'어휘', grammar:'문법', reading:'독해', writing:'쓰기' };
+const SIG_LABEL = { advance:'▲ 상위 단계 추천', borderline:'△ 경계 수준', stay:'→ 현재 단계 유지' };
+
+function showResult(a) {
+  // 총점
+  document.getElementById('res-score').textContent = a.score;
+  document.getElementById('res-total').textContent = '/ ' + a.total + ' (' + a.scorePct + '%)';
+
+  // CEFR
+  const cefr = a.appropriate ? a.appropriate.cefr : '';
+  const cefrEl = document.getElementById('res-cefr');
+  cefrEl.textContent = cefr || '';
+  cefrEl.style.display = cefr ? '' : 'none';
+
+  // 추천 레벨
+  document.getElementById('res-level').textContent =
+    a.appropriate && a.appropriate.recommended ? a.appropriate.recommended : '진단 결과 없음';
+
+  // 도전 레벨
+  const ch = a.challenge || {};
+  const challengeRow = document.getElementById('res-challenge-row');
+  if (ch.nextStageName) {
+    challengeRow.style.display = 'flex';
+    document.getElementById('res-challenge-name').textContent = ch.nextStageName;
+    document.getElementById('res-challenge-cefr').textContent = ch.nextCefr ? '(' + ch.nextCefr + ')' : '';
+    const sigEl = document.getElementById('res-signal');
+    sigEl.className   = 'signal-badge signal-' + (ch.signal || 'stay');
+    sigEl.textContent = SIG_LABEL[ch.signal] || ch.signal;
+  } else {
+    challengeRow.style.display = 'none';
+  }
+
+  // 영역별 성취도
+  if (a.sections) {
+    document.getElementById('res-sections').innerHTML =
+      Object.entries(a.sections).map(([k, v]) =>
+        `<div class="sec-bar">
+           <div class="sec-name">${SEC_KR[k] || k}</div>
+           <div class="sec-track"><div class="sec-fill" style="width:${v.pct}%"></div></div>
+           <div class="sec-pct">${v.pct}%</div>
+         </div>`
+      ).join('');
+  }
+
+  // 종합 진단
+  const diag = a.appropriate ? a.appropriate.diagnosis : '';
+  const diagEl = document.getElementById('res-diag');
+  if (diag) { diagEl.textContent = diag; diagEl.style.display = ''; }
+  else       { diagEl.style.display = 'none'; }
+
+  // 보너스
+  const bonusEl = document.getElementById('res-bonus');
+  bonusEl.innerHTML = a.bonusEligible
+    ? '<span class="bonus-badge">⭐ 상위 단계 보너스 대상</span>' : '';
+
+  showScreen('screen-result');
+}
+</script>
+</body>
+</html>
