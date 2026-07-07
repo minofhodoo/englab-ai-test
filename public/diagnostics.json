@@ -1,4 +1,32 @@
 {
+  "Seeker": {
+    "1-4": [
+      {
+        "score_min": 0,
+        "score_max": 7,
+        "recommended": "Starland Phonics 1 (Single Letters)",
+        "diagnosis": "알파벳 인지 및 단자음 기초 단계. 글자와 소리의 기초 규칙을 형성하고 음가 인지를 다지기 위해 1권부터의 학습 권장."
+      },
+      {
+        "score_min": 8,
+        "score_max": 15,
+        "recommended": "Starland Phonics 2 (Short Vowels)",
+        "diagnosis": "단자음 인지 완료 및 단모음 결합 필요 단계. 단모음(a, e, i, o, u)의 짧은 음가 규칙을 이해하고 본격적인 조합 훈련을 시작하는 2권 학습이 적합."
+      },
+      {
+        "score_min": 16,
+        "score_max": 23,
+        "recommended": "Starland Phonics 3 (Long Vowels)",
+        "diagnosis": "단모음 마스터 및 장모음 확장 단계. 알파벳 고유 이름으로 소리 나는 장모음 원리를 이해하고 소리 변화를 구별하는 3권 학습이 적합."
+      },
+      {
+        "score_min": 24,
+        "score_max": 30,
+        "recommended": "Starland Phonics 4 (Double Letters)",
+        "diagnosis": "장모음 마스터 및 이중자음/모음 심화 단계. 이중자음(blends/digraphs), 이중모음 등 복잡한 소리 결합 규칙을 마스터하고 문장 읽기를 준비하는 단계."
+      }
+    ]
+  },
   "Challenger": {
     "1-6": [
       {
