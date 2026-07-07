@@ -122,6 +122,7 @@
     .r-sec-track { flex:1; height:8px; background:#E2E8F0; border-radius:4px; overflow:hidden; }
     .r-sec-fill  { height:100%; background:linear-gradient(90deg,#4F46E5,#7C3AED); border-radius:4px; }
     .r-sec-val   { width:70px; font-size:12px; font-weight:700; text-align:right; flex-shrink:0; color:#1E293B; }
+    .r-sec-comment { font-size:11px; color:#64748B; margin:-2px 0 6px 46px; line-height:1.5; }
     .r-placeholder { background:#F8FAFC; border:2px dashed #E2E8F0; border-radius:10px;
                      padding:16px; text-align:center; color:#94A3B8; font-size:13px; margin-bottom:10px; }
     .r-placeholder .r-ph-label { font-size:11px; font-weight:700; text-transform:uppercase;
@@ -572,7 +573,17 @@ async function authedDel(url) {
 }
 
 // ── 리포트 모달 ───────────────────────────────────────────────────────────
-const R_SEC_KR  = { vocabulary:'어휘', grammar:'문법', reading:'독해', writing:'쓰기' };
+const R_SEC_KR  = { vocabulary:'어휘', grammar:'문법', reading:'독해', writing:'쓰기', phonics:'파닉스' };
+function rSectionComment(key, pct) {
+  const map = {
+    vocabulary: pct >= 80 ? '풍부한 어휘력을 갖추고 있어요.' : pct >= 60 ? '기본 어휘는 양호하나, 고급 어휘 확장이 필요해요.' : '어휘 학습을 체계적으로 강화할 필요가 있어요.',
+    grammar:    pct >= 80 ? '문법 구조를 정확히 이해하고 있어요.' : pct >= 60 ? '기초 문법은 잡혀 있으나, 시제·수 일치 등 정교화가 필요해요.' : '기초 문법 규칙부터 체계적인 복습이 필요해요.',
+    reading:    pct >= 80 ? '지문 이해 및 추론 능력이 우수해요.' : pct >= 60 ? '직접 이해는 되나, 추론·중심문장 파악 연습이 필요해요.' : '짧은 지문 독해부터 단계적 연습이 필요해요.',
+    writing:    pct >= 80 ? '문장 구조를 정확하게 조립할 수 있어요.' : pct >= 60 ? '기본 문장 구성은 가능하나, 복잡한 구조 연습이 필요해요.' : '기본 어순과 문장 구조 훈련이 필요해요.',
+    phonics:    pct >= 80 ? '알파벳·파닉스 규칙을 잘 익히고 있어요.' : pct >= 60 ? '기본 파닉스는 알지만, 이중자음·이중모음 연습이 더 필요해요.' : '알파벳 인식과 기초 파닉스부터 차근차근 학습이 필요해요.',
+  };
+  return map[key] || '';
+}
 const R_SIG_LBL = { advance:'▲ 상위 단계 추천', borderline:'△ 경계 수준', stay:'→ 현재 단계 유지' };
 const R_SIG_CLS = { advance:'signal-advance', borderline:'signal-borderline', stay:'signal-stay' };
 
@@ -655,14 +666,18 @@ function renderReportBody(data, a, competitorMap) {
   const cefr  = (a.appropriate || {}).cefr || '';
   const next  = a.challenge || {};
 
-  // 섹션 바
+  // 섹션 바 (D: total=0 제외, F: 영역별 코멘트)
   const secBars = a.sections
-    ? Object.entries(a.sections).map(([k, v]) =>
-        `<div class="r-sec-bar">
-           <div class="r-sec-name">${R_SEC_KR[k]||k}</div>
-           <div class="r-sec-track"><div class="r-sec-fill" style="width:${v.pct}%"></div></div>
-           <div class="r-sec-val">${v.correct}/${v.total} (${v.pct}%)</div>
-         </div>`).join('')
+    ? Object.entries(a.sections)
+        .filter(([, v]) => v.total > 0)
+        .map(([k, v]) => {
+          const cmt = rSectionComment(k, v.pct);
+          return `<div class="r-sec-bar">
+             <div class="r-sec-name">${R_SEC_KR[k]||k}</div>
+             <div class="r-sec-track"><div class="r-sec-fill" style="width:${v.pct}%"></div></div>
+             <div class="r-sec-val">${v.correct}/${v.total} (${v.pct}%)</div>
+           </div>${cmt ? '<div class="r-sec-comment">' + cmt + '</div>' : ''}`;
+        }).join('')
     : '';
 
   return `

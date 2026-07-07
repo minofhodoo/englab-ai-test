@@ -343,9 +343,9 @@ function scoreAndDiagnose(stage, answeredQs, pools, diag) {
   const baseTotal  = baseQs.length;
   const upperTotal = upperQs.length;
 
-  // ── 2. 섹션별 점수 ────────────────────────────────────────────────────
+  // ── 2. 섹션별 점수 (phonics 포함 — Seeker 단계 집계용) ───────────────
   const sections = {};
-  for (const sec of ['vocabulary', 'grammar', 'reading', 'writing']) {
+  for (const sec of ['vocabulary', 'grammar', 'reading', 'writing', 'phonics']) {
     const sq = answeredQs.filter(a => a.section === sec);
     const sc = sq.filter(a => a.correct).length;
     sections[sec] = {
@@ -366,6 +366,7 @@ function scoreAndDiagnose(stage, answeredQs, pools, diag) {
   // ── 4. CEFR 매핑 (각 단계의 대략적 수준) ─────────────────────────────
   const CEFR_MAP = { 1: 'Pre-A1', 2: 'A1', 3: 'A1~A2', 4: 'A2~B1', 5: 'B1~B2' };
   const NEXT_MAP = {
+    1: { stage: 2,    name: 'Builder',    cefr: 'A1' },
     2: { stage: 3,    name: 'Challenger', cefr: 'A1~A2' },
     3: { stage: 4,    name: 'Explorer',   cefr: 'A2~B1' },
     4: { stage: 5,    name: 'Inventor',   cefr: 'B1~B2' },
