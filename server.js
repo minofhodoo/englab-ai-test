@@ -852,6 +852,10 @@ app.get('/api/assignment/:code/questions', (req, res) => {
       const out = Object.assign({}, q);
       delete out.answer;
       delete out.expected;
+      // unscramble: 배지 표시용 후행 구두점만 전달 (정답 전체는 숨김)
+      if (q.questionType === 'unscramble') {
+        out.trailingPunct = AU.extractTrailingPunct(q.expected);
+      }
       return out;
     });
     res.json({ stage: a.stage, stageName: a.stageName, questions: clientQs, meta: quiz.meta });

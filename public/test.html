@@ -522,13 +522,11 @@ function renderUnscramble(card, q) {
   const qid = q.id;
   const AU  = window.AnswerUtils || {};
 
-  // 마지막 문장 종결 부호 (.?!) — words[] 에는 없고 expected[0] 에만 있음
-  const trailingPunct = AU.extractTrailingPunct
-    ? AU.extractTrailingPunct(q.expected)
-    : (function(a) {
-        const exp = (Array.isArray(a) ? a[0] : a) || '';
-        return /[.?!]$/.test(exp) ? exp[exp.length - 1] : '';
-      })(q.expected);
+  // 마지막 문장 종결 부호 (.?!)
+  // 서버가 trailingPunct 를 미리 계산해 전달 (expected 는 보안상 삭제됨)
+  const trailingPunct = (q.trailingPunct != null)
+    ? q.trailingPunct
+    : (AU.extractTrailingPunct ? AU.extractTrailingPunct(q.expected) : '');
 
   // FY-shuffle 초기화 (한 번만)
   if (!_scrambleState[qid]) {
@@ -957,7 +955,7 @@ function toggleRecording(qid, recBtn, transcriptEl, statusEl) {
   recBtn.classList.add('recording'); recBtn.innerHTML = '⏹ 녹음 중지';
   statusEl.textContent = '🎙 듣고 있습니다...';
   _spkRecognition.onresult = e => {
-    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join(' ').trim();
     const isFinal = e.results[e.results.length - 1].isFinal;
     transcriptEl.textContent = transcript;
     transcriptEl.className = 'spk-transcript' + (isFinal ? ' has-result' : '');
@@ -967,7 +965,13 @@ function toggleRecording(qid, recBtn, transcriptEl, statusEl) {
     }
   };
   _spkRecognition.onerror = e => {
-    statusEl.textContent = '마이크 오류: ' + e.error + ' — 아래 텍스트로 입력해 주세요';
+    if (e.error === 'no-speech') {
+      statusEl.textContent = '음성이 감지되지 않았습니다. 🎙 버튼을 눌러 다시 시도하세요.';
+    } else if (e.error === 'not-allowed' || e.error === 'audio-capture') {
+      statusEl.textContent = '마이크 권한이 없습니다. 브라우저 설정에서 허용 후 새로고침하세요.';
+    } else {
+      statusEl.textContent = '오류(' + e.error + ') — 아래 텍스트로 입력해 주세요';
+    }
     stopRecording(recBtn);
   };
   _spkRecognition.onend = () => stopRecording(recBtn);

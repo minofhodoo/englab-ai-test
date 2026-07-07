@@ -4,9 +4,9 @@
  */
 'use strict';
 
-/** 정규화: 양끝 공백 제거 → 다중 공백 1칸 → 소문자 */
+/** 정규화: 양끝 공백 제거 → 다중 공백 1칸 → 소문자 → 후행 구두점 제거 */
 function normalizeAnswer(s) {
-  return String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
+  return String(s || '').trim().replace(/\s+/g, ' ').toLowerCase().replace(/[.?!]+$/, '');
 }
 
 /**
