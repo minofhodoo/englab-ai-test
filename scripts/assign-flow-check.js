@@ -127,28 +127,30 @@ try {
   assert(!!validStudent && validStudent.email === 'normal@test.com', '유효한 이름+이메일 → 등록 성공');
 } catch (e) { assert(false, '유효한 이름+이메일 → 등록 성공', e.message); }
 
-// 이메일 중복
-let dupBlocked = false;
+// 이메일 중복 → 이제 허용 (유니크 제약 제거)
+let dupAllowed = false;
 try {
-  storeA.createStudent({ academyId: ACADEMY_A.id, name: '중복이', email: 'normal@test.com' });
-} catch (e) { dupBlocked = e.message.includes('이미'); }
-assert(dupBlocked, '동일 이메일 중복 등록 → 거부');
+  const dup = storeA.createStudent({ academyId: ACADEMY_A.id, name: '중복이', email: 'normal@test.com' });
+  dupAllowed = !!dup;
+} catch (e) { dupAllowed = false; }
+assert(dupAllowed, '동일 이메일 다른 이름 → 등록 허용 (유니크 제약 없음)');
 
-// ── 3. 단계 제한 (Seeker=비활성, Builder~Inventor=활성) ───────────────────
+// ── 3. 단계 제한 (Seeker=활성, Builder~Inventor=활성) ────────────────────
 console.log(hdr('3. 단계 배정 제한'));
 
 const testStudent = validStudent || storeA.getStudents(ACADEMY_A.id)[0];
 
-// 단계 1 (Seeker) → 거부
-let seeker1Blocked = false;
+// 단계 1 (Seeker) → 활성화됨, 배정 허용
+let seeker1Ok = false;
 try {
-  storeA.createAssignment({
+  const a1 = storeA.createAssignment({
     academyId: ACADEMY_A.id,
     studentId: testStudent.id, studentName: testStudent.name, studentEmail: testStudent.email,
     stage: 1,
   });
-} catch (e) { seeker1Blocked = e.message.includes('비활성'); }
-assert(seeker1Blocked, '단계 1(Seeker) 배정 → 거부 (비활성)');
+  seeker1Ok = !!a1 && a1.stage === 1;
+} catch (e) { seeker1Ok = false; }
+assert(seeker1Ok, '단계 1(Seeker) 배정 → 허용 (active:true)');
 
 // 단계 0 (존재하지 않음) → 거부
 let invalidStageBlocked = false;
@@ -267,6 +269,45 @@ if (concResult.length < N) {
   console.log(C.yellow + '  ⚠  ' + concResult.length + '/' + N +
     '개 저장 (단일 프로세스 read-modify-write 경쟁 발생). 파일 손상은 없음.' + C.reset);
 }
+
+// ── 6. 팀 피드백 수정 소스 검증 ──────────────────────────────────────────
+console.log(hdr('6. 팀 피드백 수정 소스 검증'));
+
+const SERVER_SRC = fs.readFileSync(path.join(__dirname, '../server.js'), 'utf8');
+const TEST_HTML  = fs.readFileSync(path.join(__dirname, '../public/test.html'), 'utf8');
+
+// 피드백 2: / → test.html 라우팅
+assert(
+  /app\.get\s*\(\s*'\/'\s*,/.test(SERVER_SRC),
+  "server.js: app.get('/') 명시적 루트 라우팅 존재"
+);
+assert(
+  SERVER_SRC.indexOf("app.get('/',") < SERVER_SRC.indexOf("express.static("),
+  "server.js: app.get('/') 가 express.static 보다 먼저 선언됨"
+);
+assert(
+  SERVER_SRC.includes('test.html') && SERVER_SRC.indexOf('test.html') <
+    SERVER_SRC.indexOf('express.static('),
+  "server.js: / 라우트가 test.html 을 서빙"
+);
+
+// 피드백 3: 학생 확인 화면에서 레벨명·단계번호 숨김
+assert(
+  !TEST_HTML.includes('단계 ${data.stage}'),
+  "test.html: 확인 화면에 단계번호 텍스트 없음"
+);
+assert(
+  !TEST_HTML.includes('data.stageName'),
+  "test.html: 확인 화면에 stageName 표시 없음"
+);
+assert(
+  TEST_HTML.includes('_stageEl.style.display') && TEST_HTML.includes("'none'"),
+  "test.html: confirm-stage 숨김 처리 존재"
+);
+assert(
+  TEST_HTML.includes('STAGE_GUIDE_MAP[data.stage]'),
+  "test.html: 단계 설명(STAGE_GUIDE_MAP) 은 여전히 표시"
+);
 
 // ── 정리 ─────────────────────────────────────────────────────────────────
 fs.rmSync(TMP_DIR, { recursive: true, force: true });

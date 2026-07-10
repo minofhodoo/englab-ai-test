@@ -123,11 +123,13 @@ try {
   assert(false, `학생 생성 → ${e.message}`);
 }
 
-// 1-6. 중복 이메일 → 예외
-assertThrows(
-  () => store.createStudent({ academyId: acA.id, name: '중복', email: 'test@example.com' }),
-  '동일 학원 내 중복 이메일 → 예외'
-);
+// 1-6. 중복 이메일 → 이제 허용 (유니크 제약 제거)
+try {
+  const dup = store.createStudent({ academyId: acA.id, name: '중복이름', email: 'test@example.com' });
+  assert(!!dup, '동일 이메일 다른 이름 → 등록 허용 (유니크 제약 없음)');
+} catch (e) {
+  assert(false, `동일 이메일 다른 이름 → 등록 허용 (에러: ${e.message})`);
+}
 
 // 1-7. Stage 1(Seeker) 활성 확인 (Seeker 문항 활성화됨)
 assert(store.STAGE_GUIDE[1].active === true, 'Stage 1(Seeker) 활성 상태');

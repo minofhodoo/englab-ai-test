@@ -33,6 +33,8 @@ function writeJSON(file, data) {
 
 const app = express();
 app.use(express.json({ limit: '2mb' }));
+app.get('/', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public', 'test.html')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ──────────────────────────────────────────────
