@@ -11,16 +11,15 @@
         "questionType": "picture_choice",
         "type": "vocabulary",
         "difficulty": 2,
-        "question": "Crayon",
-        "imageFile": "builder-1-8_img01.png",
+        "question": "Choose the correct picture: Crayon",
+        "imageOptions": true,
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "builder_q1_img1.png",
+          "builder_q1_img2.png",
+          "builder_q1_img3.png"
         ],
         "answer": 2,
-        "needs_review": true,
-        "answer_note": "Crayon"
+        "answer_word": "Crayon"
       },
       {
         "id": "builder-1-8-q2",
@@ -31,17 +30,16 @@
         "no": 2,
         "questionType": "picture_choice",
         "type": "vocabulary",
-        "difficulty": 3,
-        "question": "Grandma",
-        "imageFile": "builder-1-8_img02.png",
+        "difficulty": 2,
+        "question": "Choose the correct picture: Grandma",
+        "imageOptions": true,
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "builder_q2_img1.png",
+          "builder_q2_img2.png",
+          "builder_q2_img3.png"
         ],
-        "answer": 1,
-        "needs_review": true,
-        "answer_note": "Grandma"
+        "answer": 0,
+        "answer_word": "Grandma"
       },
       {
         "id": "builder-1-8-q3",
@@ -52,17 +50,16 @@
         "no": 3,
         "questionType": "picture_choice",
         "type": "vocabulary",
-        "difficulty": 3,
-        "question": "Balloon",
-        "imageFile": "builder-1-8_img03.png",
+        "difficulty": 2,
+        "question": "Choose the correct picture: Balloon",
+        "imageOptions": true,
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "builder_q3_img1.png",
+          "builder_q3_img2.png",
+          "builder_q3_img3.png"
         ],
-        "answer": 0,
-        "needs_review": true,
-        "answer_note": "Balloon"
+        "answer": 1,
+        "answer_word": "Balloon"
       },
       {
         "id": "builder-1-8-q4",
@@ -73,17 +70,16 @@
         "no": 4,
         "questionType": "picture_choice",
         "type": "vocabulary",
-        "difficulty": 4,
-        "question": "Flower",
-        "imageFile": "builder-1-8_img04.png",
+        "difficulty": 2,
+        "question": "Choose the correct picture: Flower",
+        "imageOptions": true,
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "builder_q4_img1.png",
+          "builder_q4_img2.png",
+          "builder_q4_img3.png"
         ],
-        "answer": 0,
-        "needs_review": true,
-        "answer_note": "Flower"
+        "answer": 2,
+        "answer_word": "Flower"
       },
       {
         "id": "builder-1-8-q5",
@@ -94,17 +90,16 @@
         "no": 5,
         "questionType": "picture_choice",
         "type": "vocabulary",
-        "difficulty": 4,
-        "question": "Skateboard",
-        "imageFile": "builder-1-8_img05.png",
+        "difficulty": 2,
+        "question": "Choose the correct picture: Skateboard",
+        "imageOptions": true,
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "builder_q5_img1.png",
+          "builder_q5_img2.png",
+          "builder_q5_img3.png"
         ],
         "answer": 0,
-        "needs_review": true,
-        "answer_note": "Skateboard"
+        "answer_word": "Skateboard"
       },
       {
         "id": "builder-1-8-q6",
@@ -113,19 +108,16 @@
         "book_range": "1-8",
         "section": "grammar",
         "no": 6,
-        "questionType": "picture_choice",
         "type": "grammar",
         "difficulty": 2,
         "question": "What is ________?",
-        "imageFile": "builder-1-8_img06.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "this",
+          "he",
+          "she"
         ],
         "answer": 0,
-        "needs_review": true,
-        "answer_note": "What is this?"
+        "questionType": "multiple_choice"
       },
       {
         "id": "builder-1-8-q7",
@@ -134,19 +126,16 @@
         "book_range": "1-8",
         "section": "grammar",
         "no": 7,
-        "questionType": "picture_choice",
         "type": "grammar",
         "difficulty": 2,
         "question": "________ is my mom.",
-        "imageFile": "builder-1-8_img07.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "He",
+          "She",
+          "It"
         ],
         "answer": 1,
-        "needs_review": true,
-        "answer_note": "She is my mom."
+        "questionType": "multiple_choice"
       },
       {
         "id": "builder-1-8-q8",
@@ -155,19 +144,16 @@
         "book_range": "1-8",
         "section": "grammar",
         "no": 8,
-        "questionType": "picture_choice",
         "type": "grammar",
         "difficulty": 2,
         "question": "Is ________ a cake?",
-        "imageFile": "builder-1-8_img08.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "it",
+          "they",
+          "you"
         ],
         "answer": 0,
-        "needs_review": true,
-        "answer_note": "Is it a cake?"
+        "questionType": "multiple_choice"
       },
       {
         "id": "builder-1-8-q9",
@@ -176,19 +162,16 @@
         "book_range": "1-8",
         "section": "grammar",
         "no": 9,
-        "questionType": "picture_choice",
         "type": "grammar",
-        "difficulty": 3,
+        "difficulty": 2,
         "question": "This is ________ backpack.",
-        "imageFile": "builder-1-8_img09.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "me",
+          "my",
+          "I"
         ],
         "answer": 1,
-        "needs_review": true,
-        "answer_note": "This is my backpack."
+        "questionType": "multiple_choice"
       },
       {
         "id": "builder-1-8-q10",
@@ -197,19 +180,16 @@
         "book_range": "1-8",
         "section": "grammar",
         "no": 10,
-        "questionType": "picture_choice",
         "type": "grammar",
-        "difficulty": 3,
+        "difficulty": 2,
         "question": "________ are cars.",
-        "imageFile": "builder-1-8_img10.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "It",
+          "They",
+          "She"
         ],
         "answer": 1,
-        "needs_review": true,
-        "answer_note": "They are cars."
+        "questionType": "multiple_choice"
       },
       {
         "id": "builder-1-8-q11",
@@ -218,19 +198,16 @@
         "book_range": "1-8",
         "section": "grammar",
         "no": 11,
-        "questionType": "picture_choice",
         "type": "grammar",
-        "difficulty": 3,
+        "difficulty": 2,
         "question": "Is it a cookie?",
-        "imageFile": "builder-1-8_img11.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "Yes, it is.",
+          "Yes, I am.",
+          "Yes, they are."
         ],
         "answer": 0,
-        "needs_review": true,
-        "answer_note": "Yes, it is."
+        "questionType": "multiple_choice"
       },
       {
         "id": "builder-1-8-q12",
@@ -239,19 +216,16 @@
         "book_range": "1-8",
         "section": "grammar",
         "no": 12,
-        "questionType": "picture_choice",
         "type": "grammar",
-        "difficulty": 3,
+        "difficulty": 2,
         "question": "Is he tall?",
-        "imageFile": "builder-1-8_img12.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "No, it isn't.",
+          "No, he isn't.",
+          "No, I'm not."
         ],
         "answer": 1,
-        "needs_review": true,
-        "answer_note": "No, he isn't."
+        "questionType": "multiple_choice"
       },
       {
         "id": "builder-1-8-q13",
@@ -260,19 +234,16 @@
         "book_range": "1-8",
         "section": "grammar",
         "no": 13,
-        "questionType": "picture_choice",
         "type": "grammar",
-        "difficulty": 4,
+        "difficulty": 2,
         "question": "What is it?",
-        "imageFile": "builder-1-8_img13.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "It's a kite.",
+          "I'm Eric.",
+          "She's my mom."
         ],
         "answer": 0,
-        "needs_review": true,
-        "answer_note": "It's a kite."
+        "questionType": "multiple_choice"
       },
       {
         "id": "builder-1-8-q14",
@@ -281,19 +252,16 @@
         "book_range": "1-8",
         "section": "grammar",
         "no": 14,
-        "questionType": "picture_choice",
         "type": "grammar",
-        "difficulty": 4,
+        "difficulty": 2,
         "question": "Who is she?",
-        "imageFile": "builder-1-8_img14.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "It's a doll.",
+          "She's my sister.",
+          "He's my dad."
         ],
         "answer": 1,
-        "needs_review": true,
-        "answer_note": "She's my sister."
+        "questionType": "multiple_choice"
       },
       {
         "id": "builder-1-8-q15",
@@ -302,19 +270,16 @@
         "book_range": "1-8",
         "section": "grammar",
         "no": 15,
-        "questionType": "picture_choice",
         "type": "grammar",
-        "difficulty": 4,
+        "difficulty": 2,
         "question": "What is your name?",
-        "imageFile": "builder-1-8_img15.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "Good morning.",
+          "I'm good.",
+          "My name is Eric."
         ],
         "answer": 2,
-        "needs_review": true,
-        "answer_note": "My name is Eric."
+        "questionType": "multiple_choice"
       },
       {
         "id": "builder-1-8-q16",
@@ -323,19 +288,18 @@
         "book_range": "1-8",
         "section": "reading",
         "no": 16,
-        "questionType": "picture_choice",
         "type": "reading",
-        "difficulty": 2,
+        "difficulty": 3,
         "question": "Who is Jayden?",
-        "imageFile": "builder-1-8_img16.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "He is a teacher.",
+          "He is Brent's friend.",
+          "He is a brother."
         ],
         "answer": 1,
-        "needs_review": true,
-        "answer_note": "He is Brent's friend."
+        "questionType": "multiple_choice",
+        "passage": "\"Hello, my name is Brent. This is my backpack. This is my school. This is my friend Jayden. We play together. We learn together. I like school.\"",
+        "passage_title": "I Like School!"
       },
       {
         "id": "builder-1-8-q17",
@@ -344,19 +308,18 @@
         "book_range": "1-8",
         "section": "reading",
         "no": 17,
-        "questionType": "picture_choice",
         "type": "reading",
         "difficulty": 3,
         "question": "What do Brent and Jayden do together?",
-        "imageFile": "builder-1-8_img17.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "They sing and dance.",
+          "They play and learn.",
+          "They sleep and eat."
         ],
         "answer": 1,
-        "needs_review": true,
-        "answer_note": "They play and learn."
+        "questionType": "multiple_choice",
+        "passage": "\"Hello, my name is Brent. This is my backpack. This is my school. This is my friend Jayden. We play together. We learn together. I like school.\"",
+        "passage_title": "I Like School!"
       },
       {
         "id": "builder-1-8-q18",
@@ -365,19 +328,18 @@
         "book_range": "1-8",
         "section": "reading",
         "no": 18,
-        "questionType": "picture_choice",
         "type": "reading",
         "difficulty": 3,
         "question": "What can you see in the sky during the day?",
-        "imageFile": "builder-1-8_img18.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "Sun and clouds.",
+          "Moon and stars.",
+          "Dogs and cats."
         ],
         "answer": 0,
-        "needs_review": true,
-        "answer_note": "Sun and clouds."
+        "questionType": "multiple_choice",
+        "passage": "It is day. Look at the sky. Beautiful sun! Beautiful clouds! It is night. Look at the sky. Beautiful moon! Beautiful stars! Beautiful sky!",
+        "passage_title": "Beautiful Sky"
       },
       {
         "id": "builder-1-8-q19",
@@ -386,19 +348,18 @@
         "book_range": "1-8",
         "section": "reading",
         "no": 19,
-        "questionType": "picture_choice",
         "type": "reading",
-        "difficulty": 4,
+        "difficulty": 3,
         "question": "When can you see the moon and stars?",
-        "imageFile": "builder-1-8_img19.png",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "In the morning.",
+          "In the afternoon.",
+          "At night."
         ],
         "answer": 2,
-        "needs_review": true,
-        "answer_note": "At night."
+        "questionType": "multiple_choice",
+        "passage": "It is day. Look at the sky. Beautiful sun! Beautiful clouds! It is night. Look at the sky. Beautiful moon! Beautiful stars! Beautiful sky!",
+        "passage_title": "Beautiful Sky"
       },
       {
         "id": "builder-1-8-q20",
@@ -407,19 +368,17 @@
         "book_range": "1-8",
         "section": "writing",
         "no": 20,
-        "questionType": "picture_choice",
         "type": "writing",
-        "difficulty": 2,
-        "question": "I have ________ books. (나는 많은 책들을 가지고 있어.)",
-        "imageFile": "builder-1-8_img20.png",
+        "difficulty": 3,
+        "question": "I have ________ books.",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "many",
+          "small",
+          "good"
         ],
         "answer": 0,
-        "needs_review": true,
-        "answer_note": "many"
+        "questionType": "fillin",
+        "ko_hint": "나는 많은 책들을 가지고 있어."
       },
       {
         "id": "builder-1-8-q21",
@@ -428,19 +387,17 @@
         "book_range": "1-8",
         "section": "writing",
         "no": 21,
-        "questionType": "picture_choice",
         "type": "writing",
-        "difficulty": 2,
-        "question": "I ________ my room. (나는 나의 방을 청소해.)",
-        "imageFile": "builder-1-8_img21.png",
+        "difficulty": 3,
+        "question": "I ________ my room.",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "like",
+          "clean",
+          "have"
         ],
         "answer": 1,
-        "needs_review": true,
-        "answer_note": "clean"
+        "questionType": "fillin",
+        "ko_hint": "나는 나의 방을 청소해."
       },
       {
         "id": "builder-1-8-q22",
@@ -449,19 +406,17 @@
         "book_range": "1-8",
         "section": "writing",
         "no": 22,
-        "questionType": "picture_choice",
         "type": "writing",
-        "difficulty": 2,
-        "question": "He plays ________. (나는 야구를 해.)",
-        "imageFile": "builder-1-8_img22.png",
+        "difficulty": 3,
+        "question": "He plays ________.",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "soccer",
+          "tennis",
+          "baseball"
         ],
         "answer": 2,
-        "needs_review": true,
-        "answer_note": "baseball"
+        "questionType": "fillin",
+        "ko_hint": "나는 야구를 해."
       },
       {
         "id": "builder-1-8-q23",
@@ -470,19 +425,17 @@
         "book_range": "1-8",
         "section": "writing",
         "no": 23,
-        "questionType": "picture_choice",
         "type": "writing",
         "difficulty": 3,
-        "question": "Today is my ________. (오늘은 나의 생일이야.)",
-        "imageFile": "builder-1-8_img23.png",
+        "question": "Today is my ________.",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "party",
+          "birthday",
+          "gift"
         ],
         "answer": 1,
-        "needs_review": true,
-        "answer_note": "birthday"
+        "questionType": "fillin",
+        "ko_hint": "오늘은 나의 생일이야."
       },
       {
         "id": "builder-1-8-q24",
@@ -491,19 +444,17 @@
         "book_range": "1-8",
         "section": "writing",
         "no": 24,
-        "questionType": "picture_choice",
         "type": "writing",
         "difficulty": 3,
-        "question": "My mom ________ soccer. (나의 엄마는 축구를 하셔.)",
-        "imageFile": "builder-1-8_img24.png",
+        "question": "My mom ________ soccer.",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "plays",
+          "play",
+          "playing"
         ],
         "answer": 0,
-        "needs_review": true,
-        "answer_note": "plays"
+        "questionType": "fillin",
+        "ko_hint": "나의 엄마는 축구를 하셔."
       },
       {
         "id": "builder-1-8-q25",
@@ -512,19 +463,17 @@
         "book_range": "1-8",
         "section": "writing",
         "no": 25,
-        "questionType": "picture_choice",
         "type": "writing",
         "difficulty": 3,
-        "question": "I ________ want balloons! (나는 풍선을 원하지 않아.)",
-        "imageFile": "builder-1-8_img25.png",
+        "question": "I ________ want balloons!",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "do",
+          "not",
+          "don't"
         ],
         "answer": 2,
-        "needs_review": true,
-        "answer_note": "don't"
+        "questionType": "fillin",
+        "ko_hint": "나는 풍선을 원하지 않아."
       },
       {
         "id": "builder-1-8-q26",
@@ -533,19 +482,17 @@
         "book_range": "1-8",
         "section": "writing",
         "no": 26,
-        "questionType": "picture_choice",
         "type": "writing",
         "difficulty": 3,
-        "question": "________ your name? (너의 이름은 무엇이니?)",
-        "imageFile": "builder-1-8_img26.png",
+        "question": "________ your name?",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "What's",
+          "Who's",
+          "How's"
         ],
         "answer": 0,
-        "needs_review": true,
-        "answer_note": "What's"
+        "questionType": "fillin",
+        "ko_hint": "너의 이름은 무엇이니?"
       },
       {
         "id": "builder-1-8-q27",
@@ -554,19 +501,17 @@
         "book_range": "1-8",
         "section": "writing",
         "no": 27,
-        "questionType": "picture_choice",
         "type": "writing",
         "difficulty": 3,
-        "question": "She ________ ballet.  (그녀는 발레를 해.)",
-        "imageFile": "builder-1-8_img27.png",
+        "question": "She ________ ballet.",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "do",
+          "does",
+          "doing"
         ],
         "answer": 1,
-        "needs_review": true,
-        "answer_note": "does"
+        "questionType": "fillin",
+        "ko_hint": "그녀는 발레를 해."
       },
       {
         "id": "builder-1-8-q28",
@@ -575,19 +520,17 @@
         "book_range": "1-8",
         "section": "writing",
         "no": 28,
-        "questionType": "picture_choice",
         "type": "writing",
-        "difficulty": 4,
-        "question": "I ________ ride a bike. (그녀는 자전거를 탈 수 없어)",
-        "imageFile": "builder-1-8_img28.png",
+        "difficulty": 3,
+        "question": "I ________ ride a bike.",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "don't",
+          "can't",
+          "am not"
         ],
         "answer": 1,
-        "needs_review": true,
-        "answer_note": "can't"
+        "questionType": "fillin",
+        "ko_hint": "그녀는 자전거를 탈 수 없어."
       },
       {
         "id": "builder-1-8-q29",
@@ -596,19 +539,17 @@
         "book_range": "1-8",
         "section": "writing",
         "no": 29,
-        "questionType": "picture_choice",
         "type": "writing",
-        "difficulty": 4,
-        "question": "________ you swim? (너는 수영을 할 수 있니?)",
-        "imageFile": "builder-1-8_img29.png",
+        "difficulty": 3,
+        "question": "________ you swim?",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "Are",
+          "Do",
+          "Can"
         ],
         "answer": 2,
-        "needs_review": true,
-        "answer_note": "Can"
+        "questionType": "fillin",
+        "ko_hint": "너는 수영을 할 수 있니?"
       },
       {
         "id": "builder-1-8-q30",
@@ -617,19 +558,17 @@
         "book_range": "1-8",
         "section": "writing",
         "no": 30,
-        "questionType": "picture_choice",
         "type": "writing",
-        "difficulty": 4,
-        "question": "I ________ great today! (나는 오늘 기분이 아주 좋아.)",
-        "imageFile": "builder-1-8_img30.png",
+        "difficulty": 3,
+        "question": "I ________ great today!",
         "options": [
-          "(보기 A)",
-          "(보기 B)",
-          "(보기 C)"
+          "feel",
+          "am",
+          "like"
         ],
         "answer": 0,
-        "needs_review": true,
-        "answer_note": "feel"
+        "questionType": "fillin",
+        "ko_hint": "나는 오늘 기분이 아주 좋아."
       }
     ]
   }
