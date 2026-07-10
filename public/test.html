@@ -208,12 +208,17 @@
                         padding-top:14px; border-top:1px dashed var(--gray-200); }
     .spk-fallback-label { font-size:12px; color:var(--gray-500); flex-shrink:0; }
     .spk-fallback-input { flex:1; padding:9px 13px; border:2px solid var(--gray-200);
-                          border-radius:10px; font-size:14px; outline:none; transition:border-color .2s; }
+                          border-radius:10px; font-size:14px; outline:none; transition:border-color .2s;
+                          text-transform:none; letter-spacing:normal; text-align:left; font-weight:normal; }
     .spk-fallback-input:focus { border-color:var(--primary); }
+    .spk-fallback-input.highlight { border-color:var(--primary); box-shadow:0 0 0 3px rgba(79,70,229,.15); }
     .spk-fallback-btn { padding:9px 14px; background:var(--gray-100); border:none; border-radius:10px;
                         font-size:13px; font-weight:700; cursor:pointer; color:var(--gray-500);
                         white-space:nowrap; }
     .spk-fallback-btn:hover { background:var(--gray-200); }
+    .spk-no-sr-banner { background:#FEF3C7; border:1.5px solid #F59E0B; border-radius:8px;
+                        padding:10px 14px; font-size:13px; color:#92400E; margin-bottom:12px;
+                        text-align:center; line-height:1.5; }
   </style>
 </head>
 <body>
@@ -927,8 +932,8 @@ function renderSpeakingQuestion() {
 
   const recBtn = document.createElement('button');
   recBtn.className = 'spk-btn spk-btn-record';
-  recBtn.innerHTML = _hasSR ? '🎙 녹음 시작' : '🎙 미지원';
-  recBtn.disabled = !_hasSR;
+  recBtn.innerHTML = '🎙 녹음 시작';
+  if (!_hasSR) recBtn.style.display = 'none';
   card.appendChild(ctrl);
 
   // 상태 + 트랜스크립트
@@ -941,7 +946,7 @@ function renderSpeakingQuestion() {
   transcriptEl.textContent = (saved && saved.text) ? saved.text : '여기에 음성 인식 결과가 표시됩니다';
   if (saved) statusEl.textContent = saved.method === 'voice' ? '✓ 음성으로 답변 완료' : '✓ 타이핑으로 답변 완료';
 
-  recBtn.onclick = () => toggleRecording(q.id, recBtn, transcriptEl, statusEl);
+  recBtn.onclick = () => toggleRecording(q.id, recBtn, transcriptEl, statusEl, fbInput);
   ctrl.appendChild(recBtn);
 
   card.appendChild(statusEl);
@@ -962,6 +967,9 @@ function renderSpeakingQuestion() {
   const fbInput = document.createElement('input');
   fbInput.type = 'text'; fbInput.className = 'spk-fallback-input';
   fbInput.placeholder = 'Type your answer here...';
+  fbInput.autocapitalize = 'none';
+  fbInput.autocorrect    = 'off';
+  fbInput.spellcheck     = false;
   fbInput.value = (saved && saved.method === 'typing') ? saved.text : '';
   const fbBtn = document.createElement('button');
   fbBtn.className = 'spk-fallback-btn'; fbBtn.textContent = '완료';
@@ -974,6 +982,13 @@ function renderSpeakingQuestion() {
   };
   fbRow.appendChild(fbLabel); fbRow.appendChild(fbInput); fbRow.appendChild(fbBtn);
   card.appendChild(fbRow);
+  if (!_hasSR) {
+    const banner = document.createElement('div');
+    banner.className = 'spk-no-sr-banner';
+    banner.textContent = '이 브라우저는 음성 인식을 지원하지 않아요. 아래 칸에 직접 입력해 주세요.';
+    card.insertBefore(banner, card.firstChild);
+    setTimeout(() => fbInput.focus(), 100);
+  }
   body.appendChild(card);
 }
 
@@ -995,10 +1010,14 @@ function speakQuestion(text, btn) {
   speechSynthesis.speak(utt);
 }
 
-function toggleRecording(qid, recBtn, transcriptEl, statusEl) {
+function toggleRecording(qid, recBtn, transcriptEl, statusEl, fbInput) {
   if (_spkRecognition) { stopRecording(recBtn); return; }
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) return;
+  if (!SR) {
+    statusEl.textContent = '음성 인식이 지원되지 않습니다. 아래 칸에 직접 입력해 주세요.';
+    if (fbInput) { fbInput.classList.add('highlight'); fbInput.focus(); }
+    return;
+  }
   _spkRecognition = new SR();
   _spkRecognition.lang = 'en-US';
   _spkRecognition.continuous = false;
@@ -1020,9 +1039,11 @@ function toggleRecording(qid, recBtn, transcriptEl, statusEl) {
     if (e.error === 'no-speech') {
       statusEl.textContent = '음성이 감지되지 않았습니다. 🎙 버튼을 눌러 다시 시도하세요.';
     } else if (e.error === 'not-allowed' || e.error === 'audio-capture') {
-      statusEl.textContent = '마이크 권한이 없습니다. 브라우저 설정에서 허용 후 새로고침하세요.';
+      statusEl.textContent = '마이크 권한이 없습니다. 아래 칸에 직접 입력해 주세요.';
+      if (fbInput) { fbInput.classList.add('highlight'); fbInput.focus(); }
     } else {
       statusEl.textContent = '오류(' + e.error + ') — 아래 텍스트로 입력해 주세요';
+      if (fbInput) { fbInput.classList.add('highlight'); fbInput.focus(); }
     }
     stopRecording(recBtn);
   };
