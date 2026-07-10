@@ -91,6 +91,16 @@
     .img-missing { background:var(--gray-100); border-radius:10px; padding:24px;
                    color:var(--gray-500); font-size:13px; }
     .badge-phonics { background:#FFF3CD; color:#856404; }
+    /* picture_choice: 이미지 보기 3개 (Builder vocabulary) */
+    .pic-choices { display:flex; gap:10px; justify-content:center; margin-bottom:4px; }
+    .pic-choice-btn { flex:1; max-width:140px; padding:8px; border:2px solid var(--gray-200);
+                      border-radius:10px; background:#fff; cursor:pointer; transition:all .15s;
+                      display:flex; flex-direction:column; align-items:center; }
+    .pic-choice-btn:hover { border-color:var(--primary); }
+    .pic-choice-btn.selected { border-color:var(--primary); background:var(--primary-light); }
+    .pic-choice-btn img { width:100%; max-height:100px; object-fit:contain; border-radius:6px; }
+    .pic-choice-lbl { font-size:12px; color:var(--gray-500); margin-top:6px; font-weight:600; }
+    .pic-choice-btn.selected .pic-choice-lbl { color:var(--primary); }
     /* 단어 배열 (D&D) */
     .dnd-hint { font-size:12px; color:#94A3B8; margin:0 0 10px; }
     .dnd-answer-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
@@ -484,6 +494,8 @@ function renderQuestion() {
     renderChoices(card, q);
   } else if (q.questionType === 'unscramble') {
     renderUnscramble(card, q);
+  } else if (q.questionType === 'fillin') {
+    renderChoices(card, q);
   }
 
   body.appendChild(card);
@@ -509,17 +521,50 @@ function renderChoices(card, q) {
 }
 
 function renderPictureChoice(card, q) {
-  // 이미지 placeholder (실제 이미지 파일 미존재 시 안내)
-  const imgWrap = document.createElement('div');
-  imgWrap.className = 'img-placeholder';
-  const img = document.createElement('img');
-  img.src   = '/img/' + (q.imageFile || '');
-  img.alt   = '문항 이미지';
-  img.style.cssText = 'max-width:100%;max-height:220px;border-radius:8px;';
-  img.onerror = () => { imgWrap.textContent = '🖼️ 이미지: ' + (q.imageFile || '준비 중'); };
-  imgWrap.appendChild(img);
-  card.appendChild(imgWrap);
-  renderChoices(card, q);
+  if (q.imageOptions) {
+    // Builder: options 배열이 이미지 파일명 — 3개 이미지 버튼
+    const wrap = document.createElement('div');
+    wrap.className = 'pic-choices';
+    const saved = _answers[q.id];
+    (q.options || []).forEach((imgFile, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'pic-choice-btn' + (saved === i ? ' selected' : '');
+      const img = document.createElement('img');
+      img.src = '/img/' + imgFile;
+      img.alt = '보기 ' + String.fromCharCode(65 + i);
+      img.onerror = () => {
+        img.style.display = 'none';
+        const fb = document.createElement('div');
+        fb.style.cssText = 'font-size:11px;color:#94A3B8;padding:6px 0;';
+        fb.textContent = '🖼️ ' + imgFile;
+        btn.insertBefore(fb, btn.querySelector('.pic-choice-lbl'));
+      };
+      btn.appendChild(img);
+      const lbl = document.createElement('div');
+      lbl.className = 'pic-choice-lbl';
+      lbl.textContent = String.fromCharCode(65 + i);
+      btn.appendChild(lbl);
+      btn.onclick = () => {
+        _answers[q.id] = i;
+        wrap.querySelectorAll('.pic-choice-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      };
+      wrap.appendChild(btn);
+    });
+    card.appendChild(wrap);
+  } else {
+    // 구형: imageFile 이 질문 이미지, options 는 텍스트 보기
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'img-placeholder';
+    const img = document.createElement('img');
+    img.src   = '/img/' + (q.imageFile || '');
+    img.alt   = '문항 이미지';
+    img.style.cssText = 'max-width:100%;max-height:220px;border-radius:8px;';
+    img.onerror = () => { imgWrap.textContent = '🖼️ 이미지: ' + (q.imageFile || '준비 중'); };
+    imgWrap.appendChild(img);
+    card.appendChild(imgWrap);
+    renderChoices(card, q);
+  }
 }
 
 function renderUnscramble(card, q) {
