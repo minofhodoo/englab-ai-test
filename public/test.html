@@ -304,7 +304,7 @@
 <div class="screen active" id="screen-welcome">
   <div class="card" style="text-align:center">
     <div class="char-wrap">
-      <img src="/char-ello.png" class="char-img" alt="엘로"
+      <img src="char-ello.png" class="char-img" alt="엘로"
            onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
       <span class="char-emoji-fb" style="display:none">🤖</span>
       <div class="char-speech">안녕! 나는 엘로야 🤖 지금부터 레벨테스트를 시작해볼까요?</div>
@@ -391,7 +391,7 @@
 <div class="screen" id="screen-spk-prep">
   <div class="card">
     <div class="char-wrap">
-      <img src="/char-ello.png" class="char-img" alt="엘로"
+      <img src="char-ello.png" class="char-img" alt="엘로"
            onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
       <span class="char-emoji-fb" style="display:none">🤖</span>
       <div class="char-speech">잘 하셨어요! ⭐ 이제 저랑 영어로 이야기해 볼까요?</div>
@@ -430,7 +430,7 @@
 <div class="screen" id="screen-result">
   <div class="card result-card">
     <div class="result-char-row">
-      <img src="/char-ello.png" class="char-img" alt="엘로"
+      <img src="char-ello.png" class="char-img" alt="엘로"
            onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
       <span class="char-emoji-fb" style="display:none">🤖</span>
       <div class="result-char-speech">정말 수고하셨어요! 최선을 다한 모습이 정말 멋져요 🌟</div>
@@ -654,15 +654,16 @@ function showSectionIntro(sec) {
   // 캐릭터
   const img   = document.getElementById('si-char-img');
   const emoji = document.getElementById('si-char-emoji');
-  img.src     = '/' + info.file;
-  img.alt     = info.name;
-  img.style.display   = 'block';
-  emoji.style.display = 'none';
+  // onerror를 src 이전에 등록 (로드 실패 시 이모지 폴백)
   img.onerror = function () {
     this.style.display  = 'none';
     emoji.textContent   = info.emoji;
     emoji.style.display = 'block';
   };
+  img.src     = info.file;   // 상대 경로 (public/ 루트 기준)
+  img.alt     = info.name;
+  img.style.display   = 'block';
+  emoji.style.display = 'none';
 
   document.getElementById('si-speech').textContent = info.speech;
   document.getElementById('si-title').textContent  = info.title;
