@@ -1378,12 +1378,11 @@ function toggleRecording(qid, recBtn, transcriptEl, statusEl, fbInput) {
     _spkRecognition = rec;
 
     rec.onresult = e => {
-      let finalSeg = '', interimSeg = '';
-      for (let i = 0; i < e.results.length; i++) {
-        if (e.results[i].isFinal) finalSeg += e.results[i][0].transcript;
+      let interimSeg = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) _spkPendingText += e.results[i][0].transcript + ' ';
         else                       interimSeg += e.results[i][0].transcript;
       }
-      if (finalSeg) _spkPendingText += finalSeg + ' ';
       const display = (_spkPendingText + interimSeg).trim();
       if (display) {
         transcriptEl.textContent = display;
@@ -1472,7 +1471,7 @@ function buildRadarSVG(sections) {
   const entries = Object.entries(sections).filter(([, v]) => v.total > 0);
   const n = entries.length;
   if (n < 2) return null;
-  const W = 280, H = 280, cx = W / 2, cy = H / 2, maxR = 95, labR = 128;
+  const W = 300, H = 300, cx = W / 2, cy = H / 2, maxR = 85, labR = 115;
   const SKR = { vocabulary:'어휘', grammar:'문법', reading:'독해', writing:'쓰기', phonics:'파닉스' };
   function pt(i, r) {
     const a = (2 * Math.PI * i / n) - Math.PI / 2;
@@ -1520,7 +1519,7 @@ function buildRadarSVG(sections) {
            ' font-family="sans-serif" dominant-baseline="middle">' + v.pct + '%</text>';
   }).join('');
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg"' +
-    ' style="max-width:260px;width:100%;height:auto">' +
+    ' overflow="visible" style="max-width:260px;width:100%;height:auto">' +
     '<defs><linearGradient id="rfill" x1=".5" y1="0" x2=".5" y2="1">' +
     '<stop offset="0%" stop-color="#4F46E5" stop-opacity=".3"/>' +
     '<stop offset="100%" stop-color="#7C3AED" stop-opacity=".15"/>' +

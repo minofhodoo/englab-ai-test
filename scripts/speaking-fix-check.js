@@ -354,6 +354,14 @@ assert(
   !newToggleSrc.includes("continuous = false") && !newToggleSrc.includes("continuous     = false"),
   'STT: continuous = false 없음 (이전 방식 제거)'
 );
+assert(
+  newToggleSrc.includes('e.resultIndex'),
+  'STT onresult: e.resultIndex 부터 순회 (중복 누적 방지)'
+);
+assert(
+  !newToggleSrc.match(/for \(let i = 0; i < e\.results\.length/),
+  'STT onresult: i=0 전체 재순회 없음 (중복 버그 제거)'
+);
 
 // stopRecording 에서도 새 상태 정리하는지
 const stopFnSrc = HTML.slice(
