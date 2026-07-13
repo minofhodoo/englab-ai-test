@@ -212,6 +212,49 @@
       h1 { font-size:16pt !important; }
     }
 
+    /* ── 캐릭터 공통 ── */
+    .char-wrap { display:flex; flex-direction:column; align-items:center; margin:8px 0 4px; }
+    .char-img  { width:110px; height:auto; object-fit:contain; }
+    .char-emoji-fb { font-size:64px; line-height:1; }
+    .char-speech { background:var(--primary-light); border:1.5px solid var(--primary);
+                   border-radius:16px; padding:11px 15px; font-size:13px; color:#3730A3;
+                   line-height:1.65; max-width:300px; margin-top:10px; text-align:left;
+                   position:relative; }
+    .char-speech::before { content:''; position:absolute; top:-9px; left:50%;
+                           transform:translateX(-50%);
+                           border:5px solid transparent;
+                           border-bottom-color:var(--primary); }
+
+    /* ── 웰컴 화면 ── */
+    .welcome-steps { display:flex; gap:4px; align-items:center; justify-content:center;
+                     flex-wrap:wrap; margin:14px 0 6px; }
+    .ws-item  { display:flex; flex-direction:column; align-items:center; gap:3px; }
+    .ws-icon  { font-size:22px; }
+    .ws-lbl   { font-size:11px; color:var(--gray-500); font-weight:600; text-align:center; }
+    .ws-arrow { font-size:16px; color:var(--gray-200); flex-shrink:0; padding:0 2px; }
+
+    /* ── 섹션 인트로 ── */
+    .si-card { max-width:480px; background:#fff; border-radius:20px; padding:28px 24px;
+               width:100%; box-shadow:0 4px 24px rgba(0,0,0,.1); text-align:center; }
+    .si-progress { font-size:12px; color:var(--gray-500); font-weight:700;
+                   letter-spacing:.4px; margin-bottom:10px; }
+    .si-dots { display:flex; gap:6px; justify-content:center; margin-bottom:16px; }
+    .si-dot  { width:8px; height:8px; border-radius:50%; background:var(--gray-200);
+               transition:all .3s; }
+    .si-dot.active { background:var(--primary); width:22px; border-radius:4px; }
+    .si-dot.done   { background:var(--primary); opacity:.4; }
+    .si-title { font-size:17px; font-weight:800; color:var(--gray-800); margin:10px 0 6px; }
+    .si-desc  { font-size:13px; color:var(--gray-500); line-height:1.6; margin-bottom:12px; }
+    .si-tip   { font-size:12px; color:var(--gray-500); background:var(--gray-100);
+                border-radius:8px; padding:7px 12px; margin-bottom:5px; text-align:left; }
+    .si-count { font-size:13px; color:var(--gray-500); margin:12px 0 18px; }
+
+    /* ── 결과 화면 캐릭터 ── */
+    .result-char-row { display:flex; flex-direction:column; align-items:center; margin:4px 0 8px; }
+    .result-char-speech { background:#F0FDF4; border:1.5px solid #22C55E; border-radius:16px;
+                          padding:11px 15px; font-size:13px; color:#166534; line-height:1.65;
+                          max-width:300px; text-align:center; margin-top:8px; }
+
     /* ── 스피킹 ── */
     .spk-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px;
                  font-weight:700; background:#F3E8FF; color:#6B21A8; margin-bottom:12px;
@@ -257,8 +300,30 @@
 </head>
 <body>
 
+<!-- ⓪ 웰컴 -->
+<div class="screen active" id="screen-welcome">
+  <div class="card" style="text-align:center">
+    <div class="char-wrap">
+      <img src="/char-ello.png" class="char-img" alt="엘로"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span class="char-emoji-fb" style="display:none">🤖</span>
+      <div class="char-speech">안녕! 나는 엘로야 🤖 지금부터 레벨테스트를 시작해볼까요?</div>
+    </div>
+    <h1 style="margin-top:14px">잉글랩 AI 레벨테스트</h1>
+    <p class="sub">문제 풀기 → AI 영어 대화 → 결과 확인</p>
+    <div class="welcome-steps">
+      <div class="ws-item"><div class="ws-icon">📝</div><div class="ws-lbl">문제<br>풀기</div></div>
+      <div class="ws-arrow">→</div>
+      <div class="ws-item"><div class="ws-icon">🎙</div><div class="ws-lbl">AI<br>대화</div></div>
+      <div class="ws-arrow">→</div>
+      <div class="ws-item"><div class="ws-icon">🎯</div><div class="ws-lbl">결과<br>확인</div></div>
+    </div>
+    <button class="btn btn-primary" onclick="showScreen('screen-code')">시작하기 →</button>
+  </div>
+</div>
+
 <!-- ①코드 입력 -->
-<div class="screen active" id="screen-code">
+<div class="screen" id="screen-code">
   <div class="card">
     <div class="logo">📝</div>
     <h1>잉글랩 레벨테스트</h1>
@@ -288,6 +353,25 @@
   </div>
 </div>
 
+<!-- ②-b 섹션 인트로 -->
+<div class="screen" id="screen-section-intro">
+  <div class="si-card">
+    <div class="si-progress" id="si-progress">1 / 1 섹션</div>
+    <div class="si-dots" id="si-dots"></div>
+    <div class="char-wrap">
+      <img id="si-char-img" src="" class="char-img" alt=""
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span id="si-char-emoji" class="char-emoji-fb" style="display:none"></span>
+      <div class="char-speech" id="si-speech"></div>
+    </div>
+    <h2 class="si-title" id="si-title"></h2>
+    <p class="si-desc"  id="si-desc"></p>
+    <div id="si-tips"></div>
+    <div class="si-count" id="si-count"></div>
+    <button class="btn btn-primary" onclick="startSection()">시작하기 →</button>
+  </div>
+</div>
+
 <!-- ③시험 -->
 <div class="screen" id="screen-test">
   <div class="test-header">
@@ -306,8 +390,13 @@
 <!-- ③-a 스피킹 준비 -->
 <div class="screen" id="screen-spk-prep">
   <div class="card">
-    <div class="logo">🎙</div>
-    <h1>스피킹 영역</h1>
+    <div class="char-wrap">
+      <img src="/char-ello.png" class="char-img" alt="엘로"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span class="char-emoji-fb" style="display:none">🤖</span>
+      <div class="char-speech">잘 하셨어요! ⭐ 이제 저랑 영어로 이야기해 볼까요?</div>
+    </div>
+    <h1 style="margin-top:14px">스피킹 영역</h1>
     <p class="sub">Listen &amp; Speak — 총 <span id="spk-total-count">4</span>문항</p>
     <div class="guide-text" style="text-align:left;line-height:1.9">
       <b>📍 응시 전 확인</b><br>
@@ -340,8 +429,13 @@
 <!-- ④결과 -->
 <div class="screen" id="screen-result">
   <div class="card result-card">
-    <div class="logo">🎉</div>
-    <h1>시험 완료!</h1>
+    <div class="result-char-row">
+      <img src="/char-ello.png" class="char-img" alt="엘로"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span class="char-emoji-fb" style="display:none">🤖</span>
+      <div class="result-char-speech">정말 수고하셨어요! 최선을 다한 모습이 정말 멋져요 🌟</div>
+    </div>
+    <h1 style="margin-top:10px">시험 완료!</h1>
 
     <!-- 기본정보 헤더 -->
     <div class="res-header" id="res-header">
@@ -439,9 +533,42 @@ let _spkDone           = null;    // () → 현재 세션 완료
 const _hasSR = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 const _hasTTS = !!window.speechSynthesis;
 
-// URL에서 코드 자동 추출
+// ── 캐릭터 (섹션 담당) ────────────────────────────────────────────────────
+const SECTION_CHARS = {
+  phonics:    { file:'char-toki.png', emoji:'🦜', name:'토키',
+    speech:'안녕! 나는 수다쟁이 토키야! 🦜 알파벳이랑 소리를 같이 알아볼까? 잘 보고 골라봐!',
+    title:'소리와 알파벳을 알아봐요!',
+    desc:'알파벳과 파닉스 규칙을 보고 알맞은 답을 골라보세요.',
+    tips:['천천히 소리를 내어 보세요', '모르는 것이 있어도 괜찮아요!'] },
+  vocabulary: { file:'char-kapi.png', emoji:'🦫', name:'카피',
+    speech:'안녕! 든든한 카피야! 🦫 영어 단어 퀴즈를 낼 거야. 얼마나 많이 알고 있는지 같이 알아보자!',
+    title:'단어를 알아볼까요?',
+    desc:'그림과 문장을 보고 알맞은 영어 단어를 골라보세요.',
+    tips:['천천히 읽고 생각해요', '모르는 단어가 나와도 괜찮아요!'] },
+  grammar:    { file:'char-pixi.png', emoji:'🦊', name:'픽시',
+    speech:'안녕! 말장난의 달인 픽시야! 🦊 영어 문장의 규칙을 같이 알아볼까? 잘 읽으면 답이 보여!',
+    title:'문장 규칙을 알아봐요!',
+    desc:'빈칸에 알맞은 단어를 골라 올바른 문장을 완성해보세요.',
+    tips:['문장 전체를 끝까지 읽어요', '소리 내어 읽으면 더 쉬워요!'] },
+  reading:    { file:'char-poco.png', emoji:'🐶', name:'포코',
+    speech:'안녕! 도전을 즐기는 포코야! 🐶 짧은 영어 글을 읽고 질문에 답하는 거야. 천천히 읽으면 답이 보일 거야!',
+    title:'짧은 글을 읽어봐요!',
+    desc:'짧은 영어 글을 읽고 질문에 맞는 답을 골라보세요.',
+    tips:['글을 먼저 읽고 질문을 봐요', '모르는 단어가 있어도 전체 내용으로 답할 수 있어요'] },
+  writing:    { file:'char-nova.png', emoji:'🐻‍❄️', name:'노바',
+    speech:'안녕! 듬직한 맏형 노바야! ❄️ 이제 영어를 직접 써볼 차례야! 순서대로 배열해봐. 할 수 있어!',
+    title:'영어로 직접 써봐요!',
+    desc:'단어를 올바른 순서로 입력하거나, 빈칸에 알맞은 단어를 직접 써보세요.',
+    tips:['힌트를 꼭 확인해요', '타이핑 후 다음 버튼을 눌러요'] },
+};
+
+let _shownIntros  = new Set(); // 인트로를 이미 표시한 섹션 집합
+let _sectionOrder = [];        // 실제 출제 섹션 순서 (deduped)
+
+// URL에서 코드 자동 추출 (코드 있으면 웰컴 화면 건너뜀)
 const urlCode = new URLSearchParams(location.search).get('code');
 if (urlCode) {
+  showScreen('screen-code');
   document.getElementById('code-input').value = urlCode.toUpperCase();
   setTimeout(lookupCode, 100);
 }
@@ -490,6 +617,15 @@ async function startTest() {
     _answers   = {};
     _scrambleState = {};
     _speakingQuestions = []; _speakingAnswers = {}; _speakingIdx = 0;
+    // 섹션 인트로 상태 초기화
+    _shownIntros  = new Set();
+    const _seenSec = new Set();
+    _sectionOrder = [];
+    for (const q of _questions) {
+      if (q.section && !_seenSec.has(q.section)) {
+        _seenSec.add(q.section); _sectionOrder.push(q.section);
+      }
+    }
     showScreen('screen-test');
     renderQuestion();
   } catch (e) {
@@ -497,11 +633,65 @@ async function startTest() {
   }
 }
 
+// ── ②-b 섹션 인트로 ──────────────────────────────────────────────────────
+function showSectionIntro(sec) {
+  const info = SECTION_CHARS[sec];
+  if (!info) { renderQuestion(); return; } // 알 수 없는 섹션 → 바로 문항 표시
+
+  const secCount = _questions.filter(q => q.section === sec).length;
+  const pos      = _sectionOrder.indexOf(sec) + 1;
+  const total    = _sectionOrder.length;
+
+  document.getElementById('si-progress').textContent = pos + ' / ' + total + ' 섹션';
+
+  // 진행 점
+  document.getElementById('si-dots').innerHTML = _sectionOrder.map((s, i) =>
+    '<div class="si-dot' +
+      (i < pos - 1 ? ' done' : i === pos - 1 ? ' active' : '') +
+    '"></div>'
+  ).join('');
+
+  // 캐릭터
+  const img   = document.getElementById('si-char-img');
+  const emoji = document.getElementById('si-char-emoji');
+  img.src     = '/' + info.file;
+  img.alt     = info.name;
+  img.style.display   = 'block';
+  emoji.style.display = 'none';
+  img.onerror = function () {
+    this.style.display  = 'none';
+    emoji.textContent   = info.emoji;
+    emoji.style.display = 'block';
+  };
+
+  document.getElementById('si-speech').textContent = info.speech;
+  document.getElementById('si-title').textContent  = info.title;
+  document.getElementById('si-desc').textContent   = info.desc;
+  document.getElementById('si-count').textContent  = '📝 ' + secCount + '문제';
+  document.getElementById('si-tips').innerHTML =
+    info.tips.map(t => '<div class="si-tip">💡 ' + t + '</div>').join('');
+
+  showScreen('screen-section-intro');
+}
+
+function startSection() {
+  showScreen('screen-test');
+  renderQuestion();
+}
+
 // ── ③ 문항 렌더링 ─────────────────────────────────────────────────────────
 function renderQuestion() {
   const q    = _questions[_qIdx];
   const n    = _qIdx + 1;
   const tot  = _questions.length;
+
+  // 섹션 인트로 게이트: 각 섹션의 첫 문항에서 한 번만 인트로 표시
+  const sec = q.section;
+  if (sec && !_shownIntros.has(sec)) {
+    _shownIntros.add(sec);
+    showSectionIntro(sec);
+    return;
+  }
 
   document.getElementById('q-counter').textContent = n + ' / ' + tot;
   document.getElementById('progress-fill').style.width = Math.round((n / tot) * 100) + '%';
