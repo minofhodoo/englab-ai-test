@@ -416,7 +416,7 @@
         ],
         "answer": 2,
         "questionType": "fillin",
-        "ko_hint": "나는 야구를 해."
+        "ko_hint": "그는 야구를 해."
       },
       {
         "id": "builder-1-8-q23",
@@ -530,7 +530,7 @@
         ],
         "answer": 1,
         "questionType": "fillin",
-        "ko_hint": "그녀는 자전거를 탈 수 없어."
+        "ko_hint": "나는 자전거를 탈 수 없어."
       },
       {
         "id": "builder-1-8-q29",
