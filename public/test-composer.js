@@ -431,11 +431,11 @@ function buildOverall(assessment) {
 
   // 1. 총점 구간
   if (scorePct >= 80)
-    sent.push('전체 ' + scorePct + '%의 높은 정확도로 현재 단계를 잘 소화하고 있습니다.');
+    sent.push('AI 분석 결과, 전체 ' + scorePct + '%의 높은 정확도로 현재 학습 단계를 성공적으로 소화하고 있음을 확인했습니다.');
   else if (scorePct >= 60)
-    sent.push('전체 ' + scorePct + '%로 기본 내용은 이해하고 있으나, 일부 영역을 더 보완하면 좋겠습니다.');
+    sent.push('AI 분석 결과, 전체 ' + scorePct + '%의 정답률을 기록했습니다. 핵심 개념은 습득되어 있으나, 취약 영역의 보완이 더 빠른 실력 향상으로 이어질 것입니다.');
   else
-    sent.push('전체 ' + scorePct + '%로 기초 개념부터 체계적인 복습이 필요합니다.');
+    sent.push('AI 분석 결과, 전체 ' + scorePct + '%의 정답률을 기록했습니다. 기초 개념부터 단계적으로 재정립하면 안정적인 성장이 기대됩니다.');
 
   // 2. 강한·약한 영역
   const secs = Object.entries(sections).filter(function(e) { return e[1].total > 0; });
@@ -443,17 +443,17 @@ function buildOverall(assessment) {
     secs.sort(function(a, b) { return b[1].pct - a[1].pct; });
     const sk = secs[0][0], sv = secs[0][1];
     const wk = secs[secs.length - 1][0], wv = secs[secs.length - 1][1];
-    if (sv.pct >= 70) sent.push((SEC_KR[sk] || sk) + ' 영역에서 특히 좋은 결과를 보였습니다.');
+    if (sv.pct >= 70) sent.push((SEC_KR[sk] || sk) + ' 영역에서 특히 강점이 확인됩니다. 이 부분의 성취도가 전체 학습 흐름을 이끌고 있습니다.');
     if (wk !== sk && wv.pct < 60)
-      sent.push((SEC_KR[wk] || wk) + ' 영역을 집중적으로 보완하면 더 빠른 향상을 기대할 수 있습니다.');
+      sent.push((SEC_KR[wk] || wk) + ' 영역의 보완이 우선 과제로 분석됩니다. 집중 학습 시 전체 정답률 향상이 가속될 것으로 예측됩니다.');
   }
 
   // 3. 도전 레벨 신호
   const signal = challenge.signal, next = challenge.nextStageName;
   if (signal === 'advance' && next)
-    sent.push('상위 문항 정답률이 높아 ' + next + ' 단계 도전을 권장합니다.');
+    sent.push('상위 문항 분석 결과 ' + next + ' 단계 진급 가능성이 높습니다. 도전을 권장합니다.');
   else if (signal === 'borderline' && next)
-    sent.push(next + ' 단계 도전 가능성이 있으므로, 취약 영역을 보완한 뒤 재평가를 권장합니다.');
+    sent.push(next + ' 단계 진입 가능성이 감지됩니다. 취약 영역 보완 후 재평가를 권장합니다.');
 
   return sent.join(' ');
 }

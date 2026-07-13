@@ -58,7 +58,7 @@ const lowResult = TC.buildOverall({
   challenge: { signal:'stay' },
 });
 assert(/42/.test(lowResult), 'buildOverall: 하 — 점수% 포함');
-assert(/복습/.test(lowResult), 'buildOverall: 하 — "복습" 키워드');
+assert(/AI 분석 결과/.test(lowResult), 'buildOverall: 하 — "AI 분석 결과" 접두사');
 
 // edge: 빈 입력
 const emptyResult = TC.buildOverall({});
@@ -116,11 +116,31 @@ assert(htmlSrc.includes('window.print()'),            '출력 버튼 window.prin
 assert(htmlSrc.includes('display:none !important'),   'print: 버튼/네비 숨김 규칙');
 assert(htmlSrc.includes('print-color-adjust'),        'print: 컬러 강제 출력 설정');
 assert(htmlSrc.includes('box-shadow:none'),           'print: box-shadow 제거');
+assert(htmlSrc.includes('@page'),                     'print: @page A4 사이즈 규칙');
+assert(htmlSrc.includes('grid-template-columns'),     'print: 2단 그리드 grid-template-columns');
+assert(htmlSrc.includes('page-break-inside:avoid'),   'print: page-break-inside:avoid 규칙');
 
 // server.js — academyName 반환
 console.log('\n[6] server.js academyName 반환');
 assert(serverSrc.includes('academyName'),             'server.js: code-check에 academyName 포함');
 assert(serverSrc.includes('getAcademy'),              'server.js: getAcademy 호출');
+
+// ── 7. AI 리포트 컴포넌트 & 레이더 차트 ──────────────────────────────
+console.log('\n[7] AI 리포트 컴포넌트 & 레이더 차트');
+assert(htmlSrc.includes('ai-badge'),                    '.ai-badge CSS/HTML 존재');
+assert(htmlSrc.includes('AI 기반 진단 리포트'),          'AI 기반 진단 리포트 배지 텍스트');
+assert(htmlSrc.includes('AI 종합 분석'),                'AI 종합 분석 섹션 제목');
+assert(htmlSrc.includes('AI 영역별 성취도'),            'AI 영역별 성취도 제목 (오른쪽 컬럼)');
+assert(htmlSrc.includes('AI 영역별 세부 평가'),          'AI 영역별 세부 평가 제목 (하단)');
+assert(htmlSrc.includes('id="res-radar"'),              '#res-radar 레이더 컨테이너 존재');
+assert(htmlSrc.includes('buildRadarSVG'),               'buildRadarSVG 함수 존재');
+assert(htmlSrc.includes('report-grid'),                 '.report-grid 그리드 컨테이너 존재');
+assert(htmlSrc.includes('id="res-sections-ai"'),        '#res-sections-ai 존재');
+assert(htmlSrc.includes('id="res-sections-detail"'),    '#res-sections-detail 존재');
+assert(htmlSrc.includes('id="res-diag-wrap"'),          '#res-diag-wrap 존재');
+assert(/AI 분석 결과/.test(highResult), 'buildOverall: 상 — "AI 분석 결과" 접두사');
+assert(/AI 분석 결과/.test(midResult),  'buildOverall: 중 — "AI 분석 결과" 접두사');
+assert(/AI 분석 결과/.test(lowResult),  'buildOverall: 하 — "AI 분석 결과" 접두사');
 
 // ── 결과 ──────────────────────────────────────────────────────────────
 console.log('\n────────────────────────────────');

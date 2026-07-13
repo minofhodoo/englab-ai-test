@@ -198,18 +198,29 @@
                  color:var(--gray-500); margin-top:14px; }
     .print-btn:hover { background:var(--gray-200); }
     @media print {
+      @page { size: A4 portrait; margin: 12mm 14mm; }
       body { background:#fff !important; }
       .screen:not(#screen-result) { display:none !important; }
       #screen-result { display:block !important; position:static !important; padding:0 !important; }
       .card { box-shadow:none !important; border-radius:0 !important;
-              max-height:none !important; overflow:visible !important; padding:12px !important; }
+              max-height:none !important; overflow:visible !important; padding:8px !important;
+              max-width:none !important; width:100% !important; }
       .result-card { max-height:none !important; overflow:visible !important; }
-      .print-btn, .result-footer, .btn { display:none !important; }
-      .sec-fill { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-      .overall-box, .ref-box, .res-header { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-      * { font-size:11pt; }
-      .result-score { font-size:36pt !important; }
-      h1 { font-size:16pt !important; }
+      .print-btn, .result-footer, .btn, .no-print { display:none !important; }
+      .sec-fill, .cefr-badge, .ai-badge, .overall-box, .ref-box, .result-level,
+      .challenge-row, .signal-advance, .signal-borderline, .signal-stay,
+      .bonus-badge, .res-header, .ai-section-title {
+        -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .radar-wrap svg { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .overall-box, .ref-box, .result-level, .challenge-row { page-break-inside:avoid; }
+      .report-grid { display:grid !important; grid-template-columns:1fr 1fr !important;
+                     gap:0 20px !important; align-items:start !important; }
+      .rg-left { grid-column:1; }
+      .rg-right { grid-column:2; }
+      * { font-size:9pt; }
+      .result-score { font-size:28pt !important; }
+      h1 { font-size:13pt !important; }
+      .result-level .value { font-size:13pt !important; }
     }
 
     /* ── 캐릭터 공통 ── */
@@ -296,6 +307,19 @@
     .spk-no-sr-banner { background:#FEF3C7; border:1.5px solid #F59E0B; border-radius:8px;
                         padding:10px 14px; font-size:13px; color:#92400E; margin-bottom:12px;
                         text-align:center; line-height:1.5; }
+
+    /* ── AI 리포트 컴포넌트 ── */
+    .ai-badge { display:inline-block; background:linear-gradient(135deg,#4F46E5,#7C3AED);
+                color:#fff; font-size:11px; font-weight:700; padding:4px 14px; border-radius:20px;
+                letter-spacing:.5px; }
+    .ai-section-title { font-size:11px; font-weight:700; color:#4F46E5; margin:14px 0 8px;
+                        text-transform:uppercase; letter-spacing:.5px; }
+    .report-grid { display:block; }
+    .radar-wrap { text-align:center; margin:6px 0 4px; }
+    .radar-wrap svg { max-width:260px; width:100%; height:auto; }
+    .sec-detail-item { margin:6px 0 12px; }
+    .sec-detail-name { font-size:12px; font-weight:700; color:#374151; }
+    .sec-detail-pct  { font-size:11px; color:var(--primary); font-weight:700; margin-left:6px; }
   </style>
 </head>
 <body>
@@ -429,55 +453,78 @@
 <!-- ④결과 -->
 <div class="screen" id="screen-result">
   <div class="card result-card">
-    <div class="result-char-row">
+
+    <!-- Ello 캐릭터 (화면 전용, 인쇄 숨김) -->
+    <div class="result-char-row no-print">
       <img src="char-ello.png" class="char-img" alt="엘로"
            onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
       <span class="char-emoji-fb" style="display:none">🤖</span>
       <div class="result-char-speech">정말 수고하셨어요! 최선을 다한 모습이 정말 멋져요 🌟</div>
     </div>
-    <h1 style="margin-top:10px">시험 완료!</h1>
 
-    <!-- 기본정보 헤더 -->
+    <!-- AI 진단 리포트 배지 + 제목 -->
+    <div style="text-align:center;margin:8px 0 4px">
+      <span class="ai-badge">🤖 AI 기반 진단 리포트</span>
+    </div>
+    <h1 style="margin-top:6px;text-align:center">시험 완료!</h1>
+
+    <!-- 기본정보 헤더 (full-width) -->
     <div class="res-header" id="res-header">
       <span>이름&nbsp;<strong id="rh-name">—</strong></span>
       <span>날짜&nbsp;<strong id="rh-date">—</strong></span>
       <span>학원&nbsp;<strong id="rh-academy">—</strong></span>
     </div>
 
-    <!-- 총점 + CEFR -->
-    <div class="score-row">
-      <div class="result-score" id="res-score">—</div>
-      <div class="score-meta">
-        <div class="result-total" id="res-total">/ 30</div>
-        <span class="cefr-badge" id="res-cefr"></span>
-      </div>
-    </div>
+    <!-- 2단 그리드 (화면: 1단 스택 / 인쇄: 2단) -->
+    <div class="report-grid">
 
-    <!-- 추천 교재 레벨 -->
-    <div class="result-level">
-      <div class="label">추천 교재 레벨</div>
-      <div class="value" id="res-level">—</div>
-    </div>
+      <!-- 왼쪽: 총점·레벨·AI 진단 -->
+      <div class="rg-left">
+        <div class="score-row">
+          <div class="result-score" id="res-score">—</div>
+          <div class="score-meta">
+            <div class="result-total" id="res-total">/ 30</div>
+            <span class="cefr-badge" id="res-cefr"></span>
+          </div>
+        </div>
 
-    <!-- 도전 레벨 -->
-    <div class="challenge-row" id="res-challenge-row" style="display:none">
-      <div class="challenge-lbl">도전 레벨</div>
-      <span class="challenge-name" id="res-challenge-name"></span>
-      <span class="challenge-cefr" id="res-challenge-cefr"></span>
-      <span class="signal-badge" id="res-signal"></span>
-    </div>
+        <div class="result-level">
+          <div class="label">🎯 AI 추천 교재 레벨</div>
+          <div class="value" id="res-level">—</div>
+        </div>
 
-    <!-- 영역별 성취도 -->
-    <div class="sec-title">영역별 성취도</div>
-    <div id="res-sections"></div>
+        <div class="challenge-row" id="res-challenge-row" style="display:none">
+          <div class="challenge-lbl">도전 레벨</div>
+          <span class="challenge-name" id="res-challenge-name"></span>
+          <span class="challenge-cefr" id="res-challenge-cefr"></span>
+          <span class="signal-badge" id="res-signal"></span>
+        </div>
 
-    <!-- 종합 진단 -->
-    <div class="diag-text" id="res-diag" style="display:none"></div>
+        <div id="res-diag-wrap" style="display:none">
+          <div class="ai-section-title">🔍 AI 진단 결과</div>
+          <div class="diag-text" id="res-diag"></div>
+        </div>
+      </div><!-- /rg-left -->
 
-    <!-- 종합 피드백 (Overall) -->
+      <!-- 오른쪽: 레이더 차트 + 영역별 바 -->
+      <div class="rg-right">
+        <div class="ai-section-title">📊 AI 영역별 성취도</div>
+        <div id="res-radar" class="radar-wrap" style="display:none"></div>
+        <div id="res-sections"></div>
+      </div><!-- /rg-right -->
+
+    </div><!-- /report-grid -->
+
+    <!-- AI 종합 분석 -->
     <div class="overall-box" id="res-overall" style="display:none">
-      <div class="overall-lbl">종합 피드백</div>
+      <div class="overall-lbl">🧠 AI 종합 분석</div>
       <div id="res-overall-text"></div>
+    </div>
+
+    <!-- AI 영역별 세부 평가 -->
+    <div id="res-sections-ai" style="display:none">
+      <div class="ai-section-title">🔎 AI 영역별 세부 평가</div>
+      <div id="res-sections-detail"></div>
     </div>
 
     <!-- 보너스 대상 -->
@@ -485,7 +532,7 @@
 
     <!-- 참고 지표: Listen & Speak (레벨 미반영) -->
     <div class="ref-box" id="res-speaking" style="display:none">
-      <div class="ref-lbl">참고 지표 — Listen &amp; Speak</div>
+      <div class="ref-lbl">🎙 참고 지표 — Listen &amp; Speak</div>
       <div id="res-spk-bars"></div>
       <div class="ref-note">※ 레벨 결정에는 반영되지 않는 참고 지표입니다.</div>
     </div>
@@ -1421,6 +1468,69 @@ function sectionComment(key, pct) {
   return map[key] || '';
 }
 
+function buildRadarSVG(sections) {
+  const entries = Object.entries(sections).filter(([, v]) => v.total > 0);
+  const n = entries.length;
+  if (n < 2) return null;
+  const W = 280, H = 280, cx = W / 2, cy = H / 2, maxR = 95, labR = 128;
+  const SKR = { vocabulary:'어휘', grammar:'문법', reading:'독해', writing:'쓰기', phonics:'파닉스' };
+  function pt(i, r) {
+    const a = (2 * Math.PI * i / n) - Math.PI / 2;
+    return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+  }
+  function poly(r) {
+    return Array.from({ length: n }, (_, i) => {
+      const p = pt(i, r); return p.x.toFixed(1) + ',' + p.y.toFixed(1);
+    }).join(' ');
+  }
+  const grids = [20, 40, 60, 80, 100].map(p => {
+    const r = p / 100 * maxR;
+    return '<polygon points="' + poly(r) + '" fill="' + (p === 20 ? '#F8FAFC' : 'none') +
+           '" stroke="#E2E8F0" stroke-width="1"/>';
+  }).join('');
+  const axes = Array.from({ length: n }, (_, i) => {
+    const p = pt(i, maxR);
+    return '<line x1="' + cx + '" y1="' + cy + '" x2="' + p.x.toFixed(1) +
+           '" y2="' + p.y.toFixed(1) + '" stroke="#CBD5E1" stroke-width="1"/>';
+  }).join('');
+  const gLabels = [20, 40, 60, 80, 100].map(p => {
+    const r = p / 100 * maxR, gp = pt(0, r);
+    return '<text x="' + (gp.x + 3).toFixed(1) + '" y="' + (gp.y - 1).toFixed(1) +
+           '" font-size="7" fill="#94A3B8" font-family="sans-serif">' + p + '</text>';
+  }).join('');
+  const dataPts = entries.map(([, v], i) => {
+    const r = Math.min(v.pct, 100) / 100 * maxR, p = pt(i, r);
+    return p.x.toFixed(1) + ',' + p.y.toFixed(1);
+  }).join(' ');
+  const dots = entries.map(([, v], i) => {
+    const r = Math.min(v.pct, 100) / 100 * maxR, p = pt(i, r);
+    return '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
+           '" r="4" fill="#4F46E5" stroke="#fff" stroke-width="2"/>';
+  }).join('');
+  const labels = entries.map(([k, v], i) => {
+    const lp = pt(i, labR);
+    const ta = lp.x < cx - 5 ? 'end' : lp.x > cx + 5 ? 'start' : 'middle';
+    const dy = ta === 'middle' ? (lp.y < cy ? -4 : 4) : 0;
+    const lx = lp.x.toFixed(1), ny = lp.y + dy;
+    return '<text x="' + lx + '" y="' + (ny - 7).toFixed(1) +
+           '" text-anchor="' + ta + '" font-size="11" fill="#374151" font-weight="600"' +
+           ' font-family="sans-serif" dominant-baseline="middle">' + (SKR[k] || k) + '</text>' +
+           '<text x="' + lx + '" y="' + (ny + 8).toFixed(1) +
+           '" text-anchor="' + ta + '" font-size="10" fill="#4F46E5" font-weight="700"' +
+           ' font-family="sans-serif" dominant-baseline="middle">' + v.pct + '%</text>';
+  }).join('');
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg"' +
+    ' style="max-width:260px;width:100%;height:auto">' +
+    '<defs><linearGradient id="rfill" x1=".5" y1="0" x2=".5" y2="1">' +
+    '<stop offset="0%" stop-color="#4F46E5" stop-opacity=".3"/>' +
+    '<stop offset="100%" stop-color="#7C3AED" stop-opacity=".15"/>' +
+    '</linearGradient></defs>' +
+    grids + axes + gLabels +
+    '<polygon points="' + dataPts + '" fill="url(#rfill)" stroke="#4F46E5"' +
+    ' stroke-width="2.5" stroke-linejoin="round"/>' +
+    dots + labels + '</svg>';
+}
+
 function showResult(a) {
   // 기본정보 헤더
   const asgn = _assignment || {};
@@ -1456,26 +1566,37 @@ function showResult(a) {
     challengeRow.style.display = 'none';
   }
 
-  // 영역별 성취도 (D: total=0 섹션 제외, F: 영역별 코멘트)
+  // 영역별 성취도 (바 차트) + 레이더 차트 + 세부 평가
   if (a.sections) {
-    document.getElementById('res-sections').innerHTML =
-      Object.entries(a.sections)
-        .filter(([, v]) => v.total > 0)
-        .map(([k, v]) => {
-          const cmt = sectionComment(k, v.pct);
-          return `<div class="sec-bar">
-             <div class="sec-name">${SEC_KR[k] || k}</div>
-             <div class="sec-track"><div class="sec-fill" style="width:${v.pct}%"></div></div>
-             <div class="sec-pct">${v.pct}%</div>
-           </div>${cmt ? '<div class="sec-comment">' + cmt + '</div>' : ''}`;
-        }).join('');
+    const filteredSecs = Object.entries(a.sections).filter(([, v]) => v.total > 0);
+    // 오른쪽 컬럼: 바 차트만
+    document.getElementById('res-sections').innerHTML = filteredSecs
+      .map(([k, v]) => `<div class="sec-bar">
+         <div class="sec-name">${SEC_KR[k] || k}</div>
+         <div class="sec-track"><div class="sec-fill" style="width:${v.pct}%"></div></div>
+         <div class="sec-pct">${v.pct}%</div>
+       </div>`).join('');
+    // 하단 풀폭: 영역별 세부 평가 코멘트
+    const detailHtml = filteredSecs.map(([k, v]) => {
+      const cmt = sectionComment(k, v.pct);
+      return cmt ? `<div class="sec-detail-item"><span class="sec-detail-name">${SEC_KR[k]||k}</span><span class="sec-detail-pct">${v.pct}%</span><div class="sec-comment">${cmt}</div></div>` : '';
+    }).filter(Boolean).join('');
+    const aiSecEl = document.getElementById('res-sections-ai');
+    document.getElementById('res-sections-detail').innerHTML = detailHtml;
+    aiSecEl.style.display = detailHtml ? '' : 'none';
+    // 레이더 차트 (영역 2개 이상이면 표시)
+    const radarEl = document.getElementById('res-radar');
+    const radarSvg = buildRadarSVG(a.sections);
+    if (radarSvg) { radarEl.innerHTML = radarSvg; radarEl.style.display = ''; }
+    else           { radarEl.style.display = 'none'; }
   }
 
-  // 종합 진단
+  // AI 진단 결과
   const diag = a.appropriate ? a.appropriate.diagnosis : '';
+  const diagWrap = document.getElementById('res-diag-wrap');
   const diagEl = document.getElementById('res-diag');
-  if (diag) { diagEl.textContent = diag; diagEl.style.display = ''; }
-  else       { diagEl.style.display = 'none'; }
+  if (diag) { diagEl.textContent = diag; diagWrap.style.display = ''; }
+  else       { diagWrap.style.display = 'none'; }
 
   // 보너스
   const bonusEl = document.getElementById('res-bonus');
