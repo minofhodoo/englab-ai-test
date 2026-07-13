@@ -280,6 +280,95 @@ const emptyRpt = buildSpeakingReport([], {});
 assert(emptyRpt.responseRate === null, '문항 없음 → responseRate null');
 assert(emptyRpt.sttText     === null, '문항 없음 → sttText null');
 
+// ── 11. 팀 재테스트 — 단계 설명 문구 ──────────────────────────────────────────
+console.log(hdr('11. STAGE_GUIDE_MAP 새 문구'));
+
+assert(HTML.includes("1: '알파벳과 파닉스를 배우고 있어요'"), 'Stage 1 Seeker 설명');
+assert(HTML.includes("2: '쉬운 단어와 짧은 문장을 읽을 수 있어요'"), 'Stage 2 Builder 설명');
+assert(HTML.includes("3: '기본 문장을 읽고 쓸 수 있어요'"), 'Stage 3 Challenger 설명');
+assert(HTML.includes("4: '영어 지문을 읽고 내용을 이해할 수 있어요'"), 'Stage 4 Explorer 설명');
+assert(HTML.includes("5: '영어로 자신의 생각을 말하거나 쓸 수 있어요'"), 'Stage 5 Inventor 설명');
+assert(HTML.includes("6: '영어로 자신의 생각을 말하거나 쓸 수 있어요'"), 'Stage 6 Innovator 설명');
+// 레벨명·단계번호 미노출 확인
+assert(!HTML.includes("data.stageName"), '확인 화면에 stageName 미노출 (이전 fix 유지)');
+assert(!HTML.includes("단계 ${data.stage}"), '확인 화면에 단계번호 미노출');
+
+// ── 12. 독해 지문 폰트 크기 ────────────────────────────────────────────────────
+console.log(hdr('12. 독해 지문 font-size'));
+
+const passageCssMatch = HTML.match(/\.passage\s*\{[^}]+\}/);
+assert(
+  passageCssMatch && passageCssMatch[0].includes('1.2rem'),
+  '.passage CSS font-size:1.2rem 적용'
+);
+assert(
+  passageCssMatch && !passageCssMatch[0].includes('font-size:14px'),
+  '.passage CSS 구 14px 제거됨'
+);
+
+// ── 13. Builder writing ko_hint 표시 ───────────────────────────────────────────
+console.log(hdr('13. ko_hint 표시'));
+
+assert(HTML.includes('.q-ko-hint'), 'CSS: .q-ko-hint 클래스 정의 존재');
+assert(HTML.includes('q.ko_hint'), 'JS: q.ko_hint 분기 존재');
+assert(HTML.includes("hint.className = 'q-ko-hint'"), "JS: hint.className = 'q-ko-hint' 설정");
+assert(
+  HTML.includes("'(' + q.ko_hint + ')'"),
+  'JS: ko_hint 괄호로 감싸서 표시'
+);
+
+// ── 14. STT continuous + 자동 재시작 ──────────────────────────────────────────
+console.log(hdr('14. STT: continuous=true + 자동 재시작'));
+
+const newToggleSrc = HTML.slice(
+  HTML.indexOf('function toggleRecording'),
+  HTML.indexOf('\nfunction stopRecording')
+);
+assert(
+  newToggleSrc.includes('continuous      = true') ||
+  newToggleSrc.includes('continuous = true') ||
+  newToggleSrc.includes("continuous     = true"),
+  'STT: continuous = true 설정'
+);
+assert(
+  newToggleSrc.includes('doStart') && newToggleSrc.includes('setTimeout(doStart'),
+  'STT: onend 시 doStart 자동 재시작 존재'
+);
+assert(
+  newToggleSrc.includes('_spkRecording') && newToggleSrc.includes('_spkDone'),
+  'STT: _spkRecording / _spkDone 상태 변수 사용'
+);
+assert(
+  newToggleSrc.includes('_spk_timer') || newToggleSrc.includes('_spkSecsLeft'),
+  'STT: 타이머 표시 로직 존재'
+);
+assert(
+  newToggleSrc.includes('⏹ 완료'),
+  'STT: 녹음 중 버튼 텍스트 "⏹ 완료"'
+);
+assert(
+  newToggleSrc.includes('30'),
+  'STT: 30초 자동 완료 설정'
+);
+assert(
+  !newToggleSrc.includes("continuous = false") && !newToggleSrc.includes("continuous     = false"),
+  'STT: continuous = false 없음 (이전 방식 제거)'
+);
+
+// stopRecording 에서도 새 상태 정리하는지
+const stopFnSrc = HTML.slice(
+  HTML.indexOf('function stopRecording'),
+  HTML.indexOf('\n// ── ④-b 실제 제출')
+);
+assert(
+  stopFnSrc.includes('_spkRecording = false'),
+  'stopRecording: _spkRecording = false 초기화'
+);
+assert(
+  stopFnSrc.includes('clearInterval'),
+  'stopRecording: clearInterval 타이머 정리'
+);
+
 // ── 최종 결과 ─────────────────────────────────────────────────────────────────
 console.log('\n' + '─'.repeat(60));
 console.log('결과: ' + PASS + ' passed, ' + FAIL + ' failed');

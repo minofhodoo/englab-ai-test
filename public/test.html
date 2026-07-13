@@ -70,8 +70,10 @@
     .badge-reading    { background:#F3E8FF; color:#6B21A8; }
     .badge-writing    { background:#DCFCE7; color:#166534; }
     .passage { background:#F8FAFC; border-left:3px solid var(--gray-200); padding:14px 16px;
-               border-radius:0 10px 10px 0; font-size:14px; line-height:1.7; color:#374151;
+               border-radius:0 10px 10px 0; font-size:1.2rem; line-height:1.75; color:#374151;
                margin-bottom:16px; }
+    .q-ko-hint { font-size:13px; color:#64748B; margin:-10px 0 14px; line-height:1.5;
+                 font-style:italic; }
     .q-text { font-size:16px; font-weight:600; line-height:1.6; color:var(--gray-800);
               margin-bottom:18px; }
     .choices { display:flex; flex-direction:column; gap:10px; }
@@ -356,11 +358,12 @@
 <script>
 'use strict';
 const STAGE_GUIDE_MAP = {
-  1: '알파벳·기초 단어 단계 — 현재 준비 중',
-  2: '기초 단어는 알지만 문장이 서툰 학생. 간단한 생활 표현을 익히기 시작한 수준.',
-  3: '짧은 문장을 읽고 쓸 수 있으며 일상 주제로 간단한 대화가 가능한 학생.',
-  4: '복합 문장 구성이 가능하고 다양한 주제의 지문을 읽고 이해할 수 있는 학생.',
-  5: '고급 어휘·복잡한 구문을 이해하며 논리적으로 글을 쓰고 말할 수 있는 학생.',
+  1: '알파벳과 파닉스를 배우고 있어요',
+  2: '쉬운 단어와 짧은 문장을 읽을 수 있어요',
+  3: '기본 문장을 읽고 쓸 수 있어요',
+  4: '영어 지문을 읽고 내용을 이해할 수 있어요',
+  5: '영어로 자신의 생각을 말하거나 쓸 수 있어요',
+  6: '영어로 자신의 생각을 말하거나 쓸 수 있어요',
 };
 
 let _code = '';
@@ -376,6 +379,11 @@ let _speakingAnswers   = {}; // { qid → { text, method:'voice'|'typing' } }
 let _speakingIdx       = 0;
 let _spkRecognition    = null;
 let _spkSynthActive    = false;
+let _spkRecording      = false;   // 현재 녹음 세션 진행 중
+let _spkTimerHandle    = null;    // setInterval 핸들
+let _spkSecsLeft       = 0;       // 남은 초
+let _spkPendingText    = '';      // 누적 확정 STT 텍스트
+let _spkDone           = null;    // () → 현재 세션 완료
 const _hasSR = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 const _hasTTS = !!window.speechSynthesis;
 
@@ -492,6 +500,14 @@ function renderQuestion() {
   qt.className = 'q-text';
   qt.textContent = q.question;
   card.appendChild(qt);
+
+  // 한글 힌트 (Builder writing fillin)
+  if (q.ko_hint) {
+    const hint = document.createElement('div');
+    hint.className = 'q-ko-hint';
+    hint.textContent = '(' + q.ko_hint + ')';
+    card.appendChild(hint);
+  }
 
   // 유형별 입력
   if (q.questionType === 'multiple_choice') {
@@ -1011,47 +1027,107 @@ function speakQuestion(text, btn) {
 }
 
 function toggleRecording(qid, recBtn, transcriptEl, statusEl, fbInput) {
-  if (_spkRecognition) { stopRecording(recBtn); return; }
+  // 이미 녹음 중 → 완료(확정)
+  if (_spkRecording && _spkDone) { _spkDone(); return; }
+
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) {
     statusEl.textContent = '음성 인식이 지원되지 않습니다. 아래 칸에 직접 입력해 주세요.';
     if (fbInput) { fbInput.classList.add('highlight'); fbInput.focus(); }
     return;
   }
-  _spkRecognition = new SR();
-  _spkRecognition.lang = 'en-US';
-  _spkRecognition.continuous = false;
-  _spkRecognition.interimResults = true;
-  _spkRecognition.maxAlternatives = 1;
-  recBtn.classList.add('recording'); recBtn.innerHTML = '⏹ 녹음 중지';
-  statusEl.textContent = '🎙 듣고 있습니다...';
-  _spkRecognition.onresult = e => {
-    const transcript = Array.from(e.results).map(r => r[0].transcript).join(' ').trim();
-    const isFinal = e.results[e.results.length - 1].isFinal;
-    transcriptEl.textContent = transcript;
-    transcriptEl.className = 'spk-transcript' + (isFinal ? ' has-result' : '');
-    if (isFinal) {
-      _speakingAnswers[qid] = { text: transcript, method: 'voice' };
-      statusEl.textContent = '✓ 음성으로 답변 완료';
-    }
-  };
-  _spkRecognition.onerror = e => {
-    if (e.error === 'no-speech') {
-      statusEl.textContent = '음성이 감지되지 않았습니다. 🎙 버튼을 눌러 다시 시도하세요.';
-    } else if (e.error === 'not-allowed' || e.error === 'audio-capture') {
-      statusEl.textContent = '마이크 권한이 없습니다. 아래 칸에 직접 입력해 주세요.';
-      if (fbInput) { fbInput.classList.add('highlight'); fbInput.focus(); }
+
+  _spkRecording   = true;
+  _spkSecsLeft    = 30;
+  _spkPendingText = '';
+
+  // ── 완료 함수 (클로저로 UI 요소 캡처) ────────────────────────────────
+  _spkDone = () => {
+    _spkRecording = false;
+    clearInterval(_spkTimerHandle); _spkTimerHandle = null;
+    if (_spkRecognition) { try { _spkRecognition.stop(); } catch(e){} }
+    const text = transcriptEl.classList.contains('has-result')
+      ? transcriptEl.textContent.trim() : '';
+    if (text) {
+      _speakingAnswers[qid] = { text, method: 'voice' };
+      statusEl.textContent  = '✓ 음성으로 답변 완료';
     } else {
-      statusEl.textContent = '오류(' + e.error + ') — 아래 텍스트로 입력해 주세요';
-      if (fbInput) { fbInput.classList.add('highlight'); fbInput.focus(); }
+      transcriptEl.className   = 'spk-transcript empty';
+      transcriptEl.textContent = '여기에 음성 인식 결과가 표시됩니다';
+      statusEl.textContent = '음성이 감지되지 않았습니다. 다시 시도하거나 아래에 입력해 주세요.';
     }
-    stopRecording(recBtn);
+    recBtn.classList.remove('recording'); recBtn.innerHTML = '🎙 다시 녹음';
+    _spkDone = null;
   };
-  _spkRecognition.onend = () => stopRecording(recBtn);
-  _spkRecognition.start();
+
+  // ── 버튼 UI ──────────────────────────────────────────────────────────
+  recBtn.classList.add('recording'); recBtn.innerHTML = '⏹ 완료';
+
+  // ── 타이머 (30초 자동 완료) ──────────────────────────────────────────
+  statusEl.innerHTML =
+    '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;' +
+    'background:#EF4444;animation:spk-pulse .9s ease-in-out infinite;' +
+    'margin-right:5px;vertical-align:middle;"></span>' +
+    '듣고 있습니다... 말씀해 주세요 ' +
+    '(<span id="_spk_timer">30</span>s 후 자동 완료)';
+  _spkTimerHandle = setInterval(() => {
+    _spkSecsLeft--;
+    const el = document.getElementById('_spk_timer');
+    if (el) el.textContent = _spkSecsLeft;
+    if (_spkSecsLeft <= 0 && _spkDone) _spkDone();
+  }, 1000);
+
+  // ── STT 세션 (continuous + 자동 재시작) ──────────────────────────────
+  const doStart = () => {
+    if (!_spkRecording) return;
+    const rec = new SR();
+    rec.lang            = 'en-US';
+    rec.continuous      = true;
+    rec.interimResults  = true;
+    rec.maxAlternatives = 1;
+    _spkRecognition = rec;
+
+    rec.onresult = e => {
+      let finalSeg = '', interimSeg = '';
+      for (let i = 0; i < e.results.length; i++) {
+        if (e.results[i].isFinal) finalSeg += e.results[i][0].transcript;
+        else                       interimSeg += e.results[i][0].transcript;
+      }
+      if (finalSeg) _spkPendingText += finalSeg + ' ';
+      const display = (_spkPendingText + interimSeg).trim();
+      if (display) {
+        transcriptEl.textContent = display;
+        transcriptEl.className   = 'spk-transcript has-result';
+      }
+    };
+
+    rec.onerror = e => {
+      if (e.error === 'not-allowed' || e.error === 'audio-capture') {
+        _spkRecording = false;
+        clearInterval(_spkTimerHandle); _spkTimerHandle = null;
+        _spkDone = null;
+        stopRecording(recBtn);
+        statusEl.textContent = '마이크 권한이 없습니다. 아래 칸에 직접 입력해 주세요.';
+        if (fbInput) { fbInput.classList.add('highlight'); fbInput.focus(); }
+      }
+      // no-speech / 기타 오류 → onend 에서 자동 재시작
+    };
+
+    rec.onend = () => {
+      _spkRecognition = null;
+      if (_spkRecording) setTimeout(doStart, 150); // 브라우저 자동 종료 → 재시작
+    };
+
+    try { rec.start(); } catch(err) { /* 이미 시작 중 */ }
+  };
+
+  doStart();
 }
 
 function stopRecording(recBtn) {
+  _spkRecording = false;
+  clearInterval(_spkTimerHandle); _spkTimerHandle = null;
+  _spkDone = null;
   if (_spkRecognition) { try { _spkRecognition.stop(); } catch(e){} _spkRecognition = null; }
   if (!recBtn) recBtn = document.querySelector('.spk-btn-record.recording');
   if (recBtn) { recBtn.classList.remove('recording'); recBtn.innerHTML = '🎙 다시 녹음'; }
