@@ -1,0 +1,129 @@
+'use strict';
+/**
+ * report-enhance-check.js — 결과 리포트 보강 검증
+ * 통과: 모든 PASS / 실패: FAIL + 종료코드 1
+ */
+
+const fs   = require('fs');
+const path = require('path');
+
+let pass = 0, fail = 0;
+function ok(label)       { console.log('  PASS  ' + label); pass++; }
+function ng(label, why)  { console.error('  FAIL  ' + label + (why ? ' — ' + why : '')); fail++; }
+function assert(cond, label, why) { cond ? ok(label) : ng(label, why); }
+
+// ── 파일 로드 ──────────────────────────────────────────────────────────
+const composerSrc = fs.readFileSync(
+  path.join(__dirname, '../public/test-composer.js'), 'utf8');
+const htmlSrc = fs.readFileSync(
+  path.join(__dirname, '../public/test.html'), 'utf8');
+const spkSrc = fs.readFileSync(
+  path.join(__dirname, '../public/speaking-utils.js'), 'utf8');
+const serverSrc = fs.readFileSync(
+  path.join(__dirname, '../server.js'), 'utf8');
+
+// ── 1. buildOverall 존재 및 export ──────────────────────────────────────
+console.log('\n[1] buildOverall 함수');
+const TC = require('../public/test-composer');
+assert(typeof TC.buildOverall === 'function', 'buildOverall이 export됨');
+
+// 점수 상 (80%)
+const highResult = TC.buildOverall({
+  scorePct: 85,
+  sections: { vocabulary:{ total:5, pct:90 }, grammar:{ total:5, pct:40 } },
+  challenge: { signal:'advance', nextStageName:'Stage 4' },
+});
+assert(typeof highResult === 'string' && highResult.length > 0, 'buildOverall: 상 케이스 반환값 있음');
+assert(/85/.test(highResult), 'buildOverall: 상 — 점수% 포함');
+assert(/높은/.test(highResult), 'buildOverall: 상 — "높은" 키워드');
+assert(/어휘/.test(highResult), 'buildOverall: 상 — 강점 영역 언급');
+assert(/문법/.test(highResult), 'buildOverall: 상 — 취약 영역 언급');
+assert(/Stage 4/.test(highResult), 'buildOverall: 상 — 도전 단계 언급');
+
+// 점수 중 (60~79%)
+const midResult = TC.buildOverall({
+  scorePct: 68,
+  sections: { reading:{ total:5, pct:72 }, writing:{ total:5, pct:45 } },
+  challenge: { signal:'borderline', nextStageName:'Stage 3' },
+});
+assert(/68/.test(midResult), 'buildOverall: 중 — 점수% 포함');
+assert(/보완/.test(midResult), 'buildOverall: 중 — "보완" 키워드');
+assert(/쓰기/.test(midResult), 'buildOverall: 중 — 취약 영역 언급');
+assert(/Stage 3/.test(midResult), 'buildOverall: 중 — borderline 도전 언급');
+
+// 점수 하 (<60%)
+const lowResult = TC.buildOverall({
+  scorePct: 42,
+  sections: { phonics:{ total:5, pct:80 }, grammar:{ total:5, pct:30 } },
+  challenge: { signal:'stay' },
+});
+assert(/42/.test(lowResult), 'buildOverall: 하 — 점수% 포함');
+assert(/복습/.test(lowResult), 'buildOverall: 하 — "복습" 키워드');
+
+// edge: 빈 입력
+const emptyResult = TC.buildOverall({});
+assert(typeof emptyResult === 'string', 'buildOverall: 빈 입력에도 string 반환');
+
+// ── 2. 기본정보 헤더 (HTML) ────────────────────────────────────────────
+console.log('\n[2] 기본정보 헤더 HTML');
+assert(htmlSrc.includes('id="res-header"'),   '#res-header div 존재');
+assert(htmlSrc.includes('id="rh-name"'),      '#rh-name 존재');
+assert(htmlSrc.includes('id="rh-date"'),      '#rh-date 존재');
+assert(htmlSrc.includes('id="rh-academy"'),   '#rh-academy 존재');
+assert(htmlSrc.includes('res-header'),        '.res-header CSS 클래스 사용');
+assert(htmlSrc.includes('toLocaleDateString'), 'showResult: 날짜 포맷팅');
+assert(htmlSrc.includes('academyName'),        'showResult: academyName 사용');
+assert(htmlSrc.includes('studentName'),        'showResult: studentName 사용');
+
+// ── 3. 종합 피드백 Overall (HTML + JS) ────────────────────────────────
+console.log('\n[3] 종합 피드백 (Overall)');
+assert(htmlSrc.includes('id="res-overall"'),      '#res-overall 존재');
+assert(htmlSrc.includes('id="res-overall-text"'), '#res-overall-text 존재');
+assert(htmlSrc.includes('overall-box'),            '.overall-box CSS 클래스 사용');
+assert(htmlSrc.includes('a.overall'),              'showResult: a.overall 사용');
+
+// server.js — overall 필드 삽입
+assert(serverSrc.includes('buildOverall'),         'server.js: buildOverall 호출');
+assert(serverSrc.includes('assessment.overall'),   'server.js: assessment.overall 저장');
+
+// ── 4. 참고 지표 박스 (Listen & Speak) ───────────────────────────────
+console.log('\n[4] 참고 지표 박스');
+assert(htmlSrc.includes('id="res-spk-bars"'),                '#res-spk-bars 존재');
+assert(htmlSrc.includes('ref-box'),                           '.ref-box CSS 클래스 사용');
+assert(htmlSrc.includes('레벨 결정에는 반영되지 않는 참고 지표'), '참고지표 안내 문구 존재');
+assert(htmlSrc.includes('voiceRate'),                         'showResult: voiceRate 변수');
+assert(htmlSrc.includes('typingRate'),                        'showResult: typingRate 변수');
+
+// speaking-utils: typingRate 반환
+assert(spkSrc.includes('typingRate'),                         'speaking-utils: typingRate 계산');
+assert(spkSrc.includes("method === 'typing'"),                "speaking-utils: typing method 카운트");
+
+// buildSpeakingReport 실제 반환값 검증
+const SU = require('../public/speaking-utils');
+const spkReport = SU.buildSpeakingReport(
+  [{ id:'q1' }, { id:'q2' }, { id:'q3' }],
+  { q1:{ text:'hello world', method:'voice' }, q2:{ text:'yes', method:'typing' }, q3:null },
+);
+assert(spkReport.responseRate === 33, 'buildSpeakingReport: responseRate(voice%)=33');
+assert(spkReport.typingRate   === 33, 'buildSpeakingReport: typingRate=33');
+assert(typeof spkReport.sttText === 'string', 'buildSpeakingReport: sttText string');
+
+// ── 5. A4 출력 ────────────────────────────────────────────────────────
+console.log('\n[5] A4 출력');
+assert(htmlSrc.includes('@media print'),              '@media print 블록 존재');
+assert(htmlSrc.includes('print-btn'),                 '출력 버튼 .print-btn 존재');
+assert(htmlSrc.includes('window.print()'),            '출력 버튼 window.print() 연결');
+assert(htmlSrc.includes('display:none !important'),   'print: 버튼/네비 숨김 규칙');
+assert(htmlSrc.includes('print-color-adjust'),        'print: 컬러 강제 출력 설정');
+assert(htmlSrc.includes('box-shadow:none'),           'print: box-shadow 제거');
+
+// server.js — academyName 반환
+console.log('\n[6] server.js academyName 반환');
+assert(serverSrc.includes('academyName'),             'server.js: code-check에 academyName 포함');
+assert(serverSrc.includes('getAcademy'),              'server.js: getAcademy 호출');
+
+// ── 결과 ──────────────────────────────────────────────────────────────
+console.log('\n────────────────────────────────');
+console.log('PASS: ' + pass + '  FAIL: ' + fail);
+if (fail > 0) { console.error('검증 실패. 위 FAIL 항목을 수정하세요.'); process.exit(1); }
+else          { console.log('모든 검증 통과!'); }

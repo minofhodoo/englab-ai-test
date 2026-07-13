@@ -179,6 +179,38 @@
                    font-size:12px; font-weight:700; display:inline-block; margin-top:12px; }
     .result-footer { font-size:12px; color:#94A3B8; text-align:center; margin-top:16px; line-height:1.6; }
     .sec-comment { font-size:12px; color:var(--gray-500); margin:-2px 0 8px 44px; line-height:1.5; }
+    .res-header { display:flex; flex-wrap:wrap; gap:4px 16px; padding:10px 14px;
+                  background:var(--gray-100); border-radius:10px; margin-bottom:14px; font-size:12px;
+                  color:var(--gray-500); line-height:1.7; }
+    .res-header strong { color:var(--gray-800); font-weight:700; }
+    .overall-box { background:#EEF2FF; border-left:3px solid var(--primary); border-radius:0 10px 10px 0;
+                   padding:12px 16px; font-size:13px; color:#3730A3; line-height:1.75;
+                   margin:12px 0 4px; }
+    .overall-box .overall-lbl { font-size:10px; font-weight:700; text-transform:uppercase;
+                                 letter-spacing:.5px; color:var(--primary); margin-bottom:4px; }
+    .ref-box { border:1px dashed var(--gray-200); border-radius:10px; padding:12px 14px;
+               margin-top:14px; font-size:12px; color:var(--gray-500); line-height:1.7; }
+    .ref-box .ref-lbl { font-size:10px; font-weight:700; text-transform:uppercase;
+                         letter-spacing:.5px; color:var(--gray-500); margin-bottom:6px; }
+    .ref-note { font-size:11px; color:#94A3B8; margin-top:4px; }
+    .print-btn { display:block; width:100%; padding:11px; background:var(--gray-100); border:none;
+                 border-radius:10px; font-size:14px; font-weight:700; cursor:pointer;
+                 color:var(--gray-500); margin-top:14px; }
+    .print-btn:hover { background:var(--gray-200); }
+    @media print {
+      body { background:#fff !important; }
+      .screen:not(#screen-result) { display:none !important; }
+      #screen-result { display:block !important; position:static !important; padding:0 !important; }
+      .card { box-shadow:none !important; border-radius:0 !important;
+              max-height:none !important; overflow:visible !important; padding:12px !important; }
+      .result-card { max-height:none !important; overflow:visible !important; }
+      .print-btn, .result-footer, .btn { display:none !important; }
+      .sec-fill { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .overall-box, .ref-box, .res-header { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      * { font-size:11pt; }
+      .result-score { font-size:36pt !important; }
+      h1 { font-size:16pt !important; }
+    }
 
     /* ── 스피킹 ── */
     .spk-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px;
@@ -311,6 +343,13 @@
     <div class="logo">🎉</div>
     <h1>시험 완료!</h1>
 
+    <!-- 기본정보 헤더 -->
+    <div class="res-header" id="res-header">
+      <span>이름&nbsp;<strong id="rh-name">—</strong></span>
+      <span>날짜&nbsp;<strong id="rh-date">—</strong></span>
+      <span>학원&nbsp;<strong id="rh-academy">—</strong></span>
+    </div>
+
     <!-- 총점 + CEFR -->
     <div class="score-row">
       <div class="result-score" id="res-score">—</div>
@@ -341,15 +380,28 @@
     <!-- 종합 진단 -->
     <div class="diag-text" id="res-diag" style="display:none"></div>
 
+    <!-- 종합 피드백 (Overall) -->
+    <div class="overall-box" id="res-overall" style="display:none">
+      <div class="overall-lbl">종합 피드백</div>
+      <div id="res-overall-text"></div>
+    </div>
+
     <!-- 보너스 대상 -->
     <div style="text-align:center" id="res-bonus"></div>
 
-    <!-- 스피킹 응답률 (레벨 산출 미반영) -->
-    <div id="res-speaking" style="display:none"></div>
+    <!-- 참고 지표: Listen & Speak (레벨 미반영) -->
+    <div class="ref-box" id="res-speaking" style="display:none">
+      <div class="ref-lbl">참고 지표 — Listen &amp; Speak</div>
+      <div id="res-spk-bars"></div>
+      <div class="ref-note">※ 레벨 결정에는 반영되지 않는 참고 지표입니다.</div>
+    </div>
 
     <p class="result-footer">
       결과가 이메일로 발송되었습니다.<br>선생님의 최종 배치 결정에 따라 조정될 수 있습니다.
     </p>
+
+    <!-- A4 출력 -->
+    <button class="print-btn" onclick="window.print()">🖨 결과지 출력 (A4)</button>
   </div>
 </div>
 
@@ -1179,6 +1231,12 @@ function sectionComment(key, pct) {
 }
 
 function showResult(a) {
+  // 기본정보 헤더
+  const asgn = _assignment || {};
+  document.getElementById('rh-name').textContent    = asgn.studentName || '—';
+  document.getElementById('rh-academy').textContent = asgn.academyName || '—';
+  document.getElementById('rh-date').textContent    = new Date().toLocaleDateString('ko-KR');
+
   // 총점
   document.getElementById('res-score').textContent = a.score;
   document.getElementById('res-total').textContent = '/ ' + a.total + ' (' + a.scorePct + '%)';
@@ -1233,18 +1291,31 @@ function showResult(a) {
   bonusEl.innerHTML = a.bonusEligible
     ? '<span class="bonus-badge">⭐ 상위 단계 보너스 대상</span>' : '';
 
-  // 스피킹 응답률 (E: 표시만, 레벨 미반영)
+  // 종합 피드백 (Overall)
+  const overallEl = document.getElementById('res-overall');
+  const overallTxt = document.getElementById('res-overall-text');
+  if (a.overall) {
+    overallTxt.textContent = a.overall;
+    overallEl.style.display = '';
+  } else {
+    overallEl.style.display = 'none';
+  }
+
+  // 참고 지표: Listen & Speak (음성% / 타이핑%)
   const spkEl = document.getElementById('res-speaking');
-  const spkRate = a.speaking && a.speaking.responseRate != null ? a.speaking.responseRate : null;
-  if (spkRate != null) {
-    spkEl.innerHTML =
-      '<div class="sec-title" style="margin-top:14px">스피킹</div>' +
+  const spk = a.speaking || {};
+  const voiceRate  = spk.responseRate != null ? spk.responseRate : null;
+  const typingRate = spk.typingRate   != null ? spk.typingRate  : null;
+  if (voiceRate != null) {
+    const makebar = (label, pct) =>
       '<div class="sec-bar" style="margin-top:4px">' +
-        '<div class="sec-name">음성</div>' +
-        '<div class="sec-track"><div class="sec-fill" style="width:' + spkRate + '%"></div></div>' +
-        '<div class="sec-pct">' + spkRate + '%</div>' +
-      '</div>' +
-      '<div class="sec-comment">음성으로 응답한 스피킹 문항 비율 (레벨 산출 미반영)</div>';
+        '<div class="sec-name">' + label + '</div>' +
+        '<div class="sec-track"><div class="sec-fill" style="width:' + pct + '%"></div></div>' +
+        '<div class="sec-pct">' + pct + '%</div>' +
+      '</div>';
+    document.getElementById('res-spk-bars').innerHTML =
+      makebar('음성', voiceRate) +
+      (typingRate != null ? makebar('타이핑', typingRate) : '');
     spkEl.style.display = '';
   } else {
     spkEl.style.display = 'none';

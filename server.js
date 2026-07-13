@@ -823,7 +823,9 @@ app.get('/api/assignment/:code', (req, res) => {
   try {
     const a = store.getAssignmentByCode(req.params.code.toUpperCase());
     if (!a) return res.status(404).json({ error: '코드를 찾을 수 없습니다.' });
-    res.json({ studentName: a.studentName, stage: a.stage, stageName: a.stageName, status: a.status });
+    const _ac = store.getAcademy(a.academy);
+    res.json({ studentName: a.studentName, stage: a.stage, stageName: a.stageName,
+               status: a.status, academyName: _ac ? _ac.name : null });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -898,6 +900,9 @@ app.post('/api/assignment/:code/submit', async (req, res) => {
     if (spkData && Array.isArray(spkData.questions) && spkData.questions.length > 0) {
       assessment.speaking = SU.buildSpeakingReport(spkData.questions, spkData.answers);
     }
+
+    // 종합 피드백 생성
+    assessment.overall = TC.buildOverall(assessment);
 
     const updated    = store.submitAssignment(code, {
       answers:    submittedAnswers || [],

@@ -65,8 +65,11 @@ function buildSpeakingReport(speakingQuestions, speakingAnswers) {
   if (total === 0) return { responseRate: null, sttText: null };
 
   const answered = speakingAnswers || {};
-  const voiceCount = Object.values(answered).filter(a => a && a.method === 'voice').length;
-  const responseRate = Math.round((voiceCount / total) * 100);
+  const entries = Object.values(answered);
+  const voiceCount  = entries.filter(a => a && a.method === 'voice').length;
+  const typingCount = entries.filter(a => a && a.method === 'typing').length;
+  const responseRate = Math.round((voiceCount  / total) * 100);
+  const typingRate   = Math.round((typingCount / total) * 100);
 
   const sttLines = (speakingQuestions || []).map((q, i) => {
     const ans = answered[q.id];
@@ -77,6 +80,7 @@ function buildSpeakingReport(speakingQuestions, speakingAnswers) {
 
   return {
     responseRate,
+    typingRate,
     sttText: sttLines.join('\n'),
   };
 }
