@@ -426,7 +426,7 @@ function getBonusCandidates(stage, composedQs, pools) {
  */
 function buildOverall(assessment) {
   const SEC_KR = { vocabulary:'어휘', grammar:'문법', reading:'독해', writing:'쓰기', phonics:'파닉스' };
-  const { scorePct = 0, sections = {}, challenge = {} } = assessment || {};
+  const { scorePct = 0, sections = {} } = assessment || {};
   const sent = [];
 
   // 1. 총점 구간
@@ -447,13 +447,6 @@ function buildOverall(assessment) {
     if (wk !== sk && wv.pct < 60)
       sent.push((SEC_KR[wk] || wk) + ' 영역의 보완이 우선 과제로 분석됩니다. 집중 학습 시 전체 정답률 향상이 가속될 것으로 예측됩니다.');
   }
-
-  // 3. 도전 레벨 신호
-  const signal = challenge.signal, next = challenge.nextStageName;
-  if (signal === 'advance' && next)
-    sent.push('상위 문항 분석 결과 ' + next + ' 단계 진급 가능성이 높습니다. 도전을 권장합니다.');
-  else if (signal === 'borderline' && next)
-    sent.push(next + ' 단계 진입 가능성이 감지됩니다. 취약 영역 보완 후 재평가를 권장합니다.');
 
   return sent.join(' ');
 }

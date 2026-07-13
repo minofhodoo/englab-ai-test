@@ -38,7 +38,7 @@ assert(/85/.test(highResult), 'buildOverall: 상 — 점수% 포함');
 assert(/높은/.test(highResult), 'buildOverall: 상 — "높은" 키워드');
 assert(/어휘/.test(highResult), 'buildOverall: 상 — 강점 영역 언급');
 assert(/문법/.test(highResult), 'buildOverall: 상 — 취약 영역 언급');
-assert(/Stage 4/.test(highResult), 'buildOverall: 상 — 도전 단계 언급');
+assert(!/Stage 4/.test(highResult), 'buildOverall: 상 — 도전 단계 미포함');
 
 // 점수 중 (60~79%)
 const midResult = TC.buildOverall({
@@ -49,7 +49,7 @@ const midResult = TC.buildOverall({
 assert(/68/.test(midResult), 'buildOverall: 중 — 점수% 포함');
 assert(/보완/.test(midResult), 'buildOverall: 중 — "보완" 키워드');
 assert(/쓰기/.test(midResult), 'buildOverall: 중 — 취약 영역 언급');
-assert(/Stage 3/.test(midResult), 'buildOverall: 중 — borderline 도전 언급');
+assert(!/Stage 3/.test(midResult), 'buildOverall: 중 — 도전 단계 미포함');
 
 // 점수 하 (<60%)
 const lowResult = TC.buildOverall({
