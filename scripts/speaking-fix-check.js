@@ -18,7 +18,7 @@ const path = require('path');
 
 const ROOT    = path.join(__dirname, '..');
 const HTML    = fs.readFileSync(path.join(ROOT, 'public', 'test.html'), 'utf8');
-const { calcResponseRate, buildSpeakingReport } =
+const { calcResponseRate, buildSpeakingReport, buildSpeakingFeedback } =
   require(path.join(ROOT, 'public', 'speaking-utils.js'));
 
 let PASS = 0, FAIL = 0;
@@ -275,10 +275,23 @@ assert(typingReport.responseRate === 0, '타이핑 전용 → responseRate 0%', 
 assert(!typingReport.sttText.includes('[음성]'), '타이핑 전용 → [음성] 없음');
 assert(typingReport.sttText.includes('[타이핑]'),  '타이핑 전용 → [타이핑] 존재');
 
+assert(typeof rpt.matchRate === 'number', 'matchRate 숫자 타입', typeof rpt.matchRate);
+
 // 빈 문항 → null
 const emptyRpt = buildSpeakingReport([], {});
 assert(emptyRpt.responseRate === null, '문항 없음 → responseRate null');
-assert(emptyRpt.sttText     === null, '문항 없음 → sttText null');
+assert(emptyRpt.matchRate    === null, '문항 없음 → matchRate null');
+assert(emptyRpt.sttText      === null, '문항 없음 → sttText null');
+
+// buildSpeakingFeedback 기본 동작
+console.log(hdr('10-b. buildSpeakingFeedback'));
+assert(typeof buildSpeakingFeedback === 'function', 'buildSpeakingFeedback 함수 존재');
+const fb1 = buildSpeakingFeedback({ responseRate: 80, matchRate: 70 });
+assert(fb1 !== null && typeof fb1 === 'object', '상 케이스: 객체 반환');
+assert(['pronunciation','grammar','expression','fluency'].every(k => typeof fb1[k] === 'string' && fb1[k].length > 0), '4개 항목 모두 문자열');
+const fb2 = buildSpeakingFeedback({ responseRate: 30, matchRate: 20 });
+assert(fb2.pronunciation !== fb1.pronunciation, '하 케이스: 발음 코멘트 상이함');
+assert(buildSpeakingFeedback(null) === null, 'null 입력 → null');
 
 // ── 11. 팀 재테스트 — 단계 설명 문구 ──────────────────────────────────────────
 console.log(hdr('11. STAGE_GUIDE_MAP 새 문구'));

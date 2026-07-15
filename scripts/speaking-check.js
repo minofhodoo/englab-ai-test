@@ -18,7 +18,7 @@ const fs   = require('fs');
 
 const SU = require(path.join(__dirname, '../public/speaking-utils'));
 const TC = require(path.join(__dirname, '../public/test-composer'));
-const { semanticMatch, calcResponseRate, buildSpeakingReport, normalizeSpk } = SU;
+const { semanticMatch, calcResponseRate, buildSpeakingReport, buildSpeakingFeedback, normalizeSpk } = SU;
 
 // ── 색상 헬퍼 ──────────────────────────────────────────────────────────────
 const C = {
@@ -178,10 +178,38 @@ assert(report.sttText.includes('무응답'),
 assert(report.sttText.includes('My name is Alex'),
   'sttText에 실제 응답 텍스트 포함');
 
+assert(typeof report.typingRate  === 'number', 'typingRate는 숫자', typeof report.typingRate);
+assert(typeof report.matchRate   === 'number', 'matchRate는 숫자', typeof report.matchRate);
+assert(report.matchRate >= 0 && report.matchRate <= 100, 'matchRate 0~100 범위', report.matchRate);
+
 // 빈 문항 → null 반환
 const emptyReport = buildSpeakingReport([], {});
 assert(emptyReport.responseRate === null, '문항 없음 → responseRate=null');
-assert(emptyReport.sttText     === null, '문항 없음 → sttText=null');
+assert(emptyReport.typingRate   === null, '문항 없음 → typingRate=null');
+assert(emptyReport.matchRate    === null, '문항 없음 → matchRate=null');
+assert(emptyReport.sttText      === null, '문항 없음 → sttText=null');
+
+// buildSpeakingFeedback 상/중/하 검증
+console.log(hdr('4-b. buildSpeakingFeedback — 상/중/하 케이스'));
+const fbHigh = buildSpeakingFeedback({ responseRate: 80, matchRate: 75 });
+assert(fbHigh !== null, 'buildSpeakingFeedback: responseRate 있으면 객체 반환');
+assert(typeof fbHigh.pronunciation === 'string' && fbHigh.pronunciation.length > 0, '발음 코멘트 존재');
+assert(typeof fbHigh.fluency       === 'string' && fbHigh.fluency.length       > 0, '유창성 코멘트 존재');
+assert(typeof fbHigh.grammar       === 'string' && fbHigh.grammar.length       > 0, '문법 코멘트 존재');
+assert(typeof fbHigh.expression    === 'string' && fbHigh.expression.length    > 0, '표현 코멘트 존재');
+
+const fbMid = buildSpeakingFeedback({ responseRate: 50, matchRate: 45 });
+assert(fbMid !== null, 'buildSpeakingFeedback: 중 케이스');
+assert(fbMid.pronunciation !== fbHigh.pronunciation, '발음: 상/중 코멘트 다름 (변형 확인)');
+assert(fbMid.grammar       !== fbHigh.grammar,       '문법: 상/중 코멘트 다름');
+
+const fbLow = buildSpeakingFeedback({ responseRate: 20, matchRate: 15 });
+assert(fbLow !== null, 'buildSpeakingFeedback: 하 케이스');
+assert(fbLow.fluency     !== fbHigh.fluency,     '유창성: 상/하 코멘트 다름');
+assert(fbLow.expression  !== fbHigh.expression,  '표현: 상/하 코멘트 다름');
+
+assert(buildSpeakingFeedback(null) === null, 'buildSpeakingFeedback: null 입력 → null');
+assert(buildSpeakingFeedback({ responseRate: null }) === null, 'buildSpeakingFeedback: responseRate null → null');
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 5. 레벨 산출 불변 (스피킹 반영 금지)

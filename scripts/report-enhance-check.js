@@ -99,6 +99,26 @@ assert(adminSrc2.includes('STT'),                   'admin-assign: STT 레이블
 assert(!adminSrc2.includes('renderCompetitorSection'), 'admin-assign: 경쟁사 UI 제거됨');
 assert(adminSrc2.includes('buildRadarSVG'),          'admin-assign: buildRadarSVG 존재 (진단리포트)');
 assert(adminSrc2.includes('overall-box'),            'admin-assign: AI 종합분석 박스 존재');
+assert(adminSrc2.includes('buildSpeakingFeedback'),  'admin-assign: buildSpeakingFeedback 호출');
+assert(adminSrc2.includes('speaking-utils.js'),      'admin-assign: speaking-utils.js 스크립트 로드');
+
+// test.html: L&S 피드백 섹션 확인
+assert(htmlSrc.includes('res-spk-feedback'),         'test.html: #res-spk-feedback 존재');
+assert(htmlSrc.includes('buildSpeakingFeedback'),    'test.html: buildSpeakingFeedback 호출');
+assert(htmlSrc.includes('spk-fb-lbl'),               'test.html: .spk-fb-lbl CSS 존재');
+assert(htmlSrc.includes('참고 지표'),                'test.html: 참고 지표 레이블 존재');
+
+// speaking-utils: 새 필드 검증
+const suSrc = fs.readFileSync(path.join(__dirname, '../public/speaking-utils.js'), 'utf8');
+assert(suSrc.includes('matchRate'),                  'speaking-utils: matchRate 필드 추가됨');
+assert(suSrc.includes('buildSpeakingFeedback'),      'speaking-utils: buildSpeakingFeedback export됨');
+const SU2 = require('../public/speaking-utils');
+assert(typeof SU2.buildSpeakingFeedback === 'function', 'speaking-utils: buildSpeakingFeedback 함수 export 확인');
+const fbSample = SU2.buildSpeakingFeedback({ responseRate: 75, matchRate: 60 });
+assert(fbSample && fbSample.pronunciation, 'buildSpeakingFeedback: 발음 코멘트 생성');
+assert(fbSample && fbSample.fluency,       'buildSpeakingFeedback: 유창성 코멘트 생성');
+assert(fbSample && fbSample.grammar,       'buildSpeakingFeedback: 문법 코멘트 생성');
+assert(fbSample && fbSample.expression,    'buildSpeakingFeedback: 표현 코멘트 생성');
 
 // speaking-utils 로직은 유지
 assert(spkSrc.includes('typingRate'),                'speaking-utils: typingRate 계산 유지');

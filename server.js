@@ -943,10 +943,10 @@ function buildAssignmentResultEmail({ assignment, assessment, acInfo, dateStr })
 
   function sectionComment(key, pct) {
     const map = {
-      vocabulary: pct >= 80 ? '풍부한 어휘력을 갖추고 있어요.' : pct >= 60 ? '기본 어휘는 양호하나, 고급 어휘 확장이 필요해요.' : '어휘 학습을 체계적으로 강화할 필요가 있어요.',
-      grammar:    pct >= 80 ? '문법 구조를 정확히 이해하고 있어요.' : pct >= 60 ? '기초 문법은 잡혀 있으나, 시제·수 일치 등 정교화가 필요해요.' : '기초 문법 규칙부터 체계적인 복습이 필요해요.',
-      reading:    pct >= 80 ? '지문 이해 및 추론 능력이 우수해요.' : pct >= 60 ? '직접 이해는 되나, 추론·중심문장 파악 연습이 필요해요.' : '짧은 지문 독해부터 단계적 연습이 필요해요.',
-      writing:    pct >= 80 ? '문장 구조를 정확하게 조립할 수 있어요.' : pct >= 60 ? '기본 문장 구성은 가능하나, 복잡한 구조 연습이 필요해요.' : '기본 어순과 문장 구조 훈련이 필요해요.',
+      vocabulary: pct >= 80 ? '어휘력이 전반적으로 풍부하게 갖추어져 있으며, 다양한 표현을 맥락에 맞게 활용하는 능력이 확인됩니다.' : pct >= 60 ? '기본 어휘는 양호하나, 고급 어휘 및 다의어 활용 영역의 추가 학습이 필요합니다.' : '어휘 기초부터 체계적으로 강화해 나가는 것이 필요합니다. 빈출 어휘 중심의 집중 학습을 권장합니다.',
+      grammar:    pct >= 80 ? '문법 구조를 정확하게 이해하고 있으며, 시제와 수 일치 등 핵심 규칙을 안정적으로 적용하는 능력이 확인됩니다.' : pct >= 60 ? '기초 문법은 어느 정도 갖추어져 있으나, 시제·수 일치 등 세부 규칙의 정교화가 필요합니다.' : '기초 문법 규칙부터 체계적으로 복습하는 것이 필요합니다. 기본 문장 구조 반복 훈련을 권장합니다.',
+      reading:    pct >= 80 ? '지문 이해력과 추론 능력이 우수합니다. 중심 내용 파악과 행간 읽기 능력이 고르게 발달해 있습니다.' : pct >= 60 ? '직접적인 내용 이해는 가능하나, 추론 및 중심 문장 파악 능력을 보강하는 연습이 필요합니다.' : '짧은 지문부터 단계적으로 독해 연습을 쌓아 나가는 것이 필요합니다.',
+      writing:    pct >= 80 ? '문장 구조를 정확하게 구성할 수 있으며, 다양한 문형을 안정적으로 활용하는 능력이 확인됩니다.' : pct >= 60 ? '기본 문장 구성은 가능하나, 복잡한 구조의 문장 조합 능력을 높이는 연습이 필요합니다.' : '기본 어순과 문장 구조를 익히는 훈련이 필요합니다. 단순한 문형부터 반복 연습을 권장합니다.',
     };
     return map[key] || '';
   }
@@ -1010,6 +1010,30 @@ function buildAssignmentResultEmail({ assignment, assessment, acInfo, dateStr })
 
     ${overallHtml}
 
+    ${(function() {
+      const spk = assessment.speaking || {};
+      if (spk.responseRate == null) return '';
+      const fb = SU.buildSpeakingFeedback(spk);
+      if (!fb) return '';
+      const rate = spk.responseRate;
+      const typR = spk.typingRate != null ? ' · 타이핑 ' + spk.typingRate + '%' : '';
+      const rows = [
+        { label:'발음',  text: fb.pronunciation },
+        { label:'유창성', text: fb.fluency },
+        { label:'문법',  text: fb.grammar },
+        { label:'표현',  text: fb.expression },
+      ].map(it => `<tr>
+        <td style="padding:5px 0;font-size:12px;font-weight:700;color:#4F46E5;white-space:nowrap;width:52px;">
+          <span style="background:#EEF2FF;border-radius:4px;padding:2px 7px;">${escapeHtml(it.label)}</span>
+        </td>
+        <td style="padding:5px 0 5px 8px;font-size:12px;color:#374151;line-height:1.6;">${escapeHtml(it.text)}</td>
+      </tr>`).join('');
+      return `<div style="margin:16px 0;">
+        <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.5px;">🎙 AI Speaking 피드백</p>
+        <p style="margin:0 0 8px;font-size:11px;color:#94A3B8;">참고 지표 — 음성 응답률 ${rate}%${typR}</p>
+        <table style="width:100%;border-collapse:collapse;">${rows}</table>
+      </div>`;
+    })()}
     ${assessment.bonusEligible ? `
     <div style="text-align:center;margin:12px 0;">
       <span style="background:#FEF3C7;color:#92400E;border-radius:20px;padding:4px 16px;font-size:13px;font-weight:700;">⭐ 상위 단계 보너스 대상</span>
@@ -1028,11 +1052,15 @@ app.get('/api/assignment/:code/report', (req, res) => {
   if (!a)                  return res.status(404).json({ error: '배정을 찾을 수 없습니다.' });
   if (a.status !== 'done') return res.status(400).json({ error: '아직 완료되지 않은 시험입니다.' });
 
-  // STT 텍스트는 원장 전용 — 학생 리포트에서 제거
+  // STT 텍스트는 원장 전용 — 학생 리포트에서 제거 (responseRate/typingRate/matchRate는 피드백용으로 포함)
   let publicAssessment = a.assessment || null;
   if (publicAssessment && publicAssessment.speaking && publicAssessment.speaking.sttText != null) {
     publicAssessment = Object.assign({}, publicAssessment, {
-      speaking: { responseRate: publicAssessment.speaking.responseRate },
+      speaking: {
+        responseRate: publicAssessment.speaking.responseRate,
+        typingRate:   publicAssessment.speaking.typingRate,
+        matchRate:    publicAssessment.speaking.matchRate,
+      },
     });
   }
 

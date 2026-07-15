@@ -431,11 +431,11 @@ function buildOverall(assessment) {
 
   // 1. 총점 구간
   if (scorePct >= 80)
-    sent.push('AI 분석 결과, 전체 ' + scorePct + '%의 높은 정확도로 현재 학습 단계를 성공적으로 소화하고 있음을 확인했습니다.');
+    sent.push('AI 분석 결과, 전체 ' + scorePct + '%의 높은 정답률을 기록했습니다. 현재 학습 단계의 핵심 내용을 안정적으로 습득하고 있는 것으로 분석됩니다.');
   else if (scorePct >= 60)
-    sent.push('AI 분석 결과, 전체 ' + scorePct + '%의 정답률을 기록했습니다. 핵심 개념은 습득되어 있으나, 취약 영역의 보완이 더 빠른 실력 향상으로 이어질 것입니다.');
+    sent.push('AI 분석 결과, 전체 ' + scorePct + '%의 정답률을 기록했습니다. 기본 개념은 갖추고 있으며, 취약 영역의 보완이 이루어지면 실력 향상이 가속될 것입니다.');
   else
-    sent.push('AI 분석 결과, 전체 ' + scorePct + '%의 정답률을 기록했습니다. 기초 개념부터 단계적으로 재정립하면 안정적인 성장이 기대됩니다.');
+    sent.push('AI 분석 결과, 전체 ' + scorePct + '%의 정답률을 기록했습니다. 기초 개념을 단계적으로 다져 나가면 안정적인 성장을 이룰 수 있습니다.');
 
   // 2. 강한·약한 영역
   const secs = Object.entries(sections).filter(function(e) { return e[1].total > 0; });
@@ -443,9 +443,9 @@ function buildOverall(assessment) {
     secs.sort(function(a, b) { return b[1].pct - a[1].pct; });
     const sk = secs[0][0], sv = secs[0][1];
     const wk = secs[secs.length - 1][0], wv = secs[secs.length - 1][1];
-    if (sv.pct >= 70) sent.push((SEC_KR[sk] || sk) + ' 영역에서 특히 강점이 확인됩니다. 이 부분의 성취도가 전체 학습 흐름을 이끌고 있습니다.');
+    if (sv.pct >= 70) sent.push((SEC_KR[sk] || sk) + ' 영역에서 강점이 두드러집니다. 이 성취를 바탕으로 다른 영역까지 균형 있게 발전시켜 나가는 것이 중요합니다.');
     if (wk !== sk && wv.pct < 60)
-      sent.push((SEC_KR[wk] || wk) + ' 영역의 보완이 우선 과제로 분석됩니다. 집중 학습 시 전체 정답률 향상이 가속될 것으로 예측됩니다.');
+      sent.push('반면 ' + (SEC_KR[wk] || wk) + ' 영역은 보완이 필요한 것으로 분석됩니다. 집중 학습을 통해 전체 성적 향상으로 이어질 것입니다.');
   }
 
   return sent.join(' ');
