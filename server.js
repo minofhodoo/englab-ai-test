@@ -938,63 +938,82 @@ app.post('/api/assignment/:code/submit', async (req, res) => {
 
 // 배정 결과 이메일
 function buildAssignmentResultEmail({ assignment, assessment, acInfo, dateStr }) {
-  const sig      = assessment.challenge.signal;
-  const sigLabel = sig === 'advance' ? '▲ 상위 단계 추천' : sig === 'borderline' ? '△ 경계 수준' : '→ 현재 단계 유지';
-  const SEC_KR   = { vocabulary:'어휘', grammar:'문법', reading:'독해', writing:'쓰기' };
+  const SEC_KR = { vocabulary:'어휘', grammar:'문법', reading:'독해', writing:'쓰기' };
+  const cefr   = assessment.appropriate ? assessment.appropriate.cefr : '';
+
+  function sectionComment(key, pct) {
+    const map = {
+      vocabulary: pct >= 80 ? '풍부한 어휘력을 갖추고 있어요.' : pct >= 60 ? '기본 어휘는 양호하나, 고급 어휘 확장이 필요해요.' : '어휘 학습을 체계적으로 강화할 필요가 있어요.',
+      grammar:    pct >= 80 ? '문법 구조를 정확히 이해하고 있어요.' : pct >= 60 ? '기초 문법은 잡혀 있으나, 시제·수 일치 등 정교화가 필요해요.' : '기초 문법 규칙부터 체계적인 복습이 필요해요.',
+      reading:    pct >= 80 ? '지문 이해 및 추론 능력이 우수해요.' : pct >= 60 ? '직접 이해는 되나, 추론·중심문장 파악 연습이 필요해요.' : '짧은 지문 독해부터 단계적 연습이 필요해요.',
+      writing:    pct >= 80 ? '문장 구조를 정확하게 조립할 수 있어요.' : pct >= 60 ? '기본 문장 구성은 가능하나, 복잡한 구조 연습이 필요해요.' : '기본 어순과 문장 구조 훈련이 필요해요.',
+    };
+    return map[key] || '';
+  }
 
   const sectionRows = assessment.sections
-    ? Object.entries(assessment.sections).map(([k, v]) =>
-        `<tr>
-          <td style="padding:6px 0;color:#64748B;font-size:13px;">${SEC_KR[k]||k}</td>
-          <td style="padding:6px 0;">
-            <div style="height:8px;background:#E2E8F0;border-radius:4px;width:160px;display:inline-block;vertical-align:middle;">
-              <div style="height:100%;background:#4F46E5;border-radius:4px;width:${v.pct}%;"></div>
-            </div>
-          </td>
-          <td style="padding:6px 0 6px 8px;font-size:13px;font-weight:700;color:#1E293B;">${v.correct}/${v.total} (${v.pct}%)</td>
-        </tr>`).join('')
+    ? Object.entries(assessment.sections)
+        .filter(([, v]) => v.total > 0)
+        .map(([k, v]) => {
+          const cmt = sectionComment(k, v.pct);
+          return `<tr>
+            <td style="padding:6px 0;color:#64748B;font-size:13px;font-weight:600;">${SEC_KR[k]||k}</td>
+            <td style="padding:6px 0;">
+              <div style="height:8px;background:#E2E8F0;border-radius:4px;width:140px;display:inline-block;vertical-align:middle;">
+                <div style="height:100%;background:#4F46E5;border-radius:4px;width:${v.pct}%;"></div>
+              </div>
+            </td>
+            <td style="padding:6px 0 6px 8px;font-size:13px;font-weight:700;color:#1E293B;">${v.pct}%</td>
+            <td style="padding:6px 0 6px 6px;font-size:11px;color:#64748B;">${cmt}</td>
+          </tr>`;
+        }).join('')
     : '';
 
-  const cefrStr   = assessment.appropriate ? assessment.appropriate.cefr : '';
-  const nextStr   = assessment.challenge.nextStageName
-    ? `${assessment.challenge.nextStageName} (${assessment.challenge.nextCefr || ''})`
-    : '—';
+  const overallHtml = assessment.overall
+    ? `<div style="background:#EEF2FF;border-left:3px solid #4F46E5;border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;">
+         <p style="margin:0 0 6px;font-size:11px;font-weight:700;color:#4F46E5;text-transform:uppercase;letter-spacing:.5px;">🧠 AI 종합 분석</p>
+         <p style="margin:0;font-size:13px;color:#3730A3;line-height:1.75;">${escapeHtml(assessment.overall)}</p>
+       </div>`
+    : '';
 
   return `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"></head>
 <body style="font-family:sans-serif;background:#F8FAFC;padding:32px;">
-<div style="max-width:560px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E2E8F0;">
+<div style="max-width:600px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E2E8F0;">
   <div style="background:linear-gradient(135deg,#4F46E5,#7C3AED);padding:28px 32px;color:#fff;">
     <p style="margin:0 0 4px;font-size:12px;opacity:.7;">SDA삼육잉글랩</p>
-    <h1 style="margin:0;font-size:22px;">AI 레벨테스트 결과</h1>
+    <h1 style="margin:0;font-size:22px;">AI 기반 진단 리포트</h1>
     <p style="margin:6px 0 0;font-size:12px;opacity:.7;">${dateStr}</p>
   </div>
   <div style="padding:28px 32px;">
     <p style="margin:0 0 4px;color:#64748B;font-size:14px;">학생: <strong style="color:#1E293B;">${escapeHtml(assignment.studentName)}</strong></p>
-    <p style="margin:0 0 20px;color:#64748B;font-size:14px;">응시 단계: <strong style="color:#4F46E5;">${escapeHtml(assignment.stageName)} (단계 ${assignment.stage}) · CEFR ${cefrStr}</strong></p>
+    <p style="margin:0 0 20px;color:#64748B;font-size:14px;">응시 단계: <strong style="color:#4F46E5;">${escapeHtml(assignment.stageName)} (단계 ${assignment.stage})${cefr ? ' · CEFR ' + escapeHtml(cefr) : ''}</strong></p>
 
     <div style="background:#F1F5F9;border-radius:12px;padding:20px;margin-bottom:20px;text-align:center;">
       <p style="margin:0 0 6px;font-size:13px;color:#64748B;">총점</p>
       <p style="margin:0;font-size:48px;font-weight:800;color:#4F46E5;">${assessment.score}<span style="font-size:24px;color:#94A3B8;"> / ${assessment.total}</span></p>
-      <p style="margin:8px 0 0;font-size:13px;color:#64748B;">${assessment.scorePct}% &nbsp;·&nbsp; ${sigLabel}</p>
+      <p style="margin:8px 0 0;font-size:13px;color:#64748B;">${assessment.scorePct}%${cefr ? ' &nbsp;·&nbsp; CEFR ' + escapeHtml(cefr) : ''}</p>
     </div>
 
     ${assessment.appropriate && assessment.appropriate.recommended ? `
     <div style="border-left:4px solid #22C55E;background:#F0FDF4;padding:14px 18px;border-radius:0 10px 10px 0;margin-bottom:12px;">
-      <p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#166534;">추천 교재 레벨</p>
-      <p style="margin:0;font-size:15px;color:#15803D;font-weight:600;">${escapeHtml(assessment.appropriate.recommended)}</p>
+      <p style="margin:0 0 4px;font-size:11px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:.5px;">🎯 AI 추천 교재 레벨</p>
+      <p style="margin:0;font-size:16px;color:#15803D;font-weight:700;">${escapeHtml(assessment.appropriate.recommended)}</p>
     </div>
     <div style="border-left:4px solid #94A3B8;background:#F8FAFC;padding:14px 18px;border-radius:0 10px 10px 0;margin-bottom:16px;">
-      <p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#64748B;">진단</p>
-      <p style="margin:0;font-size:14px;color:#475569;line-height:1.6;">${escapeHtml(assessment.appropriate.diagnosis)}</p>
+      <p style="margin:0 0 4px;font-size:11px;font-weight:700;color:#64748B;">🔍 AI 진단 결과</p>
+      <p style="margin:0;font-size:13px;color:#475569;line-height:1.6;">${escapeHtml(assessment.appropriate.diagnosis || '')}</p>
     </div>` : ''}
 
     ${sectionRows ? `
-    <p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#64748B;">영역별 성취도</p>
-    <table style="width:100%;border-collapse:collapse;">${sectionRows}</table>
-    <div style="height:1px;background:#E2E8F0;margin:16px 0;"></div>` : ''}
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.5px;">📊 AI 영역별 성취도</p>
+    <table style="width:100%;border-collapse:collapse;">${sectionRows}</table>` : ''}
 
-    <p style="margin:0 0 4px;font-size:12px;color:#64748B;">도전 레벨: <strong style="color:#4F46E5;">${escapeHtml(nextStr)}</strong></p>
-    <p style="margin:0;font-size:12px;color:#64748B;">Upper 정답률: ${assessment.challenge.upperCorrectRate}% → ${sigLabel}</p>
+    ${overallHtml}
+
+    ${assessment.bonusEligible ? `
+    <div style="text-align:center;margin:12px 0;">
+      <span style="background:#FEF3C7;color:#92400E;border-radius:20px;padding:4px 16px;font-size:13px;font-weight:700;">⭐ 상위 단계 보너스 대상</span>
+    </div>` : ''}
 
     <p style="margin:20px 0 0;font-size:12px;color:#94A3B8;text-align:center;">본 결과는 AI 기반 자동 채점이며, 최종 배치는 담당 선생님의 판단에 따라 조정될 수 있습니다.</p>
   </div>

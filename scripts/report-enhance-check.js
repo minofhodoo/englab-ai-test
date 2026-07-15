@@ -86,19 +86,25 @@ assert(htmlSrc.includes('a.overall'),              'showResult: a.overall 사용
 assert(serverSrc.includes('buildOverall'),         'server.js: buildOverall 호출');
 assert(serverSrc.includes('assessment.overall'),   'server.js: assessment.overall 저장');
 
-// ── 4. 참고 지표 박스 (Listen & Speak) ───────────────────────────────
-console.log('\n[4] 참고 지표 박스');
-assert(htmlSrc.includes('id="res-spk-bars"'),                '#res-spk-bars 존재');
-assert(htmlSrc.includes('ref-box'),                           '.ref-box CSS 클래스 사용');
-assert(htmlSrc.includes('레벨 결정에는 반영되지 않는 참고 지표'), '참고지표 안내 문구 존재');
-assert(htmlSrc.includes('voiceRate'),                         'showResult: voiceRate 변수');
-assert(htmlSrc.includes('typingRate'),                        'showResult: typingRate 변수');
+// ── 4. 스피킹 지표 — 테스트 상세(관리자)로 이동 ─────────────────────
+console.log('\n[4] 스피킹 지표 (진단리포트 제거 → 테스트상세 이동)');
+assert(!htmlSrc.includes('id="res-speaking"'),      'test.html: #res-speaking 제거됨 (테스트상세로 이동)');
+assert(!htmlSrc.includes('id="res-spk-bars"'),      'test.html: #res-spk-bars 제거됨');
+assert(!htmlSrc.includes('voiceRate'),              'test.html: voiceRate 제거됨');
 
-// speaking-utils: typingRate 반환
-assert(spkSrc.includes('typingRate'),                         'speaking-utils: typingRate 계산');
-assert(spkSrc.includes("method === 'typing'"),                "speaking-utils: typing method 카운트");
+const adminSrc2 = fs.readFileSync(path.join(__dirname, '../public/admin-assign.html'), 'utf8');
+assert(adminSrc2.includes('openDiagReport'),         'admin-assign: openDiagReport 함수 존재');
+assert(adminSrc2.includes('openDetailReport'),       'admin-assign: openDetailReport 함수 존재');
+assert(adminSrc2.includes('STT'),                   'admin-assign: STT 레이블 테스트상세에 존재');
+assert(!adminSrc2.includes('renderCompetitorSection'), 'admin-assign: 경쟁사 UI 제거됨');
+assert(adminSrc2.includes('buildRadarSVG'),          'admin-assign: buildRadarSVG 존재 (진단리포트)');
+assert(adminSrc2.includes('overall-box'),            'admin-assign: AI 종합분석 박스 존재');
 
-// buildSpeakingReport 실제 반환값 검증
+// speaking-utils 로직은 유지
+assert(spkSrc.includes('typingRate'),                'speaking-utils: typingRate 계산 유지');
+assert(spkSrc.includes("method === 'typing'"),       "speaking-utils: typing method 카운트 유지");
+
+// buildSpeakingReport 반환값 검증 (로직 불변)
 const SU = require('../public/speaking-utils');
 const spkReport = SU.buildSpeakingReport(
   [{ id:'q1' }, { id:'q2' }, { id:'q3' }],

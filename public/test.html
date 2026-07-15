@@ -177,11 +177,6 @@
                    margin:12px 0 4px; }
     .overall-box .overall-lbl { font-size:10px; font-weight:700; text-transform:uppercase;
                                  letter-spacing:.5px; color:var(--primary); margin-bottom:4px; }
-    .ref-box { border:1px dashed var(--gray-200); border-radius:10px; padding:12px 14px;
-               margin-top:14px; font-size:12px; color:var(--gray-500); line-height:1.7; }
-    .ref-box .ref-lbl { font-size:10px; font-weight:700; text-transform:uppercase;
-                         letter-spacing:.5px; color:var(--gray-500); margin-bottom:6px; }
-    .ref-note { font-size:11px; color:#94A3B8; margin-top:4px; }
     .print-btn { display:block; width:100%; padding:11px; background:var(--gray-100); border:none;
                  border-radius:10px; font-size:14px; font-weight:700; cursor:pointer;
                  color:var(--gray-500); margin-top:14px; }
@@ -196,11 +191,11 @@
               max-width:none !important; width:100% !important; }
       .result-card { max-height:none !important; overflow:visible !important; }
       .print-btn, .result-footer, .btn, .no-print { display:none !important; }
-      .sec-fill, .cefr-badge, .ai-badge, .overall-box, .ref-box, .result-level,
+      .sec-fill, .cefr-badge, .ai-badge, .overall-box, .result-level,
       .bonus-badge, .res-header, .ai-section-title {
         -webkit-print-color-adjust:exact; print-color-adjust:exact; }
       .radar-wrap svg { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-      .overall-box, .ref-box, .result-level { page-break-inside:avoid; }
+      .overall-box, .result-level { page-break-inside:avoid; }
       .report-grid { display:grid !important; grid-template-columns:1fr 1fr !important;
                      gap:0 20px !important; align-items:start !important; }
       .rg-left { grid-column:1; }
@@ -510,13 +505,6 @@
 
     <!-- 보너스 대상 -->
     <div style="text-align:center" id="res-bonus"></div>
-
-    <!-- 참고 지표: Listen & Speak (레벨 미반영) -->
-    <div class="ref-box" id="res-speaking" style="display:none">
-      <div class="ref-lbl">🎙 참고 지표 — Listen &amp; Speak</div>
-      <div id="res-spk-bars"></div>
-      <div class="ref-note">※ 레벨 결정에는 반영되지 않는 참고 지표입니다.</div>
-    </div>
 
     <p class="result-footer">
       결과가 이메일로 발송되었습니다.<br>선생님의 최종 배치 결정에 따라 조정될 수 있습니다.
@@ -1582,26 +1570,6 @@ function showResult(a) {
     overallEl.style.display = '';
   } else {
     overallEl.style.display = 'none';
-  }
-
-  // 참고 지표: Listen & Speak (음성% / 타이핑%)
-  const spkEl = document.getElementById('res-speaking');
-  const spk = a.speaking || {};
-  const voiceRate  = spk.responseRate != null ? spk.responseRate : null;
-  const typingRate = spk.typingRate   != null ? spk.typingRate  : null;
-  if (voiceRate != null) {
-    const makebar = (label, pct) =>
-      '<div class="sec-bar" style="margin-top:4px">' +
-        '<div class="sec-name">' + label + '</div>' +
-        '<div class="sec-track"><div class="sec-fill" style="width:' + pct + '%"></div></div>' +
-        '<div class="sec-pct">' + pct + '%</div>' +
-      '</div>';
-    document.getElementById('res-spk-bars').innerHTML =
-      makebar('음성', voiceRate) +
-      (typingRate != null ? makebar('타이핑', typingRate) : '');
-    spkEl.style.display = '';
-  } else {
-    spkEl.style.display = 'none';
   }
 
   showScreen('screen-result');

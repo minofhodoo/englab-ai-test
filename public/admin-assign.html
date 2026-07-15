@@ -100,7 +100,7 @@
 
     /* ── REPORT MODAL ───────────────────────────── */
     .report-modal { background:#fff; border-radius:20px; padding:28px; width:100%;
-                    max-width:560px; max-height:88vh; overflow-y:auto;
+                    max-width:700px; max-height:88vh; overflow-y:auto;
                     box-shadow:0 20px 60px rgba(0,0,0,.2); }
     .report-modal h2 { font-size:17px; font-weight:800; margin-bottom:4px; }
     .report-modal .r-meta { font-size:13px; color:#64748B; margin-bottom:20px; }
@@ -113,8 +113,7 @@
     .r-level-box .r-val   { font-size:15px; font-weight:700; color:#15803D; }
     .r-diag-box  { background:#F8FAFC; border-left:4px solid #94A3B8; border-radius:0 10px 10px 0;
                    padding:12px 16px; margin-bottom:16px; font-size:13px; color:#475569; line-height:1.7; }
-    .r-challenge-box { background:#EEF2FF; border-radius:10px; padding:12px 16px;
-                       margin-bottom:16px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    /* r-challenge-box removed */
     .r-sec-title { font-size:11px; font-weight:700; color:#64748B; text-transform:uppercase;
                    letter-spacing:.5px; margin:14px 0 8px; }
     .r-sec-bar   { display:flex; align-items:center; gap:10px; margin:6px 0; }
@@ -130,22 +129,54 @@
     .r-section-divider { height:1px; background:#E2E8F0; margin:18px 0; }
     .r-bonus-badge { background:#FEF3C7; color:#92400E; border-radius:20px; padding:3px 12px;
                      font-size:12px; font-weight:700; display:inline-block; margin-top:4px; }
-    /* ── 경쟁사 비교표 ── */
-    .r-comp-wrap { border:1px solid #E2E8F0; border-radius:10px; overflow:hidden; margin-bottom:8px; }
-    .r-comp-header { background:#F1F5F9; padding:10px 14px; font-size:12px; color:#475569;
-                     font-weight:600; display:flex; justify-content:space-between; align-items:center; }
-    .r-comp-updated { font-size:11px; color:#94A3B8; }
-    .r-comp-table { width:100%; border-collapse:collapse; font-size:13px; }
-    .r-comp-table th { background:#F8FAFC; padding:8px 12px; text-align:center; font-weight:700;
-                       color:#475569; border-bottom:1px solid #E2E8F0; white-space:nowrap; }
-    .r-comp-table th:first-child { text-align:left; }
-    .r-comp-table td { padding:8px 12px; border-bottom:1px solid #F1F5F9; text-align:center;
-                       color:#1E293B; }
-    .r-comp-table td:first-child { font-weight:600; color:#475569; text-align:left; }
-    .r-comp-table tr:last-child td { border-bottom:none; }
-    .r-comp-our  { background:#EEF2FF; }
-    .r-comp-note { padding:8px 14px; font-size:11px; color:#94A3B8; border-top:1px solid #F1F5F9;
-                   font-style:italic; }
+    /* ── 진단 리포트 공통 스타일 (test.html 기준 통일) ── */
+    .ai-badge { display:inline-block; background:linear-gradient(135deg,#4F46E5,#7C3AED);
+                color:#fff; font-size:11px; font-weight:700; border-radius:20px;
+                padding:4px 14px; letter-spacing:.5px; }
+    .ai-section-title { font-size:11px; font-weight:700; color:#4F46E5; text-transform:uppercase;
+                        letter-spacing:.5px; margin:14px 0 8px; }
+    .result-level-box { background:#EEF2FF; border-radius:12px; padding:14px 16px; margin:12px 0; }
+    .result-level-box .rl-label { font-size:11px; color:#6366F1; font-weight:700; margin-bottom:4px; }
+    .result-level-box .rl-value { font-size:18px; font-weight:800; color:#4F46E5; }
+    .diag-text { font-size:13px; color:#475569; line-height:1.7; background:#F8FAFC;
+                 padding:14px 16px; border-radius:10px; margin-top:4px; }
+    .overall-box { background:#EEF2FF; border-left:3px solid #4F46E5;
+                   border-radius:0 10px 10px 0; padding:12px 16px; font-size:13px;
+                   color:#3730A3; line-height:1.75; margin:12px 0 4px; }
+    .overall-box .overall-lbl { font-size:10px; font-weight:700; text-transform:uppercase;
+                                 letter-spacing:.5px; color:#4F46E5; margin-bottom:4px; }
+    .radar-wrap { text-align:center; margin:6px 0 4px; }
+    .sec-detail-item { margin:6px 0 12px; }
+    .sec-detail-name { font-size:12px; font-weight:700; color:#374151; }
+    .sec-detail-pct  { font-size:12px; color:#4F46E5; font-weight:700; margin-left:6px; }
+    .bonus-badge { background:#FEF3C7; color:#92400E; border-radius:20px; padding:4px 14px;
+                   font-size:12px; font-weight:700; display:inline-block; }
+    .res-hdr { display:flex; flex-wrap:wrap; gap:4px 16px; padding:10px 14px;
+               background:#F8FAFC; border-radius:10px; margin-bottom:14px;
+               font-size:12px; color:#64748B; line-height:1.7; }
+    .res-hdr strong { color:#1E293B; font-weight:700; }
+    .print-btn-diag { display:block; width:100%; padding:11px; background:#F1F5F9;
+                      border:none; border-radius:10px; font-size:14px; font-weight:700;
+                      cursor:pointer; color:#475569; margin-top:14px; }
+    .print-btn-diag:hover { background:#E2E8F0; }
+    .diag-grid { display:block; }
+    /* ── 출력 (A4) ── */
+    @media print {
+      @page { size: A4 portrait; margin: 12mm 14mm; }
+      body > *:not(#report-modal) { display:none !important; }
+      #report-modal { position:static !important; display:flex !important;
+                      background:transparent !important; padding:0 !important; }
+      .report-modal { box-shadow:none !important; border-radius:0 !important;
+                      max-height:none !important; overflow:visible !important;
+                      max-width:none !important; width:100% !important; padding:8px !important; }
+      .print-btn-diag, .btn-cancel { display:none !important; }
+      .ai-badge, .overall-box, .result-level-box, .res-hdr, .ai-section-title,
+      .bonus-badge, .r-sec-fill { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .radar-wrap svg { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .diag-grid { display:grid !important; grid-template-columns:1fr 1fr !important;
+                   gap:0 20px !important; align-items:start !important; }
+      .overall-box, .result-level-box { page-break-inside:avoid; }
+    }
 
     /* ── STAGE ASSIGN MODAL ─────────────────── */
     .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.4);
@@ -292,7 +323,7 @@
 <div class="modal-overlay" id="report-modal">
   <div class="report-modal">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-      <h2>📊 시험 리포트</h2>
+      <h2 id="report-title">📊 시험 리포트</h2>
       <button class="btn-cancel" onclick="closeReportModal()" style="width:auto;padding:6px 16px;">닫기</button>
     </div>
     <p class="r-meta" id="report-meta">—</p>
@@ -469,7 +500,10 @@ async function loadAssignments() {
         </td>
         <td style="font-size:12px;color:#94A3B8;">${new Date(a.createdAt).toLocaleDateString('ko-KR')}</td>
         <td>${a.status === 'done'
-          ? `<button class="btn-sm btn-report" onclick='openReport(${JSON.stringify(a.accessCode)})'>리포트 보기</button>`
+          ? `<span style="display:flex;gap:4px;flex-wrap:wrap">
+               <button class="btn-sm btn-report" onclick='openDiagReport(${JSON.stringify(a.accessCode)})'>진단 리포트</button>
+               <button class="btn-sm" style="background:#F1F5F9;color:#475569;border:1px solid #E2E8F0" onclick='openDetailReport(${JSON.stringify(a.accessCode)})'>테스트 상세</button>
+             </span>`
           : '<span style="font-size:12px;color:#CBD5E1;">—</span>'}</td>
       </tr>`).join('');
   } catch(e) {
@@ -584,29 +618,83 @@ function rSectionComment(key, pct) {
   };
   return map[key] || '';
 }
-const R_SIG_LBL = { advance:'▲ 상위 단계 추천', borderline:'△ 경계 수준', stay:'→ 현재 단계 유지' };
-const R_SIG_CLS = { advance:'signal-advance', borderline:'signal-borderline', stay:'signal-stay' };
+// ── 레이더 차트 (test.html buildRadarSVG와 동일) ─────────────────────────
+function buildRadarSVG(sections) {
+  const entries = Object.entries(sections).filter(([, v]) => v.total > 0);
+  const n = entries.length;
+  if (n < 2) return null;
+  const W = 300, H = 300, cx = W / 2, cy = H / 2, maxR = 85, labR = 115;
+  const SKR = { vocabulary:'어휘', grammar:'문법', reading:'독해', writing:'쓰기', phonics:'파닉스' };
+  function pt(i, r) {
+    const a = (2 * Math.PI * i / n) - Math.PI / 2;
+    return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+  }
+  function poly(r) {
+    return Array.from({ length: n }, (_, i) => {
+      const p = pt(i, r); return p.x.toFixed(1) + ',' + p.y.toFixed(1);
+    }).join(' ');
+  }
+  const grids = [20, 40, 60, 80, 100].map(p => {
+    const r = p / 100 * maxR;
+    return '<polygon points="' + poly(r) + '" fill="' + (p === 20 ? '#F8FAFC' : 'none') +
+           '" stroke="#E2E8F0" stroke-width="1"/>';
+  }).join('');
+  const axes = Array.from({ length: n }, (_, i) => {
+    const p = pt(i, maxR);
+    return '<line x1="' + cx + '" y1="' + cy + '" x2="' + p.x.toFixed(1) +
+           '" y2="' + p.y.toFixed(1) + '" stroke="#CBD5E1" stroke-width="1"/>';
+  }).join('');
+  const gLabels = [20, 40, 60, 80, 100].map(p => {
+    const r = p / 100 * maxR, gp = pt(0, r);
+    return '<text x="' + (gp.x + 3).toFixed(1) + '" y="' + (gp.y - 1).toFixed(1) +
+           '" font-size="7" fill="#94A3B8" font-family="sans-serif">' + p + '</text>';
+  }).join('');
+  const dataPts = entries.map(([, v], i) => {
+    const r = Math.min(v.pct, 100) / 100 * maxR, p = pt(i, r);
+    return p.x.toFixed(1) + ',' + p.y.toFixed(1);
+  }).join(' ');
+  const dots = entries.map(([, v], i) => {
+    const r = Math.min(v.pct, 100) / 100 * maxR, p = pt(i, r);
+    return '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
+           '" r="4" fill="#4F46E5" stroke="#fff" stroke-width="2"/>';
+  }).join('');
+  const labels = entries.map(([k, v], i) => {
+    const lp = pt(i, labR);
+    const ta = lp.x < cx - 5 ? 'end' : lp.x > cx + 5 ? 'start' : 'middle';
+    const dy = ta === 'middle' ? (lp.y < cy ? -4 : 4) : 0;
+    const lx = lp.x.toFixed(1), ny = lp.y + dy;
+    return '<text x="' + lx + '" y="' + (ny - 7).toFixed(1) +
+           '" text-anchor="' + ta + '" font-size="11" fill="#374151" font-weight="600"' +
+           ' font-family="sans-serif" dominant-baseline="middle">' + (SKR[k] || k) + '</text>' +
+           '<text x="' + lx + '" y="' + (ny + 8).toFixed(1) +
+           '" text-anchor="' + ta + '" font-size="10" fill="#4F46E5" font-weight="700"' +
+           ' font-family="sans-serif" dominant-baseline="middle">' + v.pct + '%</text>';
+  }).join('');
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg"' +
+    ' overflow="visible" style="max-width:260px;width:100%;height:auto">' +
+    '<defs><linearGradient id="rfill" x1=".5" y1="0" x2=".5" y2="1">' +
+    '<stop offset="0%" stop-color="#4F46E5" stop-opacity=".3"/>' +
+    '<stop offset="100%" stop-color="#7C3AED" stop-opacity=".15"/>' +
+    '</linearGradient></defs>' +
+    grids + axes + gLabels +
+    '<polygon points="' + dataPts + '" fill="url(#rfill)" stroke="#4F46E5"' +
+    ' stroke-width="2.5" stroke-linejoin="round"/>' +
+    dots + labels + '</svg>';
+}
 
-// 전사 공통 경쟁사 비교표 캐시 (세션 중 1회 로드)
-let _competitorMap = null;
-
-async function openReport(code) {
+// ── 공통: 리포트 모달 열기 헬퍼 ──────────────────────────────────────────
+async function _openReportModal(code, titleText, renderFn) {
   document.getElementById('report-modal').classList.add('open');
+  document.getElementById('report-title').textContent = titleText;
   document.getElementById('report-meta').textContent = '불러오는 중…';
   document.getElementById('report-body').innerHTML = '';
   try {
-    // 리포트 + 경쟁사 비교표 병렬 로드
-    const [data, cMap] = await Promise.all([
-      authedGet('/api/admin/assignments/' + code + '/report'),
-      _competitorMap !== null
-        ? Promise.resolve(_competitorMap)
-        : authedGet('/api/competitor-map').then(m => { _competitorMap = m; return m; }).catch(() => null),
-    ]);
+    const data = await authedGet('/api/admin/assignments/' + code + '/report');
     const a = data.assessment || {};
     document.getElementById('report-meta').textContent =
       esc(data.studentName) + ' · 단계 ' + data.stage + ' ' + esc(data.stageName) +
       ' · ' + (data.completedAt ? new Date(data.completedAt).toLocaleString('ko-KR') : '—');
-    document.getElementById('report-body').innerHTML = renderReportBody(data, a, cMap);
+    document.getElementById('report-body').innerHTML = renderFn(data, a);
   } catch(e) {
     document.getElementById('report-meta').textContent = '불러오기 실패';
     document.getElementById('report-body').innerHTML =
@@ -614,59 +702,89 @@ async function openReport(code) {
   }
 }
 
-/** 적정 레벨 문자열로 경쟁사 비교표 행 검색 */
-function findCompetitorRow(mapData, ourLevel) {
-  if (!mapData || !Array.isArray(mapData.rows) || !ourLevel) return null;
-  return mapData.rows.find(r => r.ourLevel === ourLevel) || null;
+/** ① 진단 리포트 — test.html 결과 화면과 동일 구성, A4 출력 가능 */
+function openDiagReport(code) {
+  _openReportModal(code, '🩺 진단 리포트', renderDiagnosticHtml);
 }
 
-/** 경쟁사 비교 HTML 렌더 (원장 전용) */
-function renderCompetitorSection(mapData, ourLevel) {
-  const row = findCompetitorRow(mapData, ourLevel);
-  const names = (mapData && mapData.competitorNames) || [];
+/** ② 테스트 상세 — 영역 점수 상세 + STT 발화 스크립트 + 응답률 */
+function openDetailReport(code) {
+  _openReportModal(code, '📋 테스트 상세', renderDetailHtml);
+}
 
-  if (!row || names.length === 0) {
-    return `<div class="r-placeholder">
-      <div class="r-ph-label">비교 데이터</div>
-      <div>경쟁사 비교표 준비 중</div>
-    </div>`;
-  }
+/** 진단 리포트 HTML (① — 학생 화면 기준 통일, 경쟁사·STT 미포함) */
+function renderDiagnosticHtml(data, a) {
+  const cefr = (a.appropriate || {}).cefr || '';
+  const filteredSecs = a.sections
+    ? Object.entries(a.sections).filter(([, v]) => v.total > 0)
+    : [];
+  const radarSvg = a.sections ? buildRadarSVG(a.sections) : null;
 
-  const thCells = names.map(n => `<th>${esc(n)}</th>`).join('');
-  const tdCells = names.map(n => `<td>${esc(row.competitors[n] || '—')}</td>`).join('');
-  const noteHtml = row.note
-    ? `<div class="r-comp-note">${esc(row.note)}</div>`
-    : '';
-  const updatedHtml = mapData.updatedAt
-    ? `<span class="r-comp-updated">기준일: ${esc(mapData.updatedAt)}</span>`
-    : '';
+  const secBars = filteredSecs.map(([k, v]) =>
+    `<div class="r-sec-bar">
+       <div class="r-sec-name">${R_SEC_KR[k]||k}</div>
+       <div class="r-sec-track"><div class="r-sec-fill" style="width:${v.pct}%"></div></div>
+       <div class="r-sec-val">${v.pct}%</div>
+     </div>`
+  ).join('');
+
+  const secDetail = filteredSecs.map(([k, v]) => {
+    const cmt = rSectionComment(k, v.pct);
+    return cmt ? `<div class="sec-detail-item">
+      <span class="sec-detail-name">${R_SEC_KR[k]||k}</span>
+      <span class="sec-detail-pct">${v.pct}%</span>
+      <div class="r-sec-comment">${cmt}</div>
+    </div>` : '';
+  }).filter(Boolean).join('');
 
   return `
-  <div class="r-comp-wrap">
-    <div class="r-comp-header">
-      <span>우리 레벨: <strong>${esc(ourLevel)}</strong> 기준</span>
-      ${updatedHtml}
+    <div style="text-align:center;margin:8px 0 4px">
+      <span class="ai-badge">🤖 AI 기반 진단 리포트</span>
     </div>
-    <div style="overflow-x:auto">
-      <table class="r-comp-table">
-        <thead>
-          <tr class="r-comp-our"><th>구분</th>${thCells}</tr>
-        </thead>
-        <tbody>
-          <tr><td>경쟁사 레벨</td>${tdCells}</tr>
-        </tbody>
-      </table>
+    <div class="res-hdr">
+      <span>학생: <strong>${esc(data.studentName)}</strong></span>
+      <span>단계: <strong>단계 ${data.stage} ${esc(data.stageName)}</strong></span>
+      ${cefr ? `<span>CEFR: <strong>${esc(cefr)}</strong></span>` : ''}
+      <span>시험일: <strong>${data.completedAt ? new Date(data.completedAt).toLocaleDateString('ko-KR') : '—'}</strong></span>
     </div>
-    ${noteHtml}
-  </div>`;
+    <div class="diag-grid">
+      <div class="dg-left">
+        <div class="r-score-box">
+          <div class="r-score-num">${a.score ?? '—'}<span style="font-size:26px;color:#94A3B8;font-weight:400"> / ${a.total ?? 30}</span></div>
+          <div class="r-score-sub">${a.scorePct ?? 0}%${cefr ? ' &nbsp;·&nbsp; CEFR ' + esc(cefr) : ''}</div>
+        </div>
+        <div class="result-level-box">
+          <div class="rl-label">🎯 AI 추천 교재 레벨</div>
+          <div class="rl-value">${a.appropriate && a.appropriate.recommended ? esc(a.appropriate.recommended) : '진단 결과 없음'}</div>
+        </div>
+        ${a.appropriate && a.appropriate.diagnosis ? `
+        <div style="margin-top:8px">
+          <div class="ai-section-title">🔍 AI 진단 결과</div>
+          <div class="diag-text">${esc(a.appropriate.diagnosis)}</div>
+        </div>` : ''}
+        ${a.bonusEligible ? '<div style="margin-top:10px;text-align:center"><span class="bonus-badge">⭐ 상위 단계 보너스 대상</span></div>' : ''}
+      </div>
+      <div class="dg-right">
+        <div class="ai-section-title">📊 AI 영역별 성취도</div>
+        ${radarSvg ? `<div class="radar-wrap">${radarSvg}</div>` : ''}
+        ${secBars || '<p style="font-size:13px;color:#94A3B8;">섹션 데이터 없음</p>'}
+      </div>
+    </div>
+    ${a.overall ? `
+    <div class="overall-box">
+      <div class="overall-lbl">🧠 AI 종합 분석</div>
+      <div>${esc(a.overall)}</div>
+    </div>` : ''}
+    ${secDetail ? `
+    <div style="margin-top:10px">
+      <div class="ai-section-title">🔎 AI 영역별 세부 평가</div>
+      ${secDetail}
+    </div>` : ''}
+    <button class="print-btn-diag" onclick="window.print()">🖨 결과지 출력 (A4)</button>`;
 }
 
-function renderReportBody(data, a, competitorMap) {
-  const sig   = (a.challenge || {}).signal || 'stay';
-  const cefr  = (a.appropriate || {}).cefr || '';
-  const next  = a.challenge || {};
-
-  // 섹션 바 (D: total=0 제외, F: 영역별 코멘트)
+/** 테스트 상세 HTML (② — 영역 점수·STT·응답률, 원장 전용) */
+function renderDetailHtml(data, a) {
   const secBars = a.sections
     ? Object.entries(a.sections)
         .filter(([, v]) => v.total > 0)
@@ -679,69 +797,33 @@ function renderReportBody(data, a, competitorMap) {
            </div>${cmt ? '<div class="r-sec-comment">' + cmt + '</div>' : ''}`;
         }).join('')
     : '';
+  const spk      = a.speaking || {};
+  const rate     = spk.responseRate != null ? spk.responseRate : null;
+  const typRate  = spk.typingRate   != null ? spk.typingRate   : null;
+  const stt      = spk.sttText ? spk.sttText : null;
 
   return `
-    <!-- 총점 -->
     <div class="r-score-box">
       <div class="r-score-num">${a.score ?? '—'}<span style="font-size:26px;color:#94A3B8;font-weight:400"> / ${a.total ?? 30}</span></div>
-      <div class="r-score-sub">
-        ${a.scorePct ?? 0}% &nbsp;·&nbsp; ${cefr ? 'CEFR ' + esc(cefr) + ' &nbsp;·&nbsp;' : ''}
-        <span class="signal-badge ${R_SIG_CLS[sig]}">${R_SIG_LBL[sig]||sig}</span>
-        ${a.bonusEligible ? '<span class="r-bonus-badge" style="margin-left:6px;">⭐ 보너스 대상</span>' : ''}
-      </div>
+      <div class="r-score-sub">${a.scorePct ?? 0}%</div>
     </div>
-
-    <!-- 적정 레벨 -->
-    ${a.appropriate && a.appropriate.recommended ? `
-    <div class="r-level-box">
-      <div class="r-label">추천 교재 레벨</div>
-      <div class="r-val">${esc(a.appropriate.recommended)}</div>
-    </div>
-    <div class="r-diag-box">${esc(a.appropriate.diagnosis || '')}</div>` : ''}
-
-    <!-- 도전 레벨 -->
-    ${next.nextStageName ? `
-    <div class="r-challenge-box">
-      <span style="font-size:11px;font-weight:700;color:#4338CA;flex-basis:100%;">도전 레벨</span>
-      <span style="font-size:15px;font-weight:700;color:#312E81;">${esc(next.nextStageName)}</span>
-      ${next.nextCefr ? `<span style="font-size:12px;color:#6366F1;">(${esc(next.nextCefr)})</span>` : ''}
-      <span style="font-size:12px;color:#64748B;margin-left:auto;">Upper 정답률 ${next.upperCorrectRate ?? 0}%</span>
-    </div>` : ''}
-
-    <!-- 영역별 성취도 -->
-    <div class="r-sec-title">영역별 성취도</div>
+    <div class="r-sec-title">영역별 점수 상세</div>
     ${secBars || '<p style="font-size:13px;color:#94A3B8;">섹션 데이터 없음</p>'}
-
     <div class="r-section-divider"></div>
-
-    <!-- 스피킹 보조지표 (원장 전용) -->
-    <div class="r-sec-title">스피킹 — Listen &amp; Speak</div>
-    ${(function() {
-      const spk = data.assessment && data.assessment.speaking;
-      const rate = spk && spk.responseRate != null ? spk.responseRate : null;
-      const stt  = spk && spk.sttText ? spk.sttText : null;
-      const rateHtml = rate != null
+    <div class="r-sec-title">Listen &amp; Speak — 응답률</div>
+    <div class="r-placeholder" style="text-align:center;padding:14px 16px;">
+      ${rate != null
         ? `<div style="font-size:22px;font-weight:800;color:#4F46E5">${rate}%</div>
-           <div style="font-size:12px;color:#64748B;margin-top:2px">음성 응답률</div>`
-        : `<div style="color:#94A3B8">미응시 또는 데이터 없음</div>`;
-      const sttHtml = stt
+           <div style="font-size:12px;color:#64748B;margin-top:2px">음성 응답률</div>
+           ${typRate != null ? `<div style="font-size:14px;font-weight:600;color:#64748B;margin-top:6px">${typRate}% 타이핑</div>` : ''}`
+        : `<div style="color:#94A3B8">미응시 또는 데이터 없음</div>`}
+    </div>
+    <div class="r-placeholder" style="margin-top:8px;text-align:left;">
+      <div class="r-ph-label">STT 발화 스크립트 (원장 전용)</div>
+      ${stt
         ? `<pre style="font-size:12px;line-height:1.7;white-space:pre-wrap;word-break:break-all;margin:0">${esc(stt)}</pre>`
-        : `<span style="color:#94A3B8">—  (음성 인식 데이터 없음)</span>`;
-      return `
-      <div class="r-placeholder" style="text-align:center;padding:14px 16px;">
-        ${rateHtml}
-      </div>
-      <div class="r-placeholder" style="margin-top:8px;text-align:left;">
-        <div class="r-ph-label">STT 텍스트 (원장 전용)</div>
-        ${sttHtml}
-      </div>`;
-    })()}
-
-    <div class="r-section-divider"></div>
-
-    <!-- 경쟁사 레벨 비교표 (원장 전용) -->
-    <div class="r-sec-title">경쟁사 레벨 비교표</div>
-    ${renderCompetitorSection(competitorMap, a.appropriate && a.appropriate.recommended)}`;
+        : `<span style="color:#94A3B8">— (음성 인식 데이터 없음)</span>`}
+    </div>`;
 }
 
 function closeReportModal() {

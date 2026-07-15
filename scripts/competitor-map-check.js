@@ -162,15 +162,16 @@ if (cmRoute) {
   assert(cmRoute[0].includes('requireAcademy'), '/api/competitor-map 내부에서 requireAcademy 호출 확인');
 }
 
-// admin-assign.html (원장 앱)에는 경쟁사 섹션이 포함되고
 // test.html (학생 앱)에는 competitor 키워드가 없어야 함
 const testHtmlSrc = fs.readFileSync(path.join(__dirname, '..', 'public', 'test.html'), 'utf8');
 assert(!testHtmlSrc.includes('competitor-map'), 'test.html(학생 앱)에 competitor-map 미포함');
 assert(!testHtmlSrc.includes('r-comp-wrap'), 'test.html(학생 앱)에 경쟁사 테이블 CSS 미포함');
 
+// admin-assign.html: 경쟁사 UI 제거, 데이터 파일·서버 라우트는 유지
 const adminSrc = fs.readFileSync(path.join(__dirname, '..', 'public', 'admin-assign.html'), 'utf8');
-assert(adminSrc.includes('renderCompetitorSection'), 'admin-assign.html에 renderCompetitorSection 존재');
-assert(adminSrc.includes('competitor-map'), 'admin-assign.html에서 /api/competitor-map 호출');
+assert(!adminSrc.includes('renderCompetitorSection'), 'admin-assign.html에서 경쟁사 UI 제거됨');
+assert(!adminSrc.includes('r-comp-wrap'), 'admin-assign.html에서 경쟁사 테이블 CSS 없음');
+assert(!adminSrc.includes('/api/competitor-map'), 'admin-assign.html에서 competitor-map API 미호출');
 
 // ──────────────────────────────────────────────
 // 6. server.js 라우트 구조 완결성
