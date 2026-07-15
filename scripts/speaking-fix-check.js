@@ -390,6 +390,69 @@ assert(
   'stopRecording: clearInterval 타이머 정리'
 );
 
+// ── 15. commitCurrentSpeaking — 무응답 유실 버그 수정 ────────────────────────
+console.log(hdr('15. commitCurrentSpeaking — 자동 확정 로직'));
+
+assert(
+  HTML.includes('function commitCurrentSpeaking'),
+  'commitCurrentSpeaking 함수 정의 존재'
+);
+
+const commitFnStart = HTML.indexOf('function commitCurrentSpeaking');
+const commitFnEnd   = HTML.indexOf('\nfunction ', commitFnStart + 1);
+const commitFnSrc   = HTML.slice(commitFnStart, commitFnEnd > 0 ? commitFnEnd : commitFnStart + 1000);
+
+assert(
+  commitFnSrc.includes('_spkDone'),
+  'commitCurrentSpeaking: _spkDone 호출로 녹음 중 발화 확정'
+);
+assert(
+  commitFnSrc.includes('_speakingAnswers'),
+  'commitCurrentSpeaking: _speakingAnswers 참조'
+);
+assert(
+  commitFnSrc.includes('.spk-fallback-input'),
+  'commitCurrentSpeaking: 타이핑 폴백 input DOM 쿼리'
+);
+assert(
+  commitFnSrc.includes("method: 'typing'") || commitFnSrc.includes("method:'typing'"),
+  'commitCurrentSpeaking: 타이핑 답변 저장'
+);
+
+// nextSpeaking 에서 commitCurrentSpeaking 이 stopRecording 보다 먼저
+const nextFnStart = HTML.indexOf('function nextSpeaking');
+const nextFnEnd   = HTML.indexOf('\nfunction ', nextFnStart + 1);
+const nextFnSrc   = HTML.slice(nextFnStart, nextFnEnd > 0 ? nextFnEnd : nextFnStart + 500);
+
+assert(
+  nextFnSrc.includes('commitCurrentSpeaking'),
+  'nextSpeaking: commitCurrentSpeaking 호출'
+);
+assert(
+  nextFnSrc.indexOf('commitCurrentSpeaking') < nextFnSrc.indexOf('stopRecording'),
+  'nextSpeaking: commitCurrentSpeaking이 stopRecording보다 먼저'
+);
+
+// doSubmit 에서 commitCurrentSpeaking 이 stopRecording 보다 먼저
+const submitFnStart = HTML.indexOf('async function doSubmit');
+const submitFnEnd   = HTML.indexOf('\n// ──', submitFnStart + 1);
+const submitFnSrc   = HTML.slice(submitFnStart, submitFnEnd > 0 ? submitFnEnd : submitFnStart + 500);
+
+assert(
+  submitFnSrc.includes('commitCurrentSpeaking'),
+  'doSubmit: commitCurrentSpeaking 호출'
+);
+assert(
+  submitFnSrc.indexOf('commitCurrentSpeaking') < submitFnSrc.indexOf('stopRecording'),
+  'doSubmit: commitCurrentSpeaking이 stopRecording보다 먼저'
+);
+
+// 녹음 중 UI 힌트
+assert(
+  HTML.includes('말이 끝나면') && HTML.includes('완료'),
+  '녹음 중 상태 메시지에 완료 힌트 존재'
+);
+
 // ── 최종 결과 ─────────────────────────────────────────────────────────────────
 console.log('\n' + '─'.repeat(60));
 console.log('결과: ' + PASS + ' passed, ' + FAIL + ' failed');

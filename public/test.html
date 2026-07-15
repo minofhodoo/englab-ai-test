@@ -1284,9 +1284,31 @@ function renderSpeakingQuestion() {
   body.appendChild(card);
 }
 
+// ── 현재 문항 답변 자동 확정 (다음·제출 전 반드시 호출) ──────────────────
+function commitCurrentSpeaking() {
+  const q = _speakingQuestions[_speakingIdx];
+  if (!q) return;
+
+  // 녹음 세션이 열려 있으면 _spkDone()으로 발화를 확정 저장
+  if (_spkDone) {
+    _spkDone();
+    return;
+  }
+
+  // 이미 저장된 답변이 있으면 타이핑 자동저장 불필요
+  if (_speakingAnswers[q.id]) return;
+
+  // 타이핑 폴백 입력이 있으면 저장
+  const fbEl = document.querySelector('.spk-fallback-input');
+  if (fbEl) {
+    const txt = fbEl.value.trim();
+    if (txt) _speakingAnswers[q.id] = { text: txt, method: 'typing' };
+  }
+}
+
 function nextSpeaking() {
   if (_speakingIdx < _speakingQuestions.length - 1) {
-    stopRecording(); _speakingIdx++; renderSpeakingQuestion();
+    commitCurrentSpeaking(); stopRecording(); _speakingIdx++; renderSpeakingQuestion();
   }
 }
 
@@ -1344,8 +1366,8 @@ function toggleRecording(qid, recBtn, transcriptEl, statusEl, fbInput) {
     '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;' +
     'background:#EF4444;animation:spk-pulse .9s ease-in-out infinite;' +
     'margin-right:5px;vertical-align:middle;"></span>' +
-    '듣고 있습니다... 말씀해 주세요 ' +
-    '(<span id="_spk_timer">30</span>s 후 자동 완료)';
+    '듣고 있습니다... 말씀해 주세요 (<span id="_spk_timer">30</span>s 후 자동 완료)' +
+    ' &nbsp;—&nbsp; 말이 끝나면 <strong>⏹ 완료</strong>를 누르거나 그냥 [다음]을 눌러도 저장됩니다';
   _spkTimerHandle = setInterval(() => {
     _spkSecsLeft--;
     const el = document.getElementById('_spk_timer');
@@ -1410,6 +1432,7 @@ function stopRecording(recBtn) {
 
 // ── ④-b 실제 제출 ─────────────────────────────────────────────────────────
 async function doSubmit() {
+  commitCurrentSpeaking();
   stopRecording();
   const submitBtn = document.getElementById('btn-spk-submit') || document.getElementById('btn-submit');
   if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '제출 중…'; }
