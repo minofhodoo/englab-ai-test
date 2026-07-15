@@ -107,7 +107,7 @@ assert(adminSrc2.includes('exam-stage'),             'admin-assign: .exam-stage 
 assert(adminSrc2.includes('class="exam-stage"'),     'admin-assign: res-hdr 단계 span에 exam-stage 부여');
 assert(/exam-stage.*display:none/s.test(adminSrc2) || adminSrc2.includes('exam-stage { display:none'), 'admin-assign: @media print .exam-stage display:none');
 // report-meta에 exam-stage span 주입 (innerHTML 사용)
-assert(adminSrc2.includes('class="exam-stage">단계 '), 'admin-assign: report-meta에 exam-stage span 포함');
+assert(adminSrc2.includes('class="exam-stage"> · 단계 '), 'admin-assign: report-meta exam-stage에 구분점 포함');
 // 추천 레벨(result-level-box)은 인쇄 숨김 대상이 아님
 assert(adminSrc2.includes('result-level-box') && !adminSrc2.includes('result-level-box.*display:none'), 'admin-assign: 추천 레벨은 숨김 제외');
 

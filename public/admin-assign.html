@@ -699,7 +699,7 @@ async function _openReportModal(code, titleText, renderFn) {
     const data = await authedGet('/api/admin/assignments/' + code + '/report');
     const a = data.assessment || {};
     document.getElementById('report-meta').innerHTML =
-      esc(data.studentName) + ' · <span class="exam-stage">단계 ' + data.stage + ' ' + esc(data.stageName) + '</span>' +
+      esc(data.studentName) + '<span class="exam-stage"> · 단계 ' + data.stage + ' ' + esc(data.stageName) + '</span>' +
       ' · ' + esc(data.completedAt ? new Date(data.completedAt).toLocaleString('ko-KR') : '—');
     document.getElementById('report-body').innerHTML = renderFn(data, a);
   } catch(e) {
