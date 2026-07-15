@@ -215,6 +215,64 @@
     .btn-confirm:hover { background:#4338CA; }
     .btn-confirm:disabled { opacity:.4; cursor:not-allowed; }
 
+    /* ── 문항별 상세 (테스트 상세 모달) ────── */
+    .q-detail-filter { display:flex; gap:16px; padding:8px 0 12px; font-size:13px; }
+    .q-detail-filter label { display:flex; align-items:center; gap:5px; cursor:pointer; color:#475569; font-weight:600; }
+    .q-detail-filter input[type=radio] { accent-color:#4F46E5; }
+    .q-item { border:1px solid #E2E8F0; border-radius:10px; padding:12px 14px;
+              margin-bottom:8px; background:#fff; }
+    .q-item.q-wrong { border-color:#FCA5A5; background:#FFF5F5; }
+    .q-item-hdr { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+    .q-num { font-size:12px; font-weight:800; color:#1E293B; min-width:28px; }
+    .q-sec-badge { font-size:11px; font-weight:700; color:#4F46E5; background:#EEF2FF;
+                   border-radius:20px; padding:2px 9px; }
+    .q-type-badge { font-size:10px; color:#64748B; background:#F1F5F9; border-radius:20px;
+                    padding:2px 8px; }
+    .q-result { font-size:12px; font-weight:800; margin-left:auto; }
+    .q-result.q-correct-mark { color:#16A34A; }
+    .q-result.q-wrong-mark   { color:#DC2626; }
+    .q-stem { font-size:14px; color:#1E293B; margin-bottom:8px; line-height:1.5; }
+    .q-passage { font-size:12px; color:#475569; background:#F8FAFC; border-left:3px solid #CBD5E1;
+                 padding:8px 10px; border-radius:0 6px 6px 0; margin-bottom:8px; line-height:1.6;
+                 max-height:120px; overflow-y:auto; }
+    .q-img-wrap { margin-bottom:8px; }
+    .q-img-wrap img { max-height:140px; max-width:100%; border-radius:8px; border:1px solid #E2E8F0; }
+    .q-opts { display:flex; flex-direction:column; gap:4px; margin-top:4px; }
+    .q-opt { font-size:13px; padding:5px 10px; border-radius:6px; color:#374151;
+             background:#F8FAFC; border:1px solid transparent; }
+    .q-opt.q-opt-student-wrong { background:#FEE2E2; color:#991B1B; border-color:#FCA5A5;
+                                  font-weight:700; }
+    .q-opt.q-opt-correct       { background:#DCFCE7; color:#166534; border-color:#86EFAC;
+                                  font-weight:700; }
+    .q-opt.q-opt-student-right { background:#DCFCE7; color:#166534; border-color:#86EFAC;
+                                  font-weight:700; }
+    .q-opt-tag { font-size:10px; margin-left:6px; font-weight:600; opacity:.8; }
+    .q-pic-opts { display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+    .q-pic-opt { text-align:center; border:2px solid #E2E8F0; border-radius:8px;
+                 padding:6px 8px; background:#F8FAFC; }
+    .q-pic-opt img { max-height:80px; max-width:100px; display:block; border-radius:4px; margin-bottom:4px; }
+    .q-pic-opt.q-opt-student-wrong { border-color:#FCA5A5; background:#FEE2E2; }
+    .q-pic-opt.q-opt-correct       { border-color:#86EFAC; background:#DCFCE7; }
+    .q-pic-opt.q-opt-student-right { border-color:#86EFAC; background:#DCFCE7; }
+    .q-pic-lbl { font-size:11px; font-weight:700; color:#374151; }
+    .q-compare { display:flex; flex-direction:column; gap:5px; margin-top:6px; }
+    .q-compare-row { display:flex; gap:8px; align-items:flex-start; font-size:13px; }
+    .q-compare-lbl { font-size:11px; font-weight:700; color:#64748B; min-width:56px;
+                     padding-top:1px; flex-shrink:0; }
+    .q-compare-val { flex:1; padding:4px 8px; border-radius:6px; line-height:1.5; }
+    .q-compare-val.q-student-wrong { background:#FEE2E2; color:#991B1B; font-weight:600; }
+    .q-compare-val.q-student-right { background:#DCFCE7; color:#166534; font-weight:600; }
+    .q-compare-val.q-correct-val   { background:#DCFCE7; color:#166534; font-weight:600; }
+    .q-no-ans { font-size:12px; color:#94A3B8; font-style:italic; margin-top:4px; }
+    .q-spk-item { font-size:13px; color:#475569; margin-top:4px; }
+    .q-spk-method { display:inline-block; font-size:11px; font-weight:700; border-radius:20px;
+                    padding:2px 9px; margin-bottom:4px; }
+    .q-spk-method.voice   { background:#EEF2FF; color:#4338CA; }
+    .q-spk-method.typing  { background:#F0FDF4; color:#166534; }
+    .q-spk-method.none    { background:#F1F5F9; color:#94A3B8; }
+    .q-stt-text { font-size:12px; color:#374151; background:#F8FAFC; border-radius:6px;
+                  padding:6px 10px; margin-top:4px; line-height:1.6; white-space:pre-wrap; word-break:break-all; }
+
     /* ── TOAST ──────────────────────────────── */
     .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px);
              background:#1E293B; color:#fff; padding:12px 22px; border-radius:12px; font-size:14px;
@@ -809,7 +867,7 @@ function renderDiagnosticHtml(data, a) {
     <button class="print-btn-diag" onclick="window.print()">🖨 결과지 출력 (A4)</button>`;
 }
 
-/** 테스트 상세 HTML (② — 영역 점수·STT·응답률, 원장 전용) */
+/** 테스트 상세 HTML (② — 영역 점수·STT·응답률·문항별 상세, 원장 전용) */
 function renderDetailHtml(data, a) {
   const secBars = a.sections
     ? Object.entries(a.sections)
@@ -823,10 +881,153 @@ function renderDetailHtml(data, a) {
            </div>${cmt ? '<div class="r-sec-comment">' + cmt + '</div>' : ''}`;
         }).join('')
     : '';
-  const spk      = a.speaking || {};
-  const rate     = spk.responseRate != null ? spk.responseRate : null;
-  const typRate  = spk.typingRate   != null ? spk.typingRate   : null;
-  const stt      = spk.sttText ? spk.sttText : null;
+  const spk     = a.speaking || {};
+  const rate    = spk.responseRate != null ? spk.responseRate : null;
+  const typRate = spk.typingRate   != null ? spk.typingRate   : null;
+  const stt     = spk.sttText ? spk.sttText : null;
+
+  // ── 문항별 상세 ───────────────────────────────────────────────
+  const SEC_KR_Q = { vocabulary:'어휘', grammar:'문법', reading:'독해', writing:'쓰기', phonics:'파닉스' };
+  const TYPE_KR  = { multiple_choice:'객관식', picture_choice:'그림선택', image_prompt_choice:'그림+객관식',
+                     fillin:'빈칸선택', unscramble:'문장배열' };
+  const ALPHA    = ['A','B','C','D','E'];
+  const CIRCLE   = ['①','②','③','④','⑤'];
+
+  function renderQItem(q, idx) {
+    const num      = idx + 1;
+    const secLabel = SEC_KR_Q[q.section] || q.section || '';
+    const typeLabel= TYPE_KR[q.questionType] || q.questionType || '';
+    const wrongCls = q.correct ? '' : ' q-wrong';
+    const resultMk = q.correct
+      ? '<span class="q-result q-correct-mark">O 정답</span>'
+      : '<span class="q-result q-wrong-mark">✗ 오답</span>';
+
+    // 선택지 렌더링 (MC / fillin / image_prompt_choice / picture_choice 텍스트보기)
+    function renderTextOpts() {
+      if (!q.options || !q.options.length) return '';
+      const submIdx = (q.submitted !== null && q.submitted !== undefined) ? parseInt(q.submitted, 10) : null;
+      const corrIdx = (q.answer   !== null && q.answer   !== undefined) ? q.answer : null;
+      return '<div class="q-opts">' + q.options.map((opt, i) => {
+        let cls = 'q-opt';
+        let tag = '';
+        if (i === submIdx && i === corrIdx) { cls += ' q-opt-student-right'; tag = '<span class="q-opt-tag">학생 선택 · 정답</span>'; }
+        else if (i === submIdx)             { cls += ' q-opt-student-wrong'; tag = '<span class="q-opt-tag">학생 선택</span>'; }
+        else if (i === corrIdx)             { cls += ' q-opt-correct';       tag = '<span class="q-opt-tag">정답</span>'; }
+        return '<div class="' + cls + '">' + CIRCLE[i] + ' ' + esc(opt) + tag + '</div>';
+      }).join('') + '</div>';
+    }
+
+    // 그림 선택지 렌더링 (imageOptions)
+    function renderPicOpts() {
+      if (!q.imageOptions || !q.imageOptions.length) return '';
+      const submIdx = (q.submitted !== null && q.submitted !== undefined) ? parseInt(q.submitted, 10) : null;
+      const corrIdx = (q.answer   !== null && q.answer   !== undefined) ? q.answer : null;
+      return '<div class="q-pic-opts">' + q.imageOptions.map((imgFile, i) => {
+        let cls = 'q-pic-opt';
+        let tag = '';
+        if (i === submIdx && i === corrIdx) { cls += ' q-opt-student-right'; tag = ' ✓'; }
+        else if (i === submIdx)             { cls += ' q-opt-student-wrong'; tag = ' ✗'; }
+        else if (i === corrIdx)             { cls += ' q-opt-correct';       tag = ' ✓'; }
+        return '<div class="' + cls + '"><img src="/img/' + esc(imgFile) + '" alt="' + ALPHA[i] + '"' +
+               ' onerror="this.style.display=\'none\'">' +
+               '<div class="q-pic-lbl">' + ALPHA[i] + tag + '</div></div>';
+      }).join('') + '</div>';
+    }
+
+    // 문장배열 렌더링
+    function renderUnscramble() {
+      const stuAns = (q.submitted != null) ? q.submitted : null;
+      const corrAns = q.expected || null;
+      const stuCls = q.correct ? 'q-compare-val q-student-right' : 'q-compare-val q-student-wrong';
+      const noAns  = stuAns == null ? '<div class="q-no-ans">— 무응답</div>' : '';
+      return '<div class="q-compare">' +
+        '<div class="q-compare-row"><span class="q-compare-lbl">학생 답변</span>' +
+        (stuAns != null
+          ? '<span class="' + stuCls + '">' + esc(stuAns) + '</span>'
+          : '<span class="q-no-ans">— 무응답</span>') +
+        '</div>' +
+        (corrAns ? '<div class="q-compare-row"><span class="q-compare-lbl">정답</span>' +
+          '<span class="q-compare-val q-correct-val">' + esc(corrAns) + '</span></div>' : '') +
+        '</div>';
+    }
+
+    // 문항 이미지
+    const imgHtml = q.imageFile
+      ? '<div class="q-img-wrap"><img src="/img/' + esc(q.imageFile) + '" alt="문항 이미지"' +
+        ' onerror="this.parentNode.innerHTML=\'🖼️ \' + \'' + esc(q.imageFile) + '\'"></div>'
+      : '';
+
+    // 지문 (독해)
+    const passageHtml = q.passage
+      ? '<div class="q-passage">' + esc(q.passage) + '</div>'
+      : '';
+
+    // 선택지 블록
+    let optsHtml = '';
+    if (q.questionType === 'picture_choice' && q.imageOptions && q.imageOptions.length) {
+      optsHtml = renderPicOpts();
+    } else if (q.questionType === 'unscramble') {
+      optsHtml = renderUnscramble();
+    } else {
+      optsHtml = renderTextOpts();
+    }
+
+    // 무응답 (선택지 없는 경우)
+    if (!optsHtml && q.submitted == null && q.questionType !== 'unscramble') {
+      optsHtml = '<div class="q-no-ans">— 무응답</div>';
+    }
+
+    return '<div class="q-item' + wrongCls + '" data-correct="' + q.correct + '">' +
+      '<div class="q-item-hdr">' +
+        '<span class="q-num">Q' + num + '</span>' +
+        (secLabel  ? '<span class="q-sec-badge">'  + esc(secLabel)  + '</span>' : '') +
+        (typeLabel ? '<span class="q-type-badge">' + esc(typeLabel) + '</span>' : '') +
+        resultMk +
+      '</div>' +
+      passageHtml +
+      (q.stem ? '<div class="q-stem">' + esc(q.stem) + '</div>' : '') +
+      imgHtml +
+      optsHtml +
+    '</div>';
+  }
+
+  // 스피킹 문항 렌더링
+  function renderSpkItem(q, idx) {
+    const ans    = q.answer || null;
+    const method = ans ? ans.method : null;
+    const text   = ans ? ans.text   : null;
+    const methodLabel = method === 'voice'  ? '<span class="q-spk-method voice">🎙 음성 응답</span>'
+                      : method === 'typing' ? '<span class="q-spk-method typing">⌨️ 타이핑 응답</span>'
+                      :                       '<span class="q-spk-method none">— 무응답</span>';
+    return '<div class="q-item" data-correct="spk">' +
+      '<div class="q-item-hdr">' +
+        '<span class="q-num">S' + (idx + 1) + '</span>' +
+        '<span class="q-sec-badge">스피킹</span>' +
+        '<span class="q-type-badge">L&amp;S</span>' +
+        methodLabel +
+      '</div>' +
+      (q.stem ? '<div class="q-stem">' + esc(q.stem) + '</div>' : '') +
+      (text    ? '<div class="q-stt-text">' + esc(text) + '</div>' : '') +
+    '</div>';
+  }
+
+  const qDetails  = data.questionDetails  || null;
+  const spkDetails= data.speakingDetails  || null;
+  const wrongCount= qDetails ? qDetails.filter(function(q){ return !q.correct; }).length : 0;
+
+  const qListHtml = qDetails && qDetails.length
+    ? '<div class="q-detail-filter">' +
+        '<label><input type="radio" name="qfilter" value="all" onchange="filterQItems(\'all\')" checked> 전체 (' + qDetails.length + ')</label>' +
+        '<label><input type="radio" name="qfilter" value="wrong" onchange="filterQItems(\'wrong\')"> 오답만 (' + wrongCount + ')</label>' +
+      '</div>' +
+      '<div id="q-detail-list">' +
+        qDetails.map(function(q, i){ return renderQItem(q, i); }).join('') +
+        (spkDetails && spkDetails.length
+          ? '<div class="r-section-divider" style="margin:12px 0"></div>' +
+            spkDetails.map(function(q, i){ return renderSpkItem(q, i); }).join('')
+          : '') +
+      '</div>'
+    : '<p style="font-size:13px;color:#94A3B8;">문항 상세 데이터 없음 (이전 제출 데이터)</p>';
 
   return `
     <div class="r-score-box">
@@ -849,7 +1050,22 @@ function renderDetailHtml(data, a) {
       ${stt
         ? `<pre style="font-size:12px;line-height:1.7;white-space:pre-wrap;word-break:break-all;margin:0">${esc(stt)}</pre>`
         : `<span style="color:#94A3B8">— (음성 인식 데이터 없음)</span>`}
-    </div>`;
+    </div>
+    <div class="r-section-divider"></div>
+    <div class="r-sec-title">📝 문항별 상세 <small style="font-size:10px;color:#94A3B8;font-weight:400;text-transform:none;">(원장 전용 · 출력 제외)</small></div>
+    ${qListHtml}`;
+}
+
+function filterQItems(mode) {
+  var list = document.getElementById('q-detail-list');
+  if (!list) return;
+  list.querySelectorAll('.q-item').forEach(function(el) {
+    if (mode === 'wrong') {
+      el.style.display = el.dataset.correct === 'false' ? '' : 'none';
+    } else {
+      el.style.display = '';
+    }
+  });
 }
 
 function closeReportModal() {

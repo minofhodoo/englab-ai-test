@@ -895,19 +895,43 @@ app.post('/api/assignment/:code/submit', async (req, res) => {
 
     const assessment = TC.scoreAndDiagnose(a.stage, scored);
 
+    // 문항별 상세 (표시 계층 전용 — 채점 로직 변경 없음)
+    const questionDetails = scored.map(q => ({
+      id:           q.id,
+      questionType: q.questionType,
+      section:      q.section      || null,
+      stem:         q.stem         || null,
+      passage:      q.passage      || null,
+      options:      q.options      || null,
+      imageFile:    q.imageFile    || null,
+      imageOptions: q.imageOptions || null,
+      answer:       q.answer       !== undefined ? q.answer : null,
+      expected:     q.expected     || null,
+      submitted:    q.submitted    !== undefined ? q.submitted : null,
+      correct:      q.correct,
+    }));
+
     // 스피킹 보조지표 반영 (레벨 산출 로직과 완전 분리)
     const spkData = req.body.speakingData;
+    let speakingDetails = null;
     if (spkData && Array.isArray(spkData.questions) && spkData.questions.length > 0) {
       assessment.speaking = SU.buildSpeakingReport(spkData.questions, spkData.answers);
+      speakingDetails = spkData.questions.map(q => ({
+        id:     q.id,
+        stem:   q.stem || null,
+        answer: (spkData.answers && spkData.answers[q.id]) || null,
+      }));
     }
 
     // 종합 피드백 생성
     assessment.overall = TC.buildOverall(assessment);
 
     const updated    = store.submitAssignment(code, {
-      answers:    submittedAnswers || [],
-      score:      assessment.score,
+      answers:         submittedAnswers || [],
+      score:           assessment.score,
       assessment,
+      questionDetails,
+      speakingDetails,
     });
 
     // 이메일 발송 (학생 이메일 + 서버 설정 있을 때)
