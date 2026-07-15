@@ -102,6 +102,15 @@ assert(adminSrc2.includes('overall-box'),            'admin-assign: AI 종합분
 assert(adminSrc2.includes('buildSpeakingFeedback'),  'admin-assign: buildSpeakingFeedback 호출');
 assert(adminSrc2.includes('speaking-utils.js'),      'admin-assign: speaking-utils.js 스크립트 로드');
 
+// 인쇄 전용 단계명 숨김 (.exam-stage)
+assert(adminSrc2.includes('exam-stage'),             'admin-assign: .exam-stage 클래스 사용');
+assert(adminSrc2.includes('class="exam-stage"'),     'admin-assign: res-hdr 단계 span에 exam-stage 부여');
+assert(/exam-stage.*display:none/s.test(adminSrc2) || adminSrc2.includes('exam-stage { display:none'), 'admin-assign: @media print .exam-stage display:none');
+// report-meta에 exam-stage span 주입 (innerHTML 사용)
+assert(adminSrc2.includes('class="exam-stage">단계 '), 'admin-assign: report-meta에 exam-stage span 포함');
+// 추천 레벨(result-level-box)은 인쇄 숨김 대상이 아님
+assert(adminSrc2.includes('result-level-box') && !adminSrc2.includes('result-level-box.*display:none'), 'admin-assign: 추천 레벨은 숨김 제외');
+
 // test.html: L&S 피드백 섹션 확인
 assert(htmlSrc.includes('res-spk-feedback'),         'test.html: #res-spk-feedback 존재');
 assert(htmlSrc.includes('buildSpeakingFeedback'),    'test.html: buildSpeakingFeedback 호출');

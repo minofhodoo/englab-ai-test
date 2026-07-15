@@ -177,6 +177,7 @@
       .print-btn-diag, .btn-cancel { display:none !important; }
       .ai-badge, .overall-box, .result-level-box, .res-hdr, .ai-section-title,
       .bonus-badge, .r-sec-fill, .spk-fb-lbl { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .exam-stage { display:none !important; }
       .radar-wrap svg { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
       .diag-grid { display:grid !important; grid-template-columns:1fr 1fr !important;
                    gap:0 20px !important; align-items:start !important; }
@@ -697,9 +698,9 @@ async function _openReportModal(code, titleText, renderFn) {
   try {
     const data = await authedGet('/api/admin/assignments/' + code + '/report');
     const a = data.assessment || {};
-    document.getElementById('report-meta').textContent =
-      esc(data.studentName) + ' · 단계 ' + data.stage + ' ' + esc(data.stageName) +
-      ' · ' + (data.completedAt ? new Date(data.completedAt).toLocaleString('ko-KR') : '—');
+    document.getElementById('report-meta').innerHTML =
+      esc(data.studentName) + ' · <span class="exam-stage">단계 ' + data.stage + ' ' + esc(data.stageName) + '</span>' +
+      ' · ' + esc(data.completedAt ? new Date(data.completedAt).toLocaleString('ko-KR') : '—');
     document.getElementById('report-body').innerHTML = renderFn(data, a);
   } catch(e) {
     document.getElementById('report-meta').textContent = '불러오기 실패';
@@ -749,7 +750,7 @@ function renderDiagnosticHtml(data, a) {
     </div>
     <div class="res-hdr">
       <span>학생: <strong>${esc(data.studentName)}</strong></span>
-      <span>단계: <strong>단계 ${data.stage} ${esc(data.stageName)}</strong></span>
+      <span class="exam-stage">단계: <strong>단계 ${data.stage} ${esc(data.stageName)}</strong></span>
       ${cefr ? `<span>CEFR: <strong>${esc(cefr)}</strong></span>` : ''}
       <span>시험일: <strong>${data.completedAt ? new Date(data.completedAt).toLocaleDateString('ko-KR') : '—'}</strong></span>
     </div>
