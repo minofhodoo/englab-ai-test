@@ -508,16 +508,16 @@
         "questionType": "unscramble",
         "type": "writing",
         "difficulty": 5,
-        "question": "( many / are / How / there / crabs ) ?",
+        "question": "( many / are / How / there / books ) ?",
         "words": [
           "many",
           "are",
           "How",
           "there",
-          "crabs"
+          "books"
         ],
         "expected": [
-          "How many crabs are there?"
+          "How many books are there?"
         ]
       },
       {
@@ -614,7 +614,7 @@
         "difficulty": 4,
         "question": "Hurry up! It is nine _______.",
         "options": [
-          "o’clock",
+          "hour",
           "thirty",
           "watch"
         ],
@@ -668,7 +668,7 @@
         "difficulty": 5,
         "question": "She is wearing a green _______.",
         "options": [
-          "ring",
+          "shoes",
           "skirt",
           "glasses"
         ],
@@ -686,11 +686,11 @@
         "difficulty": 5,
         "question": "The lemonade tastes very _______.",
         "options": [
-          "sweet",
           "sour",
-          "good"
+          "salty",
+          "spicy"
         ],
-        "answer": 1
+        "answer": 0
       },
       {
         "id": "challenger-7-12-q8",
@@ -981,7 +981,7 @@
           "sixth"
         ],
         "answer": 1,
-        "passage": "Eric is in fifth grade. He likes to collect trading cards. He has many cards from Japan, but he doesn't have any pets. His sister, Rachel, likes to play the piano. She also likes to read comic books"
+        "passage": "Eric is in fifth grade. He likes to collect trading cards. He has many cards from Japan, but he doesn't have any pets. His sister, Rachel, likes to play the piano. She also likes to read comic books."
       },
       {
         "id": "challenger-7-12-q24",
@@ -1119,16 +1119,16 @@
         "questionType": "unscramble",
         "type": "writing",
         "difficulty": 6,
-        "question": "( tastes / The / very / lemonade / sour ) .",
+        "question": "( every / breakfast / eats / He / morning ) .",
         "words": [
-          "tastes",
-          "The",
-          "very",
-          "lemonade",
-          "sour"
+          "every",
+          "breakfast",
+          "eats",
+          "He",
+          "morning"
         ],
         "expected": [
-          "The lemonade tastes very sour."
+          "He eats breakfast every morning."
         ]
       }
     ]
@@ -1791,7 +1791,7 @@
         "questionType": "multiple_choice",
         "type": "vocabulary",
         "difficulty": 7,
-        "question": "Labradors and retrievers are very ________ dogs.",
+        "question": "Labradors and retrievers are very ________ dogs because they learn quickly.",
         "options": [
           "adventurous",
           "clever",
@@ -1851,7 +1851,7 @@
           "tour",
           "poster"
         ],
-        "answer": 2
+        "answer": 1
       },
       {
         "id": "explorer-7-12-q9",
@@ -1863,11 +1863,11 @@
         "questionType": "multiple_choice",
         "type": "vocabulary",
         "difficulty": 8,
-        "question": "Falcons are bigger than ________.",
+        "question": "Pigeons are bigger than ________.",
         "options": [
-          "kittens",
-          "pigeons",
-          "puppies"
+          "eagles",
+          "chicks",
+          "falcons"
         ],
         "answer": 1
       },
@@ -2138,9 +2138,9 @@
         "difficulty": 8,
         "question": "Why are Labradors good guide dogs?",
         "options": [
-          "They are clever",
-          "They are colorful",
-          "They are quiet"
+          "They are clever.",
+          "They are colorful.",
+          "They are quiet."
         ],
         "answer": 0,
         "passage": "Some animals have jobs. Guide dogs help people who cannot see well. They help their owners cross the road. Labradors are good guide dogs because they are clever. In Dubai, people use falcons to scare away other birds like pigeons. Falcons are bigger than pigeons."
@@ -2272,20 +2272,17 @@
         "questionType": "unscramble",
         "type": "writing",
         "difficulty": 8,
-        "question": "( than / rather / parrot / I / a / rabbit / a / get / would ) .",
+        "question": "( rather / parrot / I / a / get / would ) .",
         "words": [
-          "than",
           "rather",
           "parrot",
           "I",
-          "a",
-          "rabbit",
           "a",
           "get",
           "would"
         ],
         "expected": [
-          "I would rather get a parrot than a rabbit."
+          "I would rather get a parrot."
         ]
       }
     ]
@@ -2324,7 +2321,7 @@
         "options": [
           "salmon",
           "pineapple",
-          "coconut"
+          "olive"
         ],
         "answer": 1
       },
@@ -2500,11 +2497,11 @@
         "questionType": "multiple_choice",
         "type": "grammar",
         "difficulty": 7,
-        "question": "________, heat the oven.",
+        "question": "Before you start baking, ________, heat the oven.",
         "options": [
-          "Next",
-          "First",
-          "Finally"
+          "next",
+          "first",
+          "finally"
         ],
         "answer": 1
       },
@@ -2612,7 +2609,7 @@
         "options": [
           "will",
           "are",
-          "could"
+          "were"
         ],
         "answer": 0
       },
