@@ -106,8 +106,14 @@ function checkRequiredFields(questions) {
     if (q.questionType === 'unscramble' && (!q.expected || !q.expected.length)) {
       missing.push('expected');
     }
-    if (q.questionType === 'picture_choice' && !q.imageFile) {
-      missing.push('imageFile');
+    // picture_choice: imageOptions:true → options[]에 이미지 파일명 (신형)
+    //                 imageOptions 없음  → imageFile 필드 사용 (구형)
+    if (q.questionType === 'picture_choice') {
+      if (q.imageOptions) {
+        if (!q.options || !q.options.length) missing.push('options(imageOptions)');
+      } else {
+        if (!q.imageFile) missing.push('imageFile');
+      }
     }
     if (missing.length) problems.push(q.id + '[' + missing.join(',') + ']');
   }

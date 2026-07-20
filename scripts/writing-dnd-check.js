@@ -9,6 +9,9 @@
  *  5. Builder 문항(picture_choice) D&D 대상 제외 확인
  *
  * 실행: node scripts/writing-dnd-check.js
+ *
+ * [normalizeAnswer 사양] 후행 구두점(. ? !)을 제거한 소문자 문자열을 반환한다.
+ * 따라서 종결 부호 누락 제출도 정답으로 허용(관대 채점)하는 것이 의도된 동작이다.
  */
 'use strict';
 
@@ -46,10 +49,10 @@ console.log(hdr('1. normalizeAnswer'));
 
 assert(normalizeAnswer('  Hello  World  ') === 'hello world',
   '양끝 공백 제거 + 다중 공백 축소 + 소문자');
-assert(normalizeAnswer("Don't stop.") === "don't stop.",
-  "내부 아포스트로피 보존 + 소문자");
-assert(normalizeAnswer('This is a desk.') === 'this is a desk.',
-  '일반 종결 부호 소문자');
+assert(normalizeAnswer("Don't stop.") === "don't stop",
+  "내부 아포스트로피 보존 + 소문자 (후행 마침표 제거)");
+assert(normalizeAnswer('This is a desk.') === 'this is a desk',
+  '일반 종결 부호 소문자 (후행 마침표 제거)');
 assert(normalizeAnswer(null) === '', 'null → 빈 문자열');
 assert(normalizeAnswer(undefined) === '', 'undefined → 빈 문자열');
 assert(normalizeAnswer('') === '', '빈 문자열 → 빈 문자열');
@@ -92,9 +95,9 @@ assert(!judgeUnscramble('is This a desk.', ['This is a desk.']),
 assert(!judgeUnscramble('This is desk.',   ['This is a desk.']),
   '단어 누락 → 오답 ✓');
 
-// 종결 부호 누락 → 오답
-assert(!judgeUnscramble('This is a desk',  ['This is a desk.']),
-  '종결 부호 누락 → 오답 ✓');
+// 종결 부호 누락 → 관대 채점으로 정답 허용 (normalizeAnswer가 후행 구두점 제거)
+assert(judgeUnscramble('This is a desk',  ['This is a desk.']),
+  '종결 부호 누락 허용(관대 채점) ✓');
 
 // expected 복수 허용 (배열)
 assert(judgeUnscramble('He is tall.', ['He is tall.', 'He is a tall boy.']),
