@@ -293,15 +293,21 @@ const fb2 = buildSpeakingFeedback({ responseRate: 30, matchRate: 20 });
 assert(fb2.pronunciation !== fb1.pronunciation, '하 케이스: 발음 코멘트 상이함');
 assert(buildSpeakingFeedback(null) === null, 'null 입력 → null');
 
-// ── 11. 팀 재테스트 — 단계 설명 문구 ──────────────────────────────────────────
-console.log(hdr('11. STAGE_GUIDE_MAP 새 문구'));
+// ── 11. 단계 설명 문구 — stage-guide.js 모듈 기준 ──────────────────────────
+console.log(hdr('11. StageGuide.STAGE_GUIDE_MAP 문구'));
 
-assert(HTML.includes("1: '알파벳과 파닉스를 배우고 있어요'"), 'Stage 1 Seeker 설명');
-assert(HTML.includes("2: '쉬운 단어와 짧은 문장을 읽을 수 있어요'"), 'Stage 2 Builder 설명');
-assert(HTML.includes("3: '기본 문장을 읽고 쓸 수 있어요'"), 'Stage 3 Challenger 설명');
-assert(HTML.includes("4: '영어 지문을 읽고 내용을 이해할 수 있어요'"), 'Stage 4 Explorer 설명');
-assert(HTML.includes("5: '영어로 자신의 생각을 말하거나 쓸 수 있어요'"), 'Stage 5 Inventor 설명');
-assert(HTML.includes("6: '영어로 자신의 생각을 말하거나 쓸 수 있어요'"), 'Stage 6 Innovator 설명');
+// 문구는 stage-guide.js 공용 모듈로 이동됨 — 그 모듈을 직접 검증
+const SG = require(path.join(ROOT, 'public', 'stage-guide.js'));
+const SGM = SG.STAGE_GUIDE_MAP;
+assert(SGM[1] === '알파벳과 파닉스를 배우고 있어요.',     'Stage 1 Seeker 설명');
+assert(SGM[2] === '쉬운 단어와 짧은 문장을 읽을 수 있어요.', 'Stage 2 Builder 설명');
+assert(SGM[3] === '기본 문장을 이해하고 영어로 쓸 수 있어요.', 'Stage 3 Challenger 설명');
+assert(SGM[4] === '영어 지문을 읽고 내용을 이해할 수 있어요.', 'Stage 4 Explorer 설명');
+assert(SGM[5] === '영어로 자신의 생각을 말하고 글로 표현할 수 있어요.', 'Stage 5 Inventor 설명');
+assert(SGM[6] === '영어로 자신의 생각을 말하고 글로 표현할 수 있어요.', 'Stage 6 Innovator 설명');
+// test.html이 공용 모듈을 참조하는지 확인
+assert(HTML.includes('stage-guide.js'), 'test.html: stage-guide.js 로드');
+assert(HTML.includes('StageGuide.STAGE_GUIDE_MAP'), 'test.html: StageGuide.STAGE_GUIDE_MAP 참조');
 // 레벨명·단계번호 미노출 확인
 assert(!HTML.includes("data.stageName"), '확인 화면에 stageName 미노출 (이전 fix 유지)');
 assert(!HTML.includes("단계 ${data.stage}"), '확인 화면에 단계번호 미노출');

@@ -37,15 +37,26 @@
     .err { color:var(--danger); font-size:13px; text-align:center; margin-top:10px;
            min-height:20px; }
 
-    /* ── 확인 화면 ── */
-    .info-box { background:var(--primary-light); border-radius:14px; padding:20px 24px;
-                margin-bottom:20px; text-align:center; }
-    .info-box .stage-label { font-size:13px; color:var(--gray-500); margin-bottom:6px; }
-    .info-box .stage-name  { font-size:28px; font-weight:800; color:var(--primary); }
-    .info-box .student-name { font-size:16px; color:var(--gray-800); margin-top:8px; font-weight:600; }
-    .guide-text { font-size:13px; color:var(--gray-500); line-height:1.6;
-                  background:var(--gray-100); padding:14px 16px; border-radius:10px;
-                  margin-bottom:20px; }
+    /* ── 배정 확인 화면 ── */
+    .confirm-card { max-width:420px; padding:28px 24px; }
+    .confirm-logo-wrap { text-align:center; margin-bottom:14px; }
+    .confirm-logo { max-height:54px; max-width:180px; object-fit:contain; display:inline-block; }
+    .confirm-title { text-align:center; font-size:14px; font-weight:800;
+                     letter-spacing:.18em; color:#BA7517; margin-bottom:14px; }
+    .confirm-hr { border:none; border-top:1px solid var(--gray-200); margin:16px 0; }
+    .confirm-section-title { font-size:17px; font-weight:800; text-align:center; margin-bottom:6px; }
+    .confirm-section-desc  { font-size:14px; color:var(--gray-500); text-align:center; margin-bottom:14px; }
+    .confirm-time-badge { display:flex; align-items:center; justify-content:center; gap:6px;
+                          background:#FEF3DC; color:#92400E; font-size:13px; font-weight:600;
+                          border-radius:20px; padding:5px 14px; }
+    .confirm-student-name { font-size:24px; font-weight:800; text-align:center;
+                            margin-bottom:10px; color:var(--gray-800); }
+    .confirm-level-label  { font-size:12px; font-weight:700; color:var(--gray-500);
+                            text-align:center; letter-spacing:.06em; margin-bottom:6px; }
+    .confirm-level-text   { font-size:16px; color:var(--gray-800); text-align:center;
+                            line-height:1.5; margin-bottom:0; }
+    .btn-confirm-start { background:#BA7517; color:#fff; }
+    .btn-confirm-start:hover { background:#9a6113; opacity:1; }
 
     /* ── 시험 화면 ── */
     #screen-test { display:none; flex-direction:column; min-height:100vh; padding:0; }
@@ -350,17 +361,31 @@
 
 <!-- ②배정 확인 -->
 <div class="screen" id="screen-confirm">
-  <div class="card">
-    <div class="logo">🎯</div>
-    <h1>시험 배정 확인</h1>
-    <p class="sub">아래 정보를 확인한 뒤 시험을 시작하세요</p>
-    <div class="info-box">
-      <div class="stage-label">배정 단계</div>
-      <div class="stage-name" id="confirm-stage">—</div>
-      <div class="student-name" id="confirm-name">—</div>
+  <div class="card confirm-card">
+    <!-- 1. 로고 -->
+    <div class="confirm-logo-wrap">
+      <img class="confirm-logo" id="confirm-logo-img" alt="SDA 삼육잉글랩">
     </div>
-    <div class="guide-text" id="confirm-guide"></div>
-    <button class="btn btn-primary" onclick="startTest()">시험 시작하기 →</button>
+    <!-- 2. 타이틀 -->
+    <div class="confirm-title">AI ONLINE LEVEL TEST</div>
+    <!-- 3. 구분선 -->
+    <hr class="confirm-hr">
+    <!-- 4. 소제목 + 설명 -->
+    <div class="confirm-section-title">시험 배정 확인</div>
+    <div class="confirm-section-desc">아래 정보를 확인한 후, 시험을 시작하세요.</div>
+    <!-- 5. 소요 시간 뱃지 -->
+    <div class="confirm-time-badge">⏱ 약 15~20분 소요</div>
+    <!-- 6. 구분선 -->
+    <hr class="confirm-hr">
+    <!-- 7. 학생명 -->
+    <div class="confirm-student-name" id="confirm-name"></div>
+    <!-- 8. 학습 수준 -->
+    <div class="confirm-level-label">현재 학습 수준</div>
+    <div class="confirm-level-text" id="confirm-guide"></div>
+    <!-- 9. 구분선 -->
+    <hr class="confirm-hr">
+    <!-- 10. 시작 버튼 -->
+    <button class="btn btn-confirm-start" onclick="startTest()">시험 시작하기 →</button>
     <p class="err" id="confirm-err"></p>
   </div>
 </div>
@@ -527,18 +552,21 @@
   </div>
 </div>
 
+<script src="/stage-guide.js"></script>
 <script src="/answer-utils.js"></script>
 <script src="/speaking-utils.js"></script>
 <script>
 'use strict';
-const STAGE_GUIDE_MAP = {
-  1: '알파벳과 파닉스를 배우고 있어요',
-  2: '쉬운 단어와 짧은 문장을 읽을 수 있어요',
-  3: '기본 문장을 읽고 쓸 수 있어요',
-  4: '영어 지문을 읽고 내용을 이해할 수 있어요',
-  5: '영어로 자신의 생각을 말하거나 쓸 수 있어요',
-  6: '영어로 자신의 생각을 말하거나 쓸 수 있어요',
-};
+const STAGE_GUIDE_MAP = StageGuide.STAGE_GUIDE_MAP;
+
+// ── 로고: onerror를 src 지정 전에 등록 ──────────────────────────────────────
+(function () {
+  var logo = document.getElementById('confirm-logo-img');
+  if (logo) {
+    logo.onerror = function () { this.style.display = 'none'; };
+    logo.src = '/img/sda-logo.jpg';
+  }
+}());
 
 let _code = '';
 let _assignment = null;
@@ -620,12 +648,8 @@ async function lookupCode() {
     if (!res.ok) { errEl.textContent = data.error || '코드를 찾을 수 없습니다.'; return; }
     if (data.status === 'done') { errEl.textContent = '이미 완료된 시험입니다.'; return; }
     _assignment = data;
-    const _stageEl = document.getElementById('confirm-stage');
-    _stageEl.style.display = 'none';
-    const _stageLblEl = _stageEl.previousElementSibling;
-    if (_stageLblEl) _stageLblEl.style.display = 'none';
     document.getElementById('confirm-name').textContent  = data.studentName + ' 학생';
-    document.getElementById('confirm-guide').textContent  = STAGE_GUIDE_MAP[data.stage] || '';
+    document.getElementById('confirm-guide').textContent = STAGE_GUIDE_MAP[data.stage] || '';
     showScreen('screen-confirm');
   } catch (e) {
     errEl.textContent = '서버 연결에 실패했습니다.';
